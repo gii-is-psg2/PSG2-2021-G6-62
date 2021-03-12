@@ -16,6 +16,14 @@
     
     <developers>
     	<developer>
+			<id>felipescalera</id>
+			<name>Felipe Escalera González</name>
+			<email>felescgon@alum.us.es</email>
+			<roles>
+				<role>Scrum Master</role>
+			</roles>
+		</developer>
+    	<developer>
 			<id>martorsan13</id>
 			<name>Mariano Manuel Torrado Sánchez</name>
 			<email>martorsan13@alum.us.es</email>
