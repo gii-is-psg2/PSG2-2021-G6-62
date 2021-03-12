@@ -20,7 +20,15 @@
 			<name>Mariano Manuel Torrado Sánchez</name>
 			<email>martorsan13@alum.us.es</email>
 			<roles>
-				<role>Team Member</role>
+				<role>Development Team Member</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Jotaeme55</id>
+			<name>José Manuel Tabares Rodríguez</name>
+			<email>jmtr2000@gmail.com</email>
+			<roles>
+				<role>Development Team Member</role>
 			</roles>
 		</developer>
 	</developers>
