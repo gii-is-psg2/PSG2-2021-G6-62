@@ -47,6 +47,14 @@
                 <role>Development Team Member</role>
             </roles>
         </developer>
+        <developer>
+            <id>pablogiraldez17</id>
+            <name>Pablo Giráldez Álvarez</name>
+            <email>pablogiraldez17@gmail.com</email>
+            <roles>
+                <role>Development Team Member</role>
+            </roles>
+        </developer>
 	</developers>
 
     <properties>
