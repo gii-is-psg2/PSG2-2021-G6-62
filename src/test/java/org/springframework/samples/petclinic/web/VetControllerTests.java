@@ -22,22 +22,29 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Test class for the {@link VetController}
- */
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.*;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 @WebMvcTest(controllers=VetController.class,
 		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 		excludeAutoConfiguration= SecurityConfiguration.class)
 class VetControllerTests {
+	
+	private static final Integer TEST_VET_ID = 1;
+	private static final Integer TEST_VET_NOT_FOUND_ID = 2;
+
 
 	@Autowired
 	private VetController vetController;
 
 	@MockBean
-	private VetService clinicService;
+	private VetService vetService;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -57,7 +64,9 @@ class VetControllerTests {
 		radiology.setId(1);
 		radiology.setName("radiology");
 		helen.addSpecialty(radiology);
-		given(this.clinicService.findVets()).willReturn(Lists.newArrayList(james, helen));
+		given(this.vetService.findVets()).willReturn(Lists.newArrayList(james, helen));
+		given(this.vetService.findById(TEST_VET_ID)).willReturn(Optional.of(james));
+		given(this.vetService.findById(TEST_VET_NOT_FOUND_ID)).willReturn(Optional.empty());
 	}
         
     @WithMockUser(value = "spring")
@@ -74,5 +83,55 @@ class VetControllerTests {
 				.andExpect(content().contentType(MediaType.APPLICATION_XML_VALUE))
 				.andExpect(content().node(hasXPath("/vets/vetList[id=1]/id")));
 	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testCreateVetGet() throws Exception {
+		mockMvc.perform(get("/vets/new"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("vet"))
+			.andExpect(view().name("vets/vetsEdit"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testCreateVetPost() throws Exception {
+		mockMvc.perform(post("/vets/new")
+				.with(csrf()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Vet created succesfully!")))
+			.andExpect(view().name("redirect:/vets"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testEditVetGet() throws Exception {
+		mockMvc.perform(get("/vets/{vetId}/edit", TEST_VET_ID))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("vet"))
+			.andExpect(view().name("vets/vetsEdit"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testEditVetPost() throws Exception {
+		mockMvc.perform(post("/vets/{vetId}/edit", TEST_VET_ID)
+				.with(csrf())
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Vet successfully updated!")))
+			.andExpect(view().name("redirect:/vets"));
+	}
 
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeleteVet() throws Exception {
+		
+		mockMvc.perform(get("/vets/{vetId}/delete", TEST_VET_ID)
+				.with(csrf()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Vet successfully deleted!")))
+			.andExpect(view().name("redirect:/vets"));
+	}
 }
