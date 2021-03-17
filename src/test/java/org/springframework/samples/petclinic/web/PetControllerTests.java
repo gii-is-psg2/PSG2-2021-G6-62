@@ -138,6 +138,6 @@ class PetControllerTests {
 				.with(csrf()))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(flash().attribute("message", is("Pet successfully deleted!")))
-			.andExpect(view().name("redirect:/pets"));
+			.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 }

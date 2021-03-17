@@ -134,7 +134,7 @@ public class PetController {
 			redirectAttributes.addFlashAttribute("message", "Pet not found!");
 		}
 
-		return "redirect:/pets";
+		return "redirect:/owners/{ownerId}";
 	}
 
 }

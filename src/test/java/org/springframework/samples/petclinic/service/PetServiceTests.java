@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -184,21 +185,30 @@ class PetServiceTests {
 	void shouldDeletePet() throws DataAccessException, DuplicatedPetNameException {
 		List<Pet> allPets = this.petService.findAll();
 
-		Pet newPet = new Pet();
-		PetType newPetType = new PetType();
+		User newUser = new User();
 		Owner newOwner = new Owner();
-
-		newPetType.setName("testPetType");
+		Authorities newAuthority = new Authorities();
+		Pet newPet = new Pet();
 		
 		newPet.setName("testName");
 		newPet.setBirthDate(LocalDate.now());
-		newPet.setType(newPetType);
+		
+		newAuthority.setAuthority("admin");
+		newAuthority.setUser(newUser);
+		
+		newUser.setUsername("testUsername");
+		newUser.setPassword("testPassword");
 		
 		newOwner.setFirstName("testFirstName");
 		newOwner.setLastName("testLastName");
+		newOwner.setAddress("testAddress");
+		newOwner.setCity("testCity");
+		newOwner.setTelephone("4444444444");
+		newOwner.setUser(newUser);
 		newOwner.addPet(newPet);
 
 		this.petService.savePet(newPet);
+		this.ownerService.saveOwner(newOwner);
 		this.petService.delete(newPet);
 		List<Pet> allPetsAfterInsertAndDelete = this.petService.findAll();
 

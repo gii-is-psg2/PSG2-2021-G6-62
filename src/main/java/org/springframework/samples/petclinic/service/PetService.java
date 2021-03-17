@@ -21,9 +21,7 @@ import org.springframework.util.StringUtils;
 public class PetService {
 
 	private PetRepository petRepository;
-	
 	private VisitRepository visitRepository;
-	
 
 	@Autowired
 	public PetService(PetRepository petRepository,
@@ -71,6 +69,9 @@ public class PetService {
 	}
 	
 	public void delete(Pet pet) {
+		for (Visit v : pet.getVisits()) {
+			visitRepository.delete(v);
+		}
 		petRepository.delete(pet);
 	}
 

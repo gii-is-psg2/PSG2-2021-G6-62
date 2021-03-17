@@ -44,17 +44,17 @@ import org.springframework.util.StringUtils;
 @Service
 public class OwnerService {
 
-	private OwnerRepository ownerRepository;	
-	
-	@Autowired
+	private OwnerRepository ownerRepository;
+	private PetService petService;	
 	private UserService userService;
-	
-	@Autowired
 	private AuthoritiesService authoritiesService;
 
 	@Autowired
-	public OwnerService(OwnerRepository ownerRepository) {
+	public OwnerService(OwnerRepository ownerRepository, UserService userService, PetService petService, AuthoritiesService authoritiesService) {
 		this.ownerRepository = ownerRepository;
+		this.userService = userService;
+		this.petService = petService;
+		this.authoritiesService = authoritiesService;
 	}	
 	
 	@Transactional(readOnly = true)
@@ -83,6 +83,9 @@ public class OwnerService {
 	}	
 	
 	public void delete(Owner owner) {
+		for (Pet p : owner.getPets()) {
+			petService.delete(p);
+		}
 		ownerRepository.delete(owner);
 	}
 
