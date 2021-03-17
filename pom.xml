@@ -24,7 +24,7 @@
 			</roles>
 		</developer>
     	<developer>
-			<id>martorsan13</id>
+			<id>martorsan13</id> 
 			<name>Mariano Manuel Torrado Sánchez</name>
 			<email>martorsan13@alum.us.es</email>
 			<roles>
@@ -260,7 +260,7 @@
                 <artifactId>wro4j-maven-plugin</artifactId>
                 <version>${wro4j.version}</version>
                 <executions>
-                    <execution>
+                    <execution> 
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
