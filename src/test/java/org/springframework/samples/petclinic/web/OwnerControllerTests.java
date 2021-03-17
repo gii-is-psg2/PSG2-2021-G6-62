@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.service.VetService;
+import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,13 +27,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-/**
- * Test class for {@link OwnerController}
- *
- * @author Colin But
- */
+import java.util.Optional;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers=OwnerController.class,
 		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
@@ -45,7 +43,7 @@ class OwnerControllerTests {
 	private OwnerController ownerController;
 
 	@MockBean
-	private OwnerService clinicService;
+	private OwnerService ownerService;
         
         @MockBean
 	private UserService userService;
@@ -68,8 +66,7 @@ class OwnerControllerTests {
 		george.setAddress("110 W. Liberty St.");
 		george.setCity("Madison");
 		george.setTelephone("6085551023");
-		given(this.clinicService.findOwnerById(TEST_OWNER_ID)).willReturn(george);
-
+		given(this.ownerService.findOwnerById(TEST_OWNER_ID)).willReturn(george);
 	}
 
 	@WithMockUser(value = "spring")
@@ -115,7 +112,7 @@ class OwnerControllerTests {
 	@WithMockUser(value = "spring")
         @Test
 	void testProcessFindFormSuccess() throws Exception {
-		given(this.clinicService.findOwnerByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+		given(this.ownerService.findOwnerByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
 
 		mockMvc.perform(get("/owners")).andExpect(status().isOk()).andExpect(view().name("owners/ownersList"));
 	}
@@ -123,7 +120,7 @@ class OwnerControllerTests {
 	@WithMockUser(value = "spring")
         @Test
 	void testProcessFindFormByLastName() throws Exception {
-		given(this.clinicService.findOwnerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+		given(this.ownerService.findOwnerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
 
 		mockMvc.perform(get("/owners").param("lastName", "Franklin")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
@@ -191,5 +188,15 @@ class OwnerControllerTests {
 				.andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
 				.andExpect(view().name("owners/ownerDetails"));
 	}
-
+        
+        @WithMockUser(value = "spring")
+    	@Test
+    	void testDeleteOwner() throws Exception {
+    		
+    		mockMvc.perform(get("/owners/{ownerId}/delete", TEST_OWNER_ID)
+    				.with(csrf()))
+    			.andExpect(status().is3xxRedirection())
+    			.andExpect(flash().attribute("message", is("Owner successfully deleted!")))
+    			.andExpect(view().name("redirect:/owners"));
+    	}
 }
