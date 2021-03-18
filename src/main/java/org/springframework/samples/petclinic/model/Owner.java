@@ -31,6 +31,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
@@ -65,6 +67,7 @@ public class Owner extends Person {
 	
 	//
 	@OneToOne(cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 	//

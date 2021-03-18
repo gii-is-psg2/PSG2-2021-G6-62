@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,6 +56,11 @@ public class OwnerService {
 	public OwnerService(OwnerRepository ownerRepository) {
 		this.ownerRepository = ownerRepository;
 	}	
+	
+	@Transactional(readOnly = true)
+	public List<Owner> findAll() throws DataAccessException {
+		return (List<Owner>) ownerRepository.findAll();
+	}
 
 	@Transactional(readOnly = true)
 	public Owner findOwnerById(int id) throws DataAccessException {
@@ -74,6 +80,10 @@ public class OwnerService {
 		userService.saveUser(owner.getUser());
 		//creating authorities
 		authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
-	}		
+	}	
+	
+	public void delete(Owner owner) {
+		ownerRepository.delete(owner);
+	}
 
 }
