@@ -67,7 +67,6 @@ public class Owner extends Person {
 	
 	//
 	@OneToOne(cascade = CascadeType.ALL)
-	@OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 	//
