@@ -6,13 +6,13 @@
 
 
 <petclinic:layout pageName="vets">
-    <h2>Veterinarians</h2>
+    <h2><spring:message code="vets.title" /></h2>
 
     <table id="vetsTable" class="table table-striped">
         <thead>
 	        <tr>
-	            <th>Name</th>
-	            <th>Specialties</th>
+                <th><spring:message code="vets.name" /></th>
+                <th><spring:message code="vets.specialties" /></th>
 	            <th>Actions</th>
 	        </tr>
         </thead>
