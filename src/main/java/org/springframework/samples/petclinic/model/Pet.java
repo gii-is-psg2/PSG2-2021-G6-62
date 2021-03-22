@@ -59,6 +59,10 @@ public class Pet extends NamedEntity {
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
 	private Owner owner;
+	
+	@ManyToOne
+	@JoinColumn(name = "hotel_id")
+	private PetHotel hotel;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Visit> visits;

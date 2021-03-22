@@ -1,8 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
 <!--  >%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%-->
 <%@ attribute name="name" required="true" rtexprvalue="true"
 	description="Name of the active menu: home, owners, vets or error"%>
@@ -27,6 +26,14 @@
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span>Home</span>
 				</petclinic:menuItem>
+
+				<sec:authorize access="hasAuthority('owner')">
+				<petclinic:menuItem active="${name eq 'pethotel'}" url="/pethotel/${nombre}"
+					title="home page">
+					<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+					<span>Pet Hotel</span>
+				</petclinic:menuItem>
+				</sec:authorize>
 
 				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
 					title="find owners">

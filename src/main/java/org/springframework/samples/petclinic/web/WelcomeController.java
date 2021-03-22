@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.samples.petclinic.model.User;
@@ -17,7 +18,8 @@ public class WelcomeController {
 	
 	  @GetMapping({"/","/welcome"})
 	  public String welcome(Map<String, Object> model) {	    
-
+		Object nombreOwner= SecurityContextHolder.getContext().getAuthentication().getName();
+		model.put("nombre", nombreOwner);
 	    return "welcome";
 	  }
 }
