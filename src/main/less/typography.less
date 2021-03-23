@@ -1,22 +1,24 @@
 @font-face {
-  font-family: 'varela_roundregular';
+  font-family: 'plantin';
 
-  src: url('../fonts/varela_round-webfont.eot');
-  src: url('../fonts/varela_round-webfont.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/varela_round-webfont.woff') format('woff'),
-       url('../fonts/varela_round-webfont.ttf') format('truetype'),
-       url('../fonts/varela_round-webfont.svg#varela_roundregular') format('svg');
+  src: url('../fonts/PlantinMTProRg.ttf')  format('truetype'), 
+       url('../fonts/PlantinMTProRg.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'montserratregular';
-  src: url('../fonts/montserrat-webfont.eot');
-  src: url('../fonts/montserrat-webfont.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/montserrat-webfont.woff') format('woff'),
-       url('../fonts/montserrat-webfont.ttf') format('truetype'),
-       url('../fonts/montserrat-webfont.svg#montserratregular') format('svg');
+  font-family: 'fontin';
+	
+  src: url('../fonts/Fontin-SmallCaps.ttf')  format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'apple-garamond';
+
+  src: url('../fonts/AppleGaramond-Light.ttf')  format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,22 +26,24 @@
 body, h1, h2, h3, p, input {
   margin: 0;
   font-weight: 400;
-  font-family: "varela_roundregular", sans-serif;
+  font-size: 16px;
+  font-family: "plantin", sans-serif;
   color: #34302d;
 }
 
 h1 {
   font-size: 24px;
   line-height: 30px;
-  font-family: "montserratregular", sans-serif;
+  font-family: "fontin", monospace;
 }
 
 h2 {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: bolder;
+  letter-spacing: 1px;
   line-height: 24px;
   margin-bottom: 10px;
-  font-family: "montserratregular", sans-serif;
+  font-family: "apple-garamond";
 }
 
 h3 {
@@ -56,5 +60,5 @@ p {
 
 strong {
   font-weight: 700;
-  font-family: "montserratregular", sans-serif;
+  font-family: "fontin", monospace;
 }
