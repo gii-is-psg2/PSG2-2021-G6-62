@@ -59,7 +59,7 @@ public class PetHotelService {
 
 	@Transactional
 	public Collection<Pet> findPets() throws DataAccessException {
-		return petRepository.findPets();
+		return (Collection<Pet>) petRepository.findAll();
 	}
 	
 }
