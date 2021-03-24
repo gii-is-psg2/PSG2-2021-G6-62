@@ -21,8 +21,9 @@
 		<div class="navbar-collapse collapse" id="main-navbar">
 			<ul class="nav navbar-nav">
 
+                <spring:message code="menu.home" var="home"/>
 				<petclinic:menuItem active="${name eq 'home'}" url="/"
-					title="home page">
+					title="${home}">
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span><spring:message code="menu.home" /></span>
 				</petclinic:menuItem>
@@ -35,20 +36,23 @@
 				</petclinic:menuItem>
 				</sec:authorize>
 
+                <spring:message code="menu.findOwners" var="findOwners"/>
 				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
-					title="find owners">
+					title="${findOwners}">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span><spring:message code="menu.findOwners" /></span>
 				</petclinic:menuItem>
 
+                <spring:message code="menu.veterinarians" var="veterinarians"/>
 				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
 					title="veterinarians">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span><spring:message code="menu.veterinarians" /></span>
 				</petclinic:menuItem>
 
+                <spring:message code="menu.errorDescription" var="error"/>
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
-					title="trigger a RuntimeException to see how it is handled">
+					title="${error}">
 					<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
 					<span><spring:message code="menu.error" /></span>
 				</petclinic:menuItem>
@@ -65,7 +69,7 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span>�
+						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span> 
 							<strong><sec:authentication property="name" /></strong> <span
 							class="glyphicon glyphicon-chevron-down"></span>
 					</a>
