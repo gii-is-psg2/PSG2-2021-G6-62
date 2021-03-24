@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
@@ -182,6 +182,7 @@ class PetServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldDeletePet() throws DataAccessException, DuplicatedPetNameException {
 		List<Pet> allPets = this.petService.findAll();
 
@@ -213,6 +214,55 @@ class PetServiceTests {
 		List<Pet> allPetsAfterInsertAndDelete = this.petService.findAll();
 
 		assertThat(allPetsAfterInsertAndDelete.size()).isEqualTo(allPets.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldDeletePetExtended() throws DataAccessException, DuplicatedPetNameException {
+		List<Pet> allPets = this.petService.findAll();
+
+		User newUser = new User();
+		Owner newOwner = new Owner();
+		Authorities newAuthority = new Authorities();
+		Pet newPet = new Pet();
+		
+		newPet.setName("testName");
+		newPet.setBirthDate(LocalDate.now());
+		
+		newAuthority.setAuthority("admin");
+		newAuthority.setUser(newUser);
+		
+		newUser.setUsername("testUsername");
+		newUser.setPassword("testPassword");
+		
+		newOwner.setFirstName("testFirstName");
+		newOwner.setLastName("testLastName");
+		newOwner.setAddress("testAddress");
+		newOwner.setCity("testCity");
+		newOwner.setTelephone("4444444444");
+		newOwner.setUser(newUser);
+		newOwner.addPet(newPet);
+		
+		Assertions.assertThrows(InvalidDataAccessApiUsageException.class,() -> {this.petService.delete(newPet);});
+
+		List<Pet> allPetsAfterFakeDelete = this.petService.findAll();
+		assertThat(allPetsAfterFakeDelete.size()).isEqualTo(allPets.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldAlsoDeleteOwnerPets() throws DataAccessException {
+		int oldPets = this.petService.findAll().size();
+
+		Owner oldOwner = this.ownerService.findAll().stream()
+				.filter(x -> x.getPets().size() > 0).findFirst().get();
+		Pet oldPet = oldOwner.getPets().stream().findFirst().get();
+		
+		this.petService.delete(oldPet);
+		
+		int newPets = this.petService.findAll().size();
+		
+		assertThat(oldPets - 1).isEqualTo(newPets);
 	}
 
 }

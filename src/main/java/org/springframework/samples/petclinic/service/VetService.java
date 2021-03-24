@@ -32,6 +32,7 @@ public class VetService {
 		return vetRepository.findById(id);
 	}
 	
+	@Transactional
 	public void delete(Vet vet) {
 		vetRepository.delete(vet);
 	}
