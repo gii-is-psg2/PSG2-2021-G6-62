@@ -147,11 +147,9 @@ class OwnerServiceTests {
 	@Test
 	@Transactional
 	void shouldAlsoDeleteOwnerPets() throws DataAccessException {
+		Owner oldOwner = this.ownerService.findOwnerById(1);
 		List<Owner> allOwners = this.ownerService.findAll();
 		List<Pet> allPets = this.petService.findAll();
-
-		Owner oldOwner = this.ownerService.findAll().stream()
-				.filter(x -> x.getPets().size() > 0).findFirst().get();
 		
 		this.ownerService.delete(oldOwner);
 		
