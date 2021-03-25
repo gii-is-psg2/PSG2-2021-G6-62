@@ -28,7 +28,7 @@
 				</petclinic:menuItem>
 
 				<sec:authorize access="hasAuthority('owner')">
-				<petclinic:menuItem active="${name eq 'pethotel'}" url="/pethotel/${nombre}"
+				<petclinic:menuItem active="${name eq 'pethotel'}" url="/pethotel"
 					title="home page">
 					<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
 					<span>Pet Hotel</span>
