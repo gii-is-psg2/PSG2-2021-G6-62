@@ -10,7 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,11 @@ public class VetController {
 	public List<Specialty> getAllSpecialties() {
 		return this.vetService.getAllSpecialties();
 	}
+	
+	@InitBinder
+	public void setAllowedFields(WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
 
 	@GetMapping(value = { "/vets" })
 	public String showVetList(Map<String, Object> model) {
@@ -66,7 +73,7 @@ public class VetController {
 	}
 	
 	@PostMapping(path="/vets/new")
-	public String nuevoVetPost(Vet vet, BindingResult results, ModelMap model, RedirectAttributes redirectAttributes) {	
+	public String nuevoVetPost(@Valid Vet vet, BindingResult results, ModelMap model, RedirectAttributes redirectAttributes) {	
 		if (results.hasErrors()) {
 			model.addAttribute("errors", results.getAllErrors());
 			return "vets/vetsEdit";
@@ -86,15 +93,13 @@ public class VetController {
 	}
 
 	@PostMapping(path="/vets/{vetId}/edit")
-	public String editarVetPost(@PathVariable("vetId") int vetId, Vet vet, BindingResult result, ModelMap model, RedirectAttributes redirectAttributes) {
+	public String editarVetPost(@PathVariable("vetId") int vetId, @Valid Vet vet, BindingResult result, ModelMap model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
-			model.put("vet", vet);
 			return "vets/vetsEdit";
 		} else {
-			Vet vetToUpdate = this.vetService.findById(vetId).get();
-			BeanUtils.copyProperties(vet, vetToUpdate);
+			vet.setId(vetId);
 			model.put("vet", vet);
-			this.vetService.save(vetToUpdate);
+			this.vetService.save(vet);
 			redirectAttributes.addFlashAttribute("message", "Vet successfully updated!");
 			return "redirect:/vets";
 		}

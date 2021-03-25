@@ -44,12 +44,14 @@
 					<span><spring:message code="menu.findOwners" /></span>
 				</petclinic:menuItem>
 
+				<sec:authorize access="hasAnyAuthority('admin')">
                 <spring:message code="menu.veterinarians" var="veterinarians"/>
 				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
 					title="veterinarians">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span><spring:message code="menu.veterinarians" /></span>
 				</petclinic:menuItem>
+				</sec:authorize>
 
                 <spring:message code="menu.errorDescription" var="error"/>
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"

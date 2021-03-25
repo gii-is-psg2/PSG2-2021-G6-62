@@ -38,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class PetControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
+	private static final int TEST_OWNER_FAKE_ID = -1;
 	private static final int TEST_PET_ID = 1;
 	private static final int TEST_PET_NOT_FOUND_ID = 2;
 
@@ -140,4 +141,27 @@ class PetControllerTests {
 			.andExpect(flash().attribute("message", is("Pet successfully deleted!")))
 			.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
+    
+    @WithMockUser(value = "spring")
+	@Test
+	void testDeletePetWrongOwner() throws Exception {
+		
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_FAKE_ID, TEST_PET_ID)
+				.with(csrf()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Owner not found!")))
+			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+    
+    @WithMockUser(value = "spring")
+	@Test
+	void testDeleteWrongPet() throws Exception {
+		
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, TEST_PET_NOT_FOUND_ID)
+				.with(csrf()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Pet not found!")))
+			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+    
 }
