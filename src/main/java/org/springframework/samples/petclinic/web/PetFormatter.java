@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetHotelService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,7 +28,7 @@ public class PetFormatter implements Formatter<Pet> {
 
 	@Override
 	public Pet parse(String text, Locale locale) throws ParseException {
-		Collection<Pet> findPets = this.peService.findPets();
+		Collection<Pet> findPets = this.peService.findAllPets();
 		for (Pet type : findPets) {
 			if (type.getName().equals(text)) {
 				return type;

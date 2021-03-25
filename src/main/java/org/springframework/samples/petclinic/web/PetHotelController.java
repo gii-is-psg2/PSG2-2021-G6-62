@@ -41,8 +41,9 @@ public class PetHotelController {
 	}
 	
 	@ModelAttribute("pets")
-	public Collection<Pet> populatePetTypes() {
-		return this.petHotelService.findPets();
+	public List<Pet> populatePetTypes() {
+		Object nombreOwner= SecurityContextHolder.getContext().getAuthentication().getName();
+		return this.petHotelService.findPetsByUser(nombreOwner.toString());
 	}
 	
 	@GetMapping()

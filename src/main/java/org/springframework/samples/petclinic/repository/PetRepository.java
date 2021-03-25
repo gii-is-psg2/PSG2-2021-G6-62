@@ -34,8 +34,7 @@ public interface PetRepository extends CrudRepository<Pet, Integer> {
 	 * @param pet the <code>Pet</code> to save
 	 * @see BaseEntity#isNew
 	 */
-	void save(Pet pet) throws DataAccessException;
-
-	@Query("SELECT p FROM Pet p ORDER BY p.id")
-	List<Pet> findPets() throws DataAccessException;
+	
+	@Query("SELECT p FROM Pet p WHERE p.owner.user.username = ?1")
+	List<Pet> findPetsByUser(String userName) throws DataAccessException;
 }

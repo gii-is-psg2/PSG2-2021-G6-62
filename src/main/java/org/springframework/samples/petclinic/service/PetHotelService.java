@@ -58,8 +58,13 @@ public class PetHotelService {
 	
 
 	@Transactional
-	public Collection<Pet> findPets() throws DataAccessException {
-		return (Collection<Pet>) petRepository.findAll();
+	public List<Pet> findPetsByUser(String username) throws DataAccessException {
+		return (List<Pet>) petRepository.findPetsByUser(username);
+	}
+	
+	@Transactional
+	public List<Pet> findAllPets() throws DataAccessException {
+		return (List<Pet>) petRepository.findAll();
 	}
 	
 }
