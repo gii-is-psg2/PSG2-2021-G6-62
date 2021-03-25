@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -55,6 +56,14 @@ public class PetHotelController {
 	
 	@GetMapping("/{nombre}")
 	public String listPetHotelOfOwner(@PathVariable("nombre") String nombre,Map<String,Object> model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		Boolean secName = name.equals(nombre)? true : false;
+		
+		if(!secName) {
+			return "redirect:/pethotel/"+name;			
+		}
+		
 		List<PetHotel> petHotel = petHotelService.bookingsOfPersonsWithUserName(nombre);
 		model.put("petHotel", petHotel);
 		String vista= "hotel/listPetHotel";
@@ -63,6 +72,14 @@ public class PetHotelController {
 	
 	@GetMapping("/new/{nombre}")
 	public String initCreationForm(@PathVariable("nombre") String nombre,Map<String,Object> model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		Boolean secName = name.equals(nombre)? true : false;
+		
+		if(!secName) {
+			return "redirect:/pethotel/"+name;			
+		}
+		
 		PetHotel petHotel= new PetHotel();
 		model.put("nombre", nombre);
 		model.put("petHotel", petHotel);
@@ -74,7 +91,15 @@ public class PetHotelController {
 	
 	@PostMapping(value = "/save")
 	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result) {
-		if (result.hasErrors()) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		Boolean secName = name.equals(petHotel.getUserName())? true : false;
+		
+		if(!secName) {
+			return "redirect:/pethotel/"+name;			
+		}
+		
+		else if (result.hasErrors()) {
 			return "hotel/createOrUpdateHotelForm";
 		}
 		else {
