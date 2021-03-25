@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -42,6 +43,13 @@ public class PetHotelController {
 	@ModelAttribute("pets")
 	public Collection<Pet> populatePetTypes() {
 		return this.petHotelService.findPets();
+	}
+	
+	@GetMapping()
+	public String listPetHotel() {
+		Object nombreOwner= SecurityContextHolder.getContext().getAuthentication().getName();
+		String vista= "redirect:/pethotel/"+nombreOwner;
+		return vista;
 	}
 	
 	@GetMapping("/{nombre}")

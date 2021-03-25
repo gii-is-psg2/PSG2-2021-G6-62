@@ -12,6 +12,7 @@ import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.VetService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,13 +62,13 @@ public class OwnerController {
 
 	@GetMapping(value = "/owners/find")
 	public String initFindForm(Map<String, Object> model) {
+	
 		model.put("owner", new Owner());
 		return "owners/findOwners";
 	}
 
 	@GetMapping(value = "/owners")
 	public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-
 		// allow parameterless GET request for /owners to return all records
 		if (owner.getLastName() == null) {
 			owner.setLastName(""); // empty string signifies broadest possible search
@@ -102,6 +103,7 @@ public class OwnerController {
 	@PostMapping(value = "/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
 			@PathVariable("ownerId") int ownerId) {
+		
 		if (result.hasErrors()) {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
