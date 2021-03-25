@@ -28,8 +28,13 @@ public interface PetRepository extends CrudRepository<Pet, Integer> {
 	 * @throws org.springframework.dao.DataRetrievalFailureException if not found
 	 */
 	Pet findById(int id) throws DataAccessException;
+
+	/**
+	 * Save a <code>Pet</code> to the data store, either inserting or updating it.
+	 * @param pet the <code>Pet</code> to save
+	 * @see BaseEntity#isNew
+	 */
 	
-	@Modifying
-	@Query("DELETE FROM Pet p WHERE p = ?1")
-	void delete(Pet pet);
+	@Query("SELECT p FROM Pet p WHERE p.owner.user.username = ?1")
+	List<Pet> findPetsByUser(String userName) throws DataAccessException;
 }

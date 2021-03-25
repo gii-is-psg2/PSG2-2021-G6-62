@@ -22,6 +22,7 @@
             <div class="form-group has-feedback">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Owner</label>
+                    
                     <div class="col-sm-10">
                         <c:out value="${pet.owner.firstName} ${pet.owner.lastName}"/>
                     </div>

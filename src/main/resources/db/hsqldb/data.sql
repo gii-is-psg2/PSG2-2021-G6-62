@@ -62,3 +62,6 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
+INSERT INTO hotels(id,description,user_name,start_date, end_date, pet_id) 
+VALUES (1, 'necesito que cuideis bien de él porque lo siento deprimido últimamente', 'owner1','2021-03-17', '2022-03-20',2);
+

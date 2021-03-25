@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- %@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %-->  
 
 <petclinic:layout pageName="home">
@@ -11,5 +13,15 @@
             <spring:url value="/resources/images/otter.png" htmlEscape="true" var="petsImage"/>
             <img class="img-responsive" src="${petsImage}"/>
         </div>
+        
+    
+        
     </div>
+    
+
+    
+    <sec:authorize access="hasAuthority('owner')">
+    	<h1>Do u want to make a booking in our pet hotel?, please click here</h1>
+		<a class="btn btn-default" href='<spring:url value="/pethotel/new/${nombre}" htmlEscape="true"/>'>Make a booking</a>
+	</sec:authorize>
 </petclinic:layout>
