@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,59 +35,85 @@ public class PetHotelController {
 	public PetHotelController(PetHotelService petHotelService) {
 		this.petHotelService = petHotelService;
 	}
-	
+
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
-	
+
 	@ModelAttribute("pets")
 	public List<Pet> populatePetTypes() {
-		Object nombreOwner= SecurityContextHolder.getContext().getAuthentication().getName();
+		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		return this.petHotelService.findPetsByUser(nombreOwner.toString());
 	}
-	
+
 	@GetMapping()
 	public String listPetHotel() {
-		Object nombreOwner= SecurityContextHolder.getContext().getAuthentication().getName();
-		String vista= "redirect:/pethotel/"+nombreOwner;
+		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
+		String vista = "redirect:/pethotel/" + nombreOwner;
 		return vista;
 	}
-	
+
 	@GetMapping("/{nombre}")
-	public String listPetHotelOfOwner(@PathVariable("nombre") String nombre,Map<String,Object> model) {
-		List<PetHotel> petHotel = petHotelService.bookingsOfPersonsWithUserName(nombre);
+	public String listPetHotelOfOwner(@PathVariable("nombre") String nombre, Map<String, Object> model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		Boolean secName = name.equals(nombre) ? true : false;
+
+		if (!secName) {
+			return "redirect:/pethotel/" + name;
+		}
+
+		List<PetHotel> petHotel = this.petHotelService.bookingsOfPersonsWithUserName(nombre);
 		model.put("petHotel", petHotel);
-		String vista= "hotel/listPetHotel";
+		String vista = "hotel/listPetHotel";
 		return vista;
 	}
-	
+
 	@GetMapping("/new/{nombre}")
-	public String initCreationForm(@PathVariable("nombre") String nombre,Map<String,Object> model) {
-		PetHotel petHotel= new PetHotel();
+	public String initCreationForm(@PathVariable("nombre") String nombre, Map<String, Object> model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		Boolean secName = name.equals(nombre) ? true : false;
+
+		if (!secName) {
+			return "redirect:/pethotel/" + name;
+		}
+
+		PetHotel petHotel = new PetHotel();
 		model.put("nombre", nombre);
 		model.put("petHotel", petHotel);
-		
-		String vista= "hotel/createOrUpdateHotelForm";
-		
+
+		String vista = "hotel/createOrUpdateHotelForm";
+
 		return vista;
 	}
-	
+
 	@PostMapping(value = "/save")
 	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result) {
 		if (result.hasErrors()) {
 			return "hotel/createOrUpdateHotelForm";
-		}
-		else {
-			try {
-				this.petHotelService.saveHotel(petHotel);
-			}catch (WrongDatesInHotelsException e) {
-				result.rejectValue("startDate", "duplicated", "start date must be before end date");
-				result.rejectValue("endDate", "duplicated", "end date must be after start date");
-                return "hotel/createOrUpdateHotelForm";
+		} else {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String name = authentication.getName();
+			Boolean secName = name.equals(petHotel.getUserName()) ? true : false;
+
+			Pet pet = petHotel.getPet();
+			Boolean myPet = pet == null || !pet.getOwner().getUser().getUsername().equals(name) ? false : true;
+
+			if (!secName || !myPet) {
+				return "redirect:/pethotel/" + name;
+			} else {
+				try {
+					this.petHotelService.saveHotel(petHotel);
+				} catch (WrongDatesInHotelsException e) {
+					result.rejectValue("startDate", "duplicated", "start date must be before end date");
+					result.rejectValue("endDate", "duplicated", "end date must be after start date");
+					return "hotel/createOrUpdateHotelForm";
+				}
+
+				return "redirect:/pethotel/" + petHotel.getUserName();
 			}
-			
-			return "redirect:/pethotel/"+petHotel.getUserName();
 		}
 	}
 }

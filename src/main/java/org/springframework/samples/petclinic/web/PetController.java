@@ -4,11 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.service.VetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +15,7 @@ import javax.validation.Valid;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
@@ -127,9 +120,11 @@ public class PetController {
 	@GetMapping(path = "/pets/{petId}/delete")
 	public String eliminarPet(@PathVariable("petId") int petId, ModelMap model, RedirectAttributes redirectAttributes) {
 		Optional<Pet> pet = this.petService.findById(petId);
-		if (pet.isPresent()) {
+		if (pet.isPresent() && model.getAttribute("owner") != null) {
 			petService.delete(pet.get());
 			redirectAttributes.addFlashAttribute("message", "Pet successfully deleted!");
+		} else if (model.getAttribute("owner") == null) {
+			redirectAttributes.addFlashAttribute("message", "Owner not found!");
 		} else {
 			redirectAttributes.addFlashAttribute("message", "Pet not found!");
 		}

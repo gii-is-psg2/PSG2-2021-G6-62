@@ -34,6 +34,9 @@ public interface PetRepository extends CrudRepository<Pet, Integer> {
 	 * @param pet the <code>Pet</code> to save
 	 * @see BaseEntity#isNew
 	 */
+	@Modifying
+	@Query("DELETE FROM Pet p WHERE p = ?1")
+	void delete(Pet pet);
 	
 	@Query("SELECT p FROM Pet p WHERE p.owner.user.username = ?1")
 	List<Pet> findPetsByUser(String userName) throws DataAccessException;

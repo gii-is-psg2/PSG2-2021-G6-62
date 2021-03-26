@@ -128,9 +128,9 @@ public class OwnerController {
 	
 	@GetMapping(path = "/owners/{ownerId}/delete")
 	public String eliminarOwner(@PathVariable("ownerId") int ownerId, ModelMap model, RedirectAttributes redirectAttributes) {
-		Optional<Owner> owner = Optional.of(this.ownerService.findOwnerById(ownerId));
-		if (owner.isPresent()) {
-			ownerService.delete(owner.get());
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		if (owner != null) {
+			ownerService.delete(owner);
 			redirectAttributes.addFlashAttribute("message", "Owner successfully deleted!");
 		} else {
 			redirectAttributes.addFlashAttribute("message", "Owner not found!");

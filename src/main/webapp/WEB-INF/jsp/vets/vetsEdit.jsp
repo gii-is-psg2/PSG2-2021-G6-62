@@ -12,7 +12,7 @@
     <h2>
         <c:if test="${vet['new']}"><spring:message code="vet.new" /></c:if> <spring:message code="vet.vet" />
     </h2>
-    <form:form modelAttribute="vet" class="form-horizontal" id="add-pilot-form" action="/vets/new">
+    <form:form modelAttribute="vet" class="form-horizontal" id="add-pilot-form">
         <div class="form-group has-feedback">
         	<input type="hidden" name="id" value="${vet.id}"/>
             <spring:message code="vet.firstName" var="firstName"/>

@@ -38,6 +38,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class OwnerControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
+	private static final int TEST_OWNER_FAKE_ID = -1;
 
 	@Autowired
 	private OwnerController ownerController;
@@ -197,6 +198,17 @@ class OwnerControllerTests {
     				.with(csrf()))
     			.andExpect(status().is3xxRedirection())
     			.andExpect(flash().attribute("message", is("Owner successfully deleted!")))
+    			.andExpect(view().name("redirect:/owners"));
+    	}
+        
+        @WithMockUser(value = "spring")
+    	@Test
+    	void testDeleteNonValidOwner() throws Exception {
+    		
+    		mockMvc.perform(get("/owners/{ownerId}/delete", TEST_OWNER_FAKE_ID)
+    				.with(csrf()))
+    			.andExpect(status().is3xxRedirection())
+    			.andExpect(flash().attribute("message", is("Owner not found!")))
     			.andExpect(view().name("redirect:/owners"));
     	}
 }

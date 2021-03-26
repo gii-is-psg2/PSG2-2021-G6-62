@@ -2,31 +2,18 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.model.Visit;
-import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.model.Authorities;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -47,6 +34,26 @@ class VetServiceTests {
 	}
 	
 	@Test
+	void shouldFindSpecialties() {
+		Collection<Specialty> specs = this.vetService.getAllSpecialties();
+		assertThat(specs.size()).isNotEqualTo(0);
+	}
+	
+	@Test
+	void shouldFindCertainSpecialty() {
+		Specialty spec = this.vetService.getAllSpecialties().stream().findFirst().get();
+		
+		Optional<Specialty> spec2 = this.vetService.findSpecialtyByName(spec.getName());
+		assertThat(spec2.isPresent()).isTrue();
+	}
+	
+	@Test
+	void shouldNotFindCertainSpecialty() {
+		Optional<Specialty> spec = this.vetService.findSpecialtyByName("Esta especialidad no existe");
+		assertThat(spec.isPresent()).isFalse();
+	}
+	
+	@Test
 	void shouldFindVetById() {
 		Optional<Vet> vet = this.vetService.findById(1);
 		assertThat(vet.isPresent()).isTrue();
@@ -59,6 +66,22 @@ class VetServiceTests {
 	}
 
 	@Test
+	@Transactional
+	void shouldSaveVet() throws DataAccessException {
+		List<Vet> allVets = (List<Vet>) this.vetService.findVets();
+
+		Vet newVet = new Vet();
+		newVet.setFirstName("testFirstName");
+		newVet.setLastName("testLastName");
+
+		this.vetService.save(newVet);
+		List<Vet> allVetsAfterInsert = (List<Vet>) this.vetService.findVets();
+
+		assertThat(allVetsAfterInsert.size()).isEqualTo(allVets.size() + 1);
+	}
+	
+	@Test
+	@Transactional
 	void shouldDeleteVet() throws DataAccessException {
 		List<Vet> allVets = (List<Vet>) this.vetService.findVets();
 
@@ -71,5 +94,21 @@ class VetServiceTests {
 		List<Vet> allVetsAfterInsertAndDelete = (List<Vet>) this.vetService.findVets();
 
 		assertThat(allVetsAfterInsertAndDelete.size()).isEqualTo(allVets.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldDeleteVetExtended() throws DataAccessException {
+		List<Vet> allVets = (List<Vet>) this.vetService.findVets();
+
+		Vet newVet = new Vet();
+		newVet.setFirstName("testFirstName");
+		newVet.setLastName("testLastName");
+
+		this.vetService.delete(newVet);
+		
+		List<Vet> allVetsAfterFakeDelete = (List<Vet>) this.vetService.findVets();
+
+		assertThat(allVetsAfterFakeDelete.size()).isEqualTo(allVets.size());
 	}
 }

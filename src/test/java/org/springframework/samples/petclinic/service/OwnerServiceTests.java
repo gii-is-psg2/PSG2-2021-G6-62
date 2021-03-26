@@ -2,32 +2,20 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.model.Authorities;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
-import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -37,6 +25,8 @@ class OwnerServiceTests {
 	protected OwnerService ownerService;
 	@Autowired
 	protected UserService userService;
+	@Autowired
+	protected PetService petService;
 	
 	@Test
 	void shouldFindOwnersByLastName() {
@@ -97,6 +87,7 @@ class OwnerServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldDeleteOwner() throws DataAccessException {
 		List<Owner> allOwners = this.ownerService.findAll();
 
@@ -122,6 +113,51 @@ class OwnerServiceTests {
 		List<Owner> allOwnersAfterInsertAndDelete = this.ownerService.findAll();
 
 		assertThat(allOwnersAfterInsertAndDelete.size()).isEqualTo(allOwners.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldDeleteOwnerExtended() throws DataAccessException {
+		//Tries to insert non-persistent data
+		List<Owner> allOwners = this.ownerService.findAll();
+
+		User newUser = new User();
+		Owner newOwner = new Owner();
+		Authorities newAuthority = new Authorities();
+		
+		newAuthority.setAuthority("admin");
+		newAuthority.setUser(newUser);
+		
+		newUser.setUsername("testUsername");
+		newUser.setPassword("testPassword");
+		
+		newOwner.setFirstName("testFirstName");
+		newOwner.setLastName("testLastName");
+		newOwner.setAddress("testAddress");
+		newOwner.setCity("testCity");
+		newOwner.setTelephone("4444444444");
+		newOwner.setUser(newUser);
+
+		Assertions.assertThrows(InvalidDataAccessApiUsageException.class,() -> {this.ownerService.delete(newOwner);});
+		
+		List<Owner> allOwnersAfterFakeDelete = this.ownerService.findAll();
+		assertThat(allOwnersAfterFakeDelete.size()).isEqualTo(allOwners.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldAlsoDeleteOwnerPets() throws DataAccessException {
+		Owner oldOwner = this.ownerService.findOwnerById(1);
+		List<Owner> allOwners = this.ownerService.findAll();
+		List<Pet> allPets = this.petService.findAll();
+		
+		this.ownerService.delete(oldOwner);
+		
+		List<Owner> allOwnersAfterDelete = this.ownerService.findAll();
+		List<Pet> allPetsAfterDelete = this.petService.findAll();
+		
+		assertThat(allOwnersAfterDelete.size()).isEqualTo(allOwners.size() - 1);
+		assertThat(allPetsAfterDelete.size()).isEqualTo(allPets.size() - oldOwner.getPets().size());
 	}
 
 }

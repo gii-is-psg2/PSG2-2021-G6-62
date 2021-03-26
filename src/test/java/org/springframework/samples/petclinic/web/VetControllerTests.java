@@ -9,11 +9,7 @@ import org.springframework.samples.petclinic.configuration.SecurityConfiguration
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.service.VetService;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import static org.hamcrest.xml.HasXPath.hasXPath;
 import static org.mockito.BDDMockito.given;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,6 +33,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class VetControllerTests {
 	
 	private static final Integer TEST_VET_ID = 1;
+	private static final Integer TEST_VET_FAKE_ID = -1;
 	private static final Integer TEST_VET_NOT_FOUND_ID = 2;
 
 
@@ -64,6 +61,7 @@ class VetControllerTests {
 		radiology.setId(1);
 		radiology.setName("radiology");
 		helen.addSpecialty(radiology);
+		
 		given(this.vetService.findVets()).willReturn(Lists.newArrayList(james, helen));
 		given(this.vetService.findById(TEST_VET_ID)).willReturn(Optional.of(james));
 		given(this.vetService.findById(TEST_VET_NOT_FOUND_ID)).willReturn(Optional.empty());
@@ -97,10 +95,26 @@ class VetControllerTests {
 	@Test
 	void testCreateVetPost() throws Exception {
 		mockMvc.perform(post("/vets/new")
-				.with(csrf()))
+				.with(csrf())
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(flash().attribute("message", is("Vet created succesfully!")))
 			.andExpect(view().name("redirect:/vets"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testCreateWrongVetPost() throws Exception {
+		mockMvc.perform(post("/vets/new")
+				.with(csrf())
+				.param("firstName", "")
+				.param("lastName", ""))
+		.andExpect(status().isOk())
+		.andExpect(model().attributeHasErrors("vet"))
+		.andExpect(model().attributeHasFieldErrors("vet", "firstName"))
+		.andExpect(model().attributeHasFieldErrors("vet", "lastName"))
+		.andExpect(view().name("vets/vetsEdit"));
 	}
 	
 	@WithMockUser(value = "spring")
@@ -123,6 +137,32 @@ class VetControllerTests {
 			.andExpect(flash().attribute("message", is("Vet successfully updated!")))
 			.andExpect(view().name("redirect:/vets"));
 	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testEditWrongVetPost() throws Exception {
+		mockMvc.perform(post("/vets/{vetId}/edit", TEST_VET_FAKE_ID)
+				.with(csrf())
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().is3xxRedirection())	
+			.andExpect(view().name("redirect:/vets")); 
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testEditWrongFieldVetPost() throws Exception {
+		mockMvc.perform(post("/vets/{vetId}/edit", TEST_VET_ID)
+				.with(csrf())
+				.param("firstName", "")
+				.param("lastName", "testLastName"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasErrors("vet"))
+			.andExpect(model().attributeHasFieldErrors("vet", "firstName"))
+			.andExpect(view().name("vets/vetsEdit"));
+			
+		//OJO, REVISALO FELIPE
+	}
 
 	@WithMockUser(value = "spring")
 	@Test
@@ -132,6 +172,17 @@ class VetControllerTests {
 				.with(csrf()))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(flash().attribute("message", is("Vet successfully deleted!")))
+			.andExpect(view().name("redirect:/vets"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeleteFakeVet() throws Exception {
+		
+		mockMvc.perform(get("/vets/{vetId}/delete", TEST_VET_FAKE_ID)
+				.with(csrf()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(flash().attribute("message", is("Vet not found!")))
 			.andExpect(view().name("redirect:/vets"));
 	}
 }
