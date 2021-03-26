@@ -45,7 +45,7 @@
     <table class="table-buttons">
         <tr>
         	<td>
-                <a href="<spring:url value="/vets/new" htmlEscape="true" />">Create a new Vet</a>
+                <a href="<spring:url value="/vets/new" htmlEscape="true" />"><spring:message code="vet.create" /></a>
             </td> 
         </tr>
 <!--         <tr> -->
