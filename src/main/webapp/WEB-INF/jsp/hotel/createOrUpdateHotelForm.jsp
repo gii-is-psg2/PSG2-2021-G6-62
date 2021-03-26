@@ -20,22 +20,26 @@
             <input type="hidden" name="userName" value="${nombre}"/>
             <div class="form-group has-feedback">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Owner</label>
+                    <label class="col-sm-2 control-label"><spring:message code="owner.owner" /></label>
                     
                     <div class="col-sm-10">
                         <c:out value="${nombre}"/>
                     </div>
                 </div>
-                <petclinic:inputField label="description" name="description"/>
-                <petclinic:inputField label="start of the Date" name="startDate"/>
-                <petclinic:inputField label="end of the Date" name="endDate"/>
+
+                <spring:message code="hotel.description" var="description" />
+                <spring:message code="hotel.startDate" var="startDate" />
+                <spring:message code="hotel.endDate" var="endDate" />
+                <petclinic:inputField label="${description}" name="description"/>
+                <petclinic:inputField label="${startDate}" name="startDate"/>
+                <petclinic:inputField label="${endDate}" name="endDate"/>
                 <div class="control-group">
                     <petclinic:selectField name="pet" label="pets" names="${pets}" size="5"/>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button class="btn btn-default" type="submit">Add booking</button>
+                    <button class="btn btn-default" type="submit"><spring:message code="hotel.addBooking" /></button>
                 </div>
             </div>
         </form:form>
