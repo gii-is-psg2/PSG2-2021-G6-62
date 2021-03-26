@@ -13,7 +13,7 @@
 	        <tr>
                 <th><spring:message code="vets.name" /></th>
                 <th><spring:message code="vets.specialties" /></th>
-	            <th>Actions</th>
+	            <th><spring:message code="vet.actions" /></th>
 	        </tr>
         </thead>
         <tbody>
@@ -26,16 +26,16 @@
 	                    <c:forEach var="specialty" items="${vet.specialties}">
 	                        <c:out value="${specialty.name} "/>
 	                    </c:forEach>
-	                    <c:if test="${vet.nrOfSpecialties == 0}">none</c:if>
+	                    <c:if test="${vet.nrOfSpecialties == 0}"><spring:message code="vet.noneSpecialty" /></c:if>
 	                </td>
 	                <td>
 		                <spring:url value="/vets/{vetId}/edit" var="editUrl">
 			                <spring:param name="vetId" value="${vet.id}" />
-		                </spring:url> <a href="${editUrl}">Edit</a>
+		                </spring:url> <a href="${editUrl}"><spring:message code="vet.edit" /></a>
 		                
 		                <spring:url value="/vets/{vetId}/delete" var="deleteUrl">
 			                <spring:param name="vetId" value="${vet.id}" />
-		                </spring:url> <a href="${deleteUrl}">Delete</a>
+		                </spring:url> <a href="${deleteUrl}"><spring:message code="vet.delete" /></a>
             		</td> 
 	            </tr>
 	        </c:forEach>
