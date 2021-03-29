@@ -25,6 +25,7 @@ import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.PetHotelService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +45,9 @@ public class PetHotelControllerTest {
 	
 	@MockBean
 	private PetHotelService petHotelService;
+	
+	@MockBean
+	private UserService userService;
 	
 	@Autowired
 	private MockMvc mockMvc;
