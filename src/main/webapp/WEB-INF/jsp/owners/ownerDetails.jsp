@@ -68,12 +68,21 @@
                         <tr>
                             <th><spring:message code="visit.visitDate" /></th>
                             <th><spring:message code="visit.description" /></th>
+                            <th><spring:message code="visit.actions" /></th>
                         </tr>
                         </thead>
                         <c:forEach var="visit" items="${pet.visits}">
                             <tr>
                                 <td><petclinic:localDate date="${visit.date}" pattern="yyyy-MM-dd"/></td>
                                 <td><c:out value="${visit.description}"/></td>
+                                <td>
+                                <spring:url value="/owners/{ownerId}/pets/{petId}/visits/{visitId}/delete" var="deleteVisitUrl">
+                                    <spring:param name="ownerId" value="${owner.id}"/>
+                                    <spring:param name="petId" value="${pet.id}"/>
+                                    <spring:param name="visitId" value="${visit.id}"/>
+                                </spring:url>
+                                <a href="${fn:escapeXml(deleteVisitUrl)}"><spring:message code="visit.deleteVisit" /></a>
+                                </td>
                             </tr>
                         </c:forEach>
                         <tr>
@@ -90,11 +99,12 @@
                                 <a href="${fn:escapeXml(deletePetUrl)}"><spring:message code="pet.delete" /></a>
                             </td>
                             <td>
-                                <spring:url value="/owners/{ownerId}/pets/{petId}/visits/new" var="visitUrl">
+                                <spring:url value="/owners/{ownerId}/pets/{petId}/visits/new" var="addVisitUrl">
                                     <spring:param name="ownerId" value="${owner.id}"/>
                                     <spring:param name="petId" value="${pet.id}"/>
                                 </spring:url>
-                                <a href="${fn:escapeXml(visitUrl)}"><spring:message code="visit.addVisit" /></a>
+                                <a href="${fn:escapeXml(addVisitUrl)}"><spring:message code="visit.addVisit" /></a>
+                            </td>
                             </td>
                         </tr>
                     </table>

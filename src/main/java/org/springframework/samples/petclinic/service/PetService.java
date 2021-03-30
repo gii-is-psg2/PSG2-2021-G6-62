@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Vet;
@@ -68,11 +69,20 @@ public class PetService {
 		return petRepository.findById(id);
 	}
 	
+	@Transactional(readOnly = true)	
+	public Optional<Visit> findVisitById(Integer id) throws DataAccessException {
+		return visitRepository.findById(id);
+	}
+	
 	public void delete(Pet pet) {
 		for (Visit v : pet.getVisits()) {
 			visitRepository.delete(v);
 		}
 		petRepository.delete(pet);
+	}
+	
+	public void deleteVisit(Visit visit) {
+		visitRepository.delete(visit);
 	}
 
 }
