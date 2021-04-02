@@ -104,6 +104,12 @@ public class PetHotelController {
 	
 	@GetMapping("/{nombre}")
 	public String listPetHotelOfOwner(@PathVariable("nombre") String nombre, Map<String, Object> model) {
+		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		if(!nombreOwner.equals(nombre)) {
+			return "redirect:/pethotel/"+nombreOwner;
+		}
+		
 		String vista= "hotel/listPetHotel";
 		List<PetHotel> petHotel = this.petHotelService.bookingsOfPersonsWithUserName(nombre);
 		model.put("petHotel", petHotel);
@@ -112,19 +118,29 @@ public class PetHotelController {
 
 	@GetMapping("/{nombre}/new")
 	public String initCreationForm(@PathVariable("nombre") String nombre, Map<String, Object> model) {
+		
+		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		
 		if(authority.equals("admin")) {
 			List<Pet>pets=this.petHotelService.findPetsByUser(nombre.toString());
 			model.put("pets", pets);
+		}else {
+			
+			if(!nombreOwner.equals(nombre)) {
+				return "redirect:/pethotel/"+nombreOwner+"/new";
+			}
 		}
+		
 
-		PetHotel petHotel = new PetHotel();
-		model.put("nombre", nombre);
-		model.put("petHotel", petHotel);
+			PetHotel petHotel = new PetHotel();
+			model.put("nombre", nombre);
+			model.put("petHotel", petHotel);
 
 		String vista = "hotel/createOrUpdateHotelForm";
 
 		return vista;
+		
 	}
 
 	@PostMapping(value = "/save")
@@ -136,14 +152,25 @@ public class PetHotelController {
 			String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 			
 			if(!authority.equals("admin")) {
+				String nombreOwner=petHotel.getUserName();
+				
+				if(!nombreOwner.equals(nombre)) {
+					
+					return "redirect:/pethotel/"+nombre;
+					
+				}else {
+					
 				try {
+					
 					this.petHotelService.saveHotelForOwner(petHotel);
+					
 				} catch (WrongPastDateInHotelsException e) {
 					result.rejectValue("startDate", "duplicated", "start date must be before end date and they must be after now");
 					result.rejectValue("endDate", "duplicated", "end date must be after start date");
 					return "hotel/createOrUpdateHotelForm";
 				}
-				return "redirect:/pethotel/" + nombre;
+					return "redirect:/pethotel/" + nombre;
+				}
 			}
 			else {
 				try {
