@@ -22,6 +22,6 @@
     
     <sec:authorize access="hasAuthority('owner')">
     	<h1><spring:message code="home.booking" /></h1>
-		<a class="btn btn-default" href='<spring:url value="/pethotel/new/${nombre}" htmlEscape="true"/>'><spring:message code="home.bookARoom" /></a>
+		<a class="btn btn-default" href='<spring:url value="/pethotel/${nombre}/new" htmlEscape="true"/>'><spring:message code="home.bookARoom" /></a>
 	</sec:authorize>
 </petclinic:layout>
