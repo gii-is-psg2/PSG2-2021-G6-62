@@ -51,7 +51,7 @@ public class UserService {
 	public Optional<User> findUser(String username) {
 		return userRepository.findById(username);
 	}
-	
+
 	@Transactional
 	public User getUserSession() {
         User usuario = new User();
@@ -62,7 +62,7 @@ public class UserService {
           }
         return usuario;
     }
-	
+
 	@Transactional
 	public String findAuthoritiesByUsername(String username) {
         return this.userRepository.findAuthoritiesByUsername(username);

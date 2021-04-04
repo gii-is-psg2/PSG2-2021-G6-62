@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -60,6 +61,11 @@ public class OwnerService {
 
 	@Transactional(readOnly = true)
 	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
+		return ownerRepository.findByLastName(lastName).stream().filter(owner -> owner.getUser().equals(this.userService.getUserSession())).collect(Collectors.toList());
+	}
+	
+	@Transactional(readOnly = true)
+	public Collection<Owner> findOwnerByLastNameAdmin(String lastName) throws DataAccessException {
 		return ownerRepository.findByLastName(lastName);
 	}
 

@@ -8,7 +8,7 @@ import org.springframework.samples.petclinic.model.User;
 
 public interface UserRepository extends  CrudRepository<User, String>{
 
-	
 	@Query("SELECT aut.authority FROM Authorities aut WHERE aut.user.username LIKE :username")
 	public String findAuthoritiesByUsername(@Param("username") String username);
+
 }

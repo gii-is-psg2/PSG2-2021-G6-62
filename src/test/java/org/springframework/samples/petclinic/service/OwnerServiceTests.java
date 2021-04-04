@@ -30,10 +30,10 @@ class OwnerServiceTests {
 	
 	@Test
 	void shouldFindOwnersByLastName() {
-		Collection<Owner> owners = this.ownerService.findOwnerByLastName("Davis");
+		Collection<Owner> owners = this.ownerService.findOwnerByLastNameAdmin("Davis");
 		assertThat(owners.size()).isEqualTo(2);
 
-		owners = this.ownerService.findOwnerByLastName("Daviss");
+		owners = this.ownerService.findOwnerByLastNameAdmin("Daviss");
 		assertThat(owners.isEmpty()).isTrue();
 	}
 
@@ -49,7 +49,7 @@ class OwnerServiceTests {
 	@Test
 	@Transactional
 	public void shouldInsertOwner() {
-		Collection<Owner> owners = this.ownerService.findOwnerByLastName("Schultz");
+		Collection<Owner> owners = this.ownerService.findOwnerByLastNameAdmin("Schultz");
 		int found = owners.size();
 
 		Owner owner = new Owner();
@@ -67,7 +67,7 @@ class OwnerServiceTests {
 		this.ownerService.saveOwner(owner);
 		assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
-		owners = this.ownerService.findOwnerByLastName("Schultz");
+		owners = this.ownerService.findOwnerByLastNameAdmin("Schultz");
 		assertThat(owners.size()).isEqualTo(found + 1);
 	}
 

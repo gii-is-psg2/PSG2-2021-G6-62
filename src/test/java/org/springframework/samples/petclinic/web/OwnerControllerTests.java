@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +40,8 @@ class OwnerControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
 	private static final int TEST_OWNER_FAKE_ID = -1;
+	private static final String TEST_USER_ADMIN = "el_admin";
+	private static final String TEST_USER_OWNER = "el_owner";
 
 	@Autowired
 	private OwnerController ownerController;
@@ -46,16 +49,17 @@ class OwnerControllerTests {
 	@MockBean
 	private OwnerService ownerService;
         
-        @MockBean
+    @MockBean
 	private UserService userService;
         
-        @MockBean
-        private AuthoritiesService authoritiesService; 
+    @MockBean
+    private AuthoritiesService authoritiesService; 
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	private Owner george;
+	private User user;
 
 	@BeforeEach
 	void setup() {
@@ -67,7 +71,15 @@ class OwnerControllerTests {
 		george.setAddress("110 W. Liberty St.");
 		george.setCity("Madison");
 		george.setTelephone("6085551023");
+		
+		user = new User();
+		user.setUsername("spring");
+		george.setUser(user);
+
 		given(this.ownerService.findOwnerById(TEST_OWNER_ID)).willReturn(george);
+		
+		given(this.userService.findAuthoritiesByUsername(TEST_USER_ADMIN)).willReturn("admin");
+		given(this.userService.findAuthoritiesByUsername(TEST_USER_OWNER)).willReturn("owner");
 	}
 
 	@WithMockUser(value = "spring")
@@ -113,7 +125,9 @@ class OwnerControllerTests {
 	@WithMockUser(value = "spring")
         @Test
 	void testProcessFindFormSuccess() throws Exception {
-		given(this.ownerService.findOwnerByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+		user.setUsername(TEST_USER_ADMIN);
+		given(this.userService.getUserSession()).willReturn(user);
+		given(this.ownerService.findOwnerByLastNameAdmin("")).willReturn(Lists.newArrayList(george, new Owner()));
 
 		mockMvc.perform(get("/owners")).andExpect(status().isOk()).andExpect(view().name("owners/ownersList"));
 	}
@@ -121,7 +135,9 @@ class OwnerControllerTests {
 	@WithMockUser(value = "spring")
         @Test
 	void testProcessFindFormByLastName() throws Exception {
-		given(this.ownerService.findOwnerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+		user.setUsername(TEST_USER_ADMIN);
+		given(this.userService.getUserSession()).willReturn(user);
+		given(this.ownerService.findOwnerByLastNameAdmin(george.getLastName())).willReturn(Lists.newArrayList(george));
 
 		mockMvc.perform(get("/owners").param("lastName", "Franklin")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
@@ -130,6 +146,9 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormNoOwnersFound() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+    		
 		mockMvc.perform(get("/owners").param("lastName", "Unknown Surname")).andExpect(status().isOk())
 				.andExpect(model().attributeHasFieldErrors("owner", "lastName"))
 				.andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
@@ -139,6 +158,9 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateOwnerForm() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+    		
 		mockMvc.perform(get("/owners/{ownerId}/edit", TEST_OWNER_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("owner"))
 				.andExpect(model().attribute("owner", hasProperty("lastName", is("Franklin"))))
@@ -152,6 +174,9 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateOwnerFormSuccess() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+    		
 		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
 							.with(csrf())
 							.param("firstName", "Joe")
@@ -166,6 +191,9 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateOwnerFormHasErrors() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+    		
 		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
 							.with(csrf())
 							.param("firstName", "Joe")
@@ -181,6 +209,9 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
 	@Test
 	void testShowOwner() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+    		
 		mockMvc.perform(get("/owners/{ownerId}", TEST_OWNER_ID)).andExpect(status().isOk())
 				.andExpect(model().attribute("owner", hasProperty("lastName", is("Franklin"))))
 				.andExpect(model().attribute("owner", hasProperty("firstName", is("George"))))
@@ -194,6 +225,9 @@ class OwnerControllerTests {
     	@Test
     	void testDeleteOwner() throws Exception {
     		
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
+        	
     		mockMvc.perform(get("/owners/{ownerId}/delete", TEST_OWNER_ID)
     				.with(csrf()))
     			.andExpect(status().is3xxRedirection())
@@ -204,6 +238,8 @@ class OwnerControllerTests {
         @WithMockUser(value = "spring")
     	@Test
     	void testDeleteNonValidOwner() throws Exception {
+        	user.setUsername(TEST_USER_ADMIN);
+    		given(this.userService.getUserSession()).willReturn(user);
     		
     		mockMvc.perform(get("/owners/{ownerId}/delete", TEST_OWNER_FAKE_ID)
     				.with(csrf()))
