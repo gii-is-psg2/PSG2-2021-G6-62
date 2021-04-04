@@ -28,7 +28,7 @@
 					<span><spring:message code="menu.home" /></span>
 				</petclinic:menuItem>
 
-				<sec:authorize access="isAuthenticated()">
+				<sec:authorize access="hasAnyAuthority('admin,owner')">
                     <spring:message code="menu.hotel" var="petHotel"/>
                     <petclinic:menuItem active="${name eq 'pethotel'}" url="/pethotel"
                         title="${petHotel}">

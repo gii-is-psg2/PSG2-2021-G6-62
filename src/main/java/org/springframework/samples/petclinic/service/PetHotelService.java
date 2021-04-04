@@ -52,7 +52,7 @@ public class PetHotelService {
 	
 	@Transactional(rollbackFor = WrongPastDateInHotelsException.class)
 	public void saveHotelForOwner(PetHotel petHotel) throws DataAccessException, WrongPastDateInHotelsException {
-		if(petHotel.getStartDate().isAfter(petHotel.getEndDate())||!petHotel.getStartDate().isAfter(LocalDate.now())) {
+		if(petHotel.getStartDate().isAfter(petHotel.getEndDate())||!petHotel.getStartDate().isAfter(LocalDate.now().plusDays(1))) {
 			throw new WrongPastDateInHotelsException();
 		}else {
 			petHotelRepository.save(petHotel);

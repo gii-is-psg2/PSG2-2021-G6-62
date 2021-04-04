@@ -20,6 +20,7 @@ import org.springframework.samples.petclinic.service.exceptions.WrongPastDateInH
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -144,7 +145,7 @@ public class PetHotelController {
 	}
 
 	@PostMapping(value = "/save")
-	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result) {
+	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result, Map<String, Object> model) {
 		if (result.hasErrors()) {
 			return "hotel/createOrUpdateHotelForm";
 		} else {
@@ -165,8 +166,9 @@ public class PetHotelController {
 					this.petHotelService.saveHotelForOwner(petHotel);
 					
 				} catch (WrongPastDateInHotelsException e) {
-					result.rejectValue("startDate", "duplicated", "start date must be before end date and they must be after now");
-					result.rejectValue("endDate", "duplicated", "end date must be after start date");
+					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final y despues de la de actual");
+					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+					model.put("nombre", petHotel.getUserName());
 					return "hotel/createOrUpdateHotelForm";
 				}
 					return "redirect:/pethotel/" + nombre;
@@ -176,8 +178,9 @@ public class PetHotelController {
 				try {
 					this.petHotelService.saveHotel(petHotel);
 				} catch (WrongDatesInHotelsException e) {
-					result.rejectValue("startDate", "duplicated", "start date must be before end date");
-					result.rejectValue("endDate", "duplicated", "end date must be after start date");
+					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final");
+					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+					model.put("nombre", petHotel.getUserName());
 					return "hotel/createOrUpdateHotelForm";
 				}
 
