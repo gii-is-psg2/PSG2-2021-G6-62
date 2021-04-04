@@ -23,10 +23,13 @@ import javax.transaction.Transaction;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.samples.petclinic.service.VetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,10 +48,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class VisitController {
 
 	private final PetService petService;
+	private final OwnerService ownerService;
+	private final UserService userService;
 
 	@Autowired
-	public VisitController(PetService petService) {
+	public VisitController(PetService petService, OwnerService ownerService, UserService userService) {
 		this.petService = petService;
+		this.ownerService = ownerService;
+		this.userService = userService;
 	}
 
 	@InitBinder
@@ -65,45 +72,63 @@ public class VisitController {
 //	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
-	@GetMapping(value = "/owners/*/pets/{petId}/visits/new")
-	public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
+	public String initNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId, Map<String, Object> model) {
+		Owner owner = this.ownerService.findOwnerById(ownerId);
 		Pet pet = this.petService.findPetById(petId);
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		model.put("visit", visit);
-		return "pets/createOrUpdateVisitForm";
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		String vista = "redirect:/";
+
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			Visit visit = new Visit();
+			pet.addVisit(visit);
+			model.put("visit", visit);
+			vista = "pets/createOrUpdateVisitForm";
+		}
+		return vista;
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@PathVariable("petId") int petId, @Valid Visit visit, BindingResult result) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
+	public String processNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId,
+			@Valid Visit visit, BindingResult result) {
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		Pet pet = this.petService.findPetById(petId);
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		String vista = "redirect:/";
+
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			if (result.hasErrors()) {
+				vista = "pets/createOrUpdateVisitForm";
+			} else {
+				visit.setPet(pet);
+				this.petService.saveVisit(visit);
+				vista = "redirect:/owners/{ownerId}";
+			}
 		}
-		else {
-			Pet pet = this.petService.findPetById(petId);
-			visit.setPet(pet);
-			this.petService.saveVisit(visit);
-			return "redirect:/owners/{ownerId}";
-		}
+		return vista;
 	}
 
-	@GetMapping(value = "/owners/*/pets/{petId}/visits")
-	public String showVisits(@PathVariable int petId, Map<String, Object> model) {
-		model.put("visits", this.petService.findPetById(petId).getVisits());
-		return "visitList";
-	}
+//	@GetMapping(value = "/owners/*/pets/{petId}/visits")
+//	public String showVisits(@PathVariable int petId, Map<String, Object> model) {
+//		model.put("visits", this.petService.findPetById(petId).getVisits());
+//		return "visitList";
+//	}
 	
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/{visitId}/delete")
 	public String deleteVisit(@PathVariable("visitId") int visitId, @PathVariable("ownerId") int ownerId, ModelMap model, RedirectAttributes redirectAttributes) {
 		Optional<Visit> visit = this.petService.findVisitById(visitId);
-		if (visit.isPresent()) {
-			petService.deleteVisit(visit.get());
-			redirectAttributes.addFlashAttribute("message", "Visit successfully deleted!");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "Visit not found!");
-		}
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			if (visit.isPresent()) {
+				petService.deleteVisit(visit.get());
+				redirectAttributes.addFlashAttribute("message", "Visit successfully deleted!");
+			} else {
+				redirectAttributes.addFlashAttribute("message", "Visit not found!");
+			}
+		}
 		return "redirect:/owners/" + ownerId;
 	}
 
