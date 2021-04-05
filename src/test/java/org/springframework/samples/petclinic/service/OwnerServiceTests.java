@@ -1,88 +1,40 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.model.Authorities;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
-import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Integration test of the Service and the Repository layer.
- * <p>
- * ClinicServiceSpringDataJpaTests subclasses benefit from the following services provided
- * by the Spring TestContext Framework:
- * </p>
- * <ul>
- * <li><strong>Spring IoC container caching</strong> which spares us unnecessary set up
- * time between test execution.</li>
- * <li><strong>Dependency Injection</strong> of test fixture instances, meaning that we
- * don't need to perform application context lookups. See the use of
- * {@link Autowired @Autowired} on the <code>{@link
- * OwnerServiceTests#clinicService clinicService}</code> instance variable, which uses
- * autowiring <em>by type</em>.
- * <li><strong>Transaction management</strong>, meaning each test method is executed in
- * its own transaction, which is automatically rolled back by default. Thus, even if tests
- * insert or otherwise change database state, there is no need for a teardown or cleanup
- * script.
- * <li>An {@link org.springframework.context.ApplicationContext ApplicationContext} is
- * also inherited and can be used for explicit bean lookup if necessary.</li>
- * </ul>
- *
- * @author Ken Krebs
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
- * @author Dave Syer
- */
-
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-class OwnerServiceTests {                
-        @Autowired
+class OwnerServiceTests { 
+	
+	@Autowired
 	protected OwnerService ownerService;
-
+	@Autowired
+	protected UserService userService;
+	@Autowired
+	protected PetService petService;
+	
 	@Test
 	void shouldFindOwnersByLastName() {
-		Collection<Owner> owners = this.ownerService.findOwnerByLastName("Davis");
+		Collection<Owner> owners = this.ownerService.findOwnerByLastNameAdmin("Davis");
 		assertThat(owners.size()).isEqualTo(2);
 
-		owners = this.ownerService.findOwnerByLastName("Daviss");
+		owners = this.ownerService.findOwnerByLastNameAdmin("Daviss");
 		assertThat(owners.isEmpty()).isTrue();
 	}
 
@@ -98,7 +50,7 @@ class OwnerServiceTests {
 	@Test
 	@Transactional
 	public void shouldInsertOwner() {
-		Collection<Owner> owners = this.ownerService.findOwnerByLastName("Schultz");
+		Collection<Owner> owners = this.ownerService.findOwnerByLastNameAdmin("Schultz");
 		int found = owners.size();
 
 		Owner owner = new Owner();
@@ -107,16 +59,16 @@ class OwnerServiceTests {
 		owner.setAddress("4, Evans Street");
 		owner.setCity("Wollongong");
 		owner.setTelephone("4444444444");
-                User user=new User();
-                user.setUsername("Sam");
-                user.setPassword("supersecretpassword");
-                user.setEnabled(true);
-                owner.setUser(user);                
-                
+		User user=new User();
+		user.setUsername("Sam");
+		user.setPassword("supersecretpassword");
+		user.setEnabled(true);
+		owner.setUser(user);                
+
 		this.ownerService.saveOwner(owner);
 		assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
-		owners = this.ownerService.findOwnerByLastName("Schultz");
+		owners = this.ownerService.findOwnerByLastNameAdmin("Schultz");
 		assertThat(owners.size()).isEqualTo(found + 1);
 	}
 
@@ -135,5 +87,78 @@ class OwnerServiceTests {
 		assertThat(owner.getLastName()).isEqualTo(newLastName);
 	}
 
+	@Test
+	@Transactional
+	void shouldDeleteOwner() throws DataAccessException {
+		List<Owner> allOwners = this.ownerService.findAll();
+
+		User newUser = new User();
+		Owner newOwner = new Owner();
+		Authorities newAuthority = new Authorities();
+		
+		newAuthority.setAuthority("admin");
+		newAuthority.setUser(newUser);
+		
+		newUser.setUsername("testUsername");
+		newUser.setPassword("testPassword");
+		
+		newOwner.setFirstName("testFirstName");
+		newOwner.setLastName("testLastName");
+		newOwner.setAddress("testAddress");
+		newOwner.setCity("testCity");
+		newOwner.setTelephone("4444444444");
+		newOwner.setUser(newUser);
+
+		this.ownerService.saveOwner(newOwner);
+		this.ownerService.delete(newOwner);
+		List<Owner> allOwnersAfterInsertAndDelete = this.ownerService.findAll();
+
+		assertThat(allOwnersAfterInsertAndDelete.size()).isEqualTo(allOwners.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldDeleteOwnerExtended() throws DataAccessException {
+		//Tries to insert non-persistent data
+		List<Owner> allOwners = this.ownerService.findAll();
+
+		User newUser = new User();
+		Owner newOwner = new Owner();
+		Authorities newAuthority = new Authorities();
+		
+		newAuthority.setAuthority("admin");
+		newAuthority.setUser(newUser);
+		
+		newUser.setUsername("testUsername");
+		newUser.setPassword("testPassword");
+		
+		newOwner.setFirstName("testFirstName");
+		newOwner.setLastName("testLastName");
+		newOwner.setAddress("testAddress");
+		newOwner.setCity("testCity");
+		newOwner.setTelephone("4444444444");
+		newOwner.setUser(newUser);
+
+		Assertions.assertThrows(InvalidDataAccessApiUsageException.class,() -> {this.ownerService.delete(newOwner);});
+		
+		List<Owner> allOwnersAfterFakeDelete = this.ownerService.findAll();
+		assertThat(allOwnersAfterFakeDelete.size()).isEqualTo(allOwners.size());
+	}
+	
+	@Test
+	@Transactional
+	void shouldAlsoDeleteOwnerPets() throws DataAccessException {
+		Owner oldOwner = this.ownerService.findOwnerById(1);
+		List<Owner> allOwners = this.ownerService.findAll();
+		List<Pet> allPets = this.petService.findAll();
+		
+		this.ownerService.delete(oldOwner);
+		
+		List<Owner> allOwnersAfterDelete = this.ownerService.findAll();
+		List<Pet> allPetsAfterDelete = this.petService.findAll();
+		
+		assertThat(allOwnersAfterDelete.size()).isEqualTo(allOwners.size() - 1);
+		assertThat(allPetsAfterDelete.size()).isEqualTo(allPets.size() - oldOwner.getPets().size());
+	}
 
 }

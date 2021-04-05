@@ -15,9 +15,12 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,14 +31,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Simple business object representing a pet.
@@ -59,7 +59,12 @@ public class Pet extends NamedEntity {
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
 	private Owner owner;
+	
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	private List<PetHotel> hotel;
 
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Visit> visits;
 
@@ -86,7 +91,15 @@ public class Pet extends NamedEntity {
 	protected void setOwner(Owner owner) {
 		this.owner = owner;
 	}
+	
+	public List<PetHotel> getHotel() {
+		return hotel;
+	}
 
+	public void setHotel(List<PetHotel> petHotel) {
+		this.hotel = petHotel;
+	}
+	
 	protected Set<Visit> getVisitsInternal() {
 		if (this.visits == null) {
 			this.visits = new HashSet<>();
@@ -107,6 +120,11 @@ public class Pet extends NamedEntity {
 	public void addVisit(Visit visit) {
 		getVisitsInternal().add(visit);
 		visit.setPet(this);
+	}
+	
+	public void addBooking(PetHotel petHotel) {
+		getHotel().add(petHotel);
+		petHotel.setPet(this);
 	}
 
 }

@@ -1,33 +1,83 @@
 package org.springframework.samples.petclinic.model;
 
-import java.util.Set;
+import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "hotel")
+@Table(name = "hotels")
 public class PetHotel extends BaseEntity{
 
-	@Column(name = "address")
+	@Column(name = "description")
 	@NotEmpty
-	private String address;
-
-	@Column(name = "city")
-	@NotEmpty
-	private String city;
-
-	@Column(name = "telephone")
-	@NotEmpty
-	@Digits(fraction = 0, integer = 10)
-	private String telephone;
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-	private Set<Pet> pets;
+	private String description;
 	
+	@Column(name = "user_name")
+	@NotEmpty
+	private String userName;
+
+	@Column(name = "start_date")
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate startDate;
+	
+	@Column(name = "end_date")
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate endDate;
+	
+	@ManyToOne
+	@JoinColumn(name = "pet_id")
+	@NotNull
+	private Pet pet;
+
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+	
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Pet getPet() {
+		return pet;
+	}
+
+	public void setPet(Pet pet) {
+		this.pet = pet;
+	}
 }

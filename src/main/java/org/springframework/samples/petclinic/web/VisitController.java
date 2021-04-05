@@ -16,18 +16,26 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
-import org.springframework.samples.petclinic.service.VetService;
+import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Juergen Hoeller
@@ -39,10 +47,14 @@ import org.springframework.web.bind.annotation.*;
 public class VisitController {
 
 	private final PetService petService;
+	private final OwnerService ownerService;
+	private final UserService userService;
 
 	@Autowired
-	public VisitController(PetService petService) {
+	public VisitController(PetService petService, OwnerService ownerService, UserService userService) {
 		this.petService = petService;
+		this.ownerService = ownerService;
+		this.userService = userService;
 	}
 
 	@InitBinder
@@ -50,44 +62,73 @@ public class VisitController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	/**
-	 * Called before each and every @GetMapping or @PostMapping annotated method. 2 goals:
-	 * - Make sure we always have fresh data - Since we do not use the session scope, make
-	 * sure that Pet object always has an id (Even though id is not part of the form
-	 * fields)
-	 * @param petId
-	 * @return Pet
-	 */
-	@ModelAttribute("visit")
-	public Visit loadPetWithVisit(@PathVariable("petId") int petId) {
-		Pet pet = this.petService.findPetById(petId);
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		return visit;
-	}
+//	@ModelAttribute("visit")
+//	public Visit loadPetWithVisit(@PathVariable("petId") int petId) {
+//		Pet pet = this.petService.findPetById(petId);
+//		Visit visit = new Visit();
+//		pet.addVisit(visit);
+//		return visit;
+//	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
-	@GetMapping(value = "/owners/*/pets/{petId}/visits/new")
-	public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-		return "pets/createOrUpdateVisitForm";
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
+	public String initNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId, Map<String, Object> model) {
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		Pet pet = this.petService.findPetById(petId);
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		String vista = "redirect:/";
+
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			Visit visit = new Visit();
+			pet.addVisit(visit);
+			model.put("visit", visit);
+			vista = "pets/createOrUpdateVisitForm";
+		}
+		return vista;
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@Valid Visit visit, BindingResult result) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
+	public String processNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId,
+			@Valid Visit visit, BindingResult result) {
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		Pet pet = this.petService.findPetById(petId);
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		String vista = "redirect:/";
+
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			if (result.hasErrors()) {
+				vista = "pets/createOrUpdateVisitForm";
+			} else {
+				visit.setPet(pet);
+				this.petService.saveVisit(visit);
+				vista = "redirect:/owners/{ownerId}";
+			}
 		}
-		else {
-			this.petService.saveVisit(visit);
-			return "redirect:/owners/{ownerId}";
-		}
+		return vista;
 	}
 
-	@GetMapping(value = "/owners/*/pets/{petId}/visits")
-	public String showVisits(@PathVariable int petId, Map<String, Object> model) {
-		model.put("visits", this.petService.findPetById(petId).getVisits());
-		return "visitList";
+//	@GetMapping(value = "/owners/*/pets/{petId}/visits")
+//	public String showVisits(@PathVariable int petId, Map<String, Object> model) {
+//		model.put("visits", this.petService.findPetById(petId).getVisits());
+//		return "visitList";
+//	}
+	
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/{visitId}/delete")
+	public String deleteVisit(@PathVariable("visitId") int visitId, @PathVariable("ownerId") int ownerId, ModelMap model, RedirectAttributes redirectAttributes) {
+		Optional<Visit> visit = this.petService.findVisitById(visitId);
+		Owner owner = this.ownerService.findOwnerById(ownerId);
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+
+		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			if (visit.isPresent()) {
+				petService.deleteVisit(visit.get());
+				redirectAttributes.addFlashAttribute("message", "Visit successfully deleted!");
+			} else {
+				redirectAttributes.addFlashAttribute("message", "Visit not found!");
+			}
+		}
+		return "redirect:/owners/" + ownerId;
 	}
 
 }
