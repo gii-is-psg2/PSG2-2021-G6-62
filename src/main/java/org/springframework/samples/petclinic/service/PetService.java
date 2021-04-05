@@ -6,10 +6,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.PetRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
@@ -23,12 +22,14 @@ public class PetService {
 
 	private PetRepository petRepository;
 	private VisitRepository visitRepository;
+	private PetHotelService petHotelService;
 
 	@Autowired
 	public PetService(PetRepository petRepository,
-			VisitRepository visitRepository) {
+			VisitRepository visitRepository, PetHotelService petHotelService) {
 		this.petRepository = petRepository;
 		this.visitRepository = visitRepository;
+		this.petHotelService = petHotelService;
 	}
 	
 	@Transactional(readOnly = true)
@@ -78,6 +79,12 @@ public class PetService {
 		for (Visit v : pet.getVisits()) {
 			visitRepository.delete(v);
 		}
+		
+		for (PetHotel p : pet.getHotel()) {
+			if(p != null)
+			petHotelService.delete(p);
+		}
+		
 		petRepository.delete(pet);
 	}
 	

@@ -9,11 +9,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.repository.PetHotelRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
-import org.springframework.samples.petclinic.repository.UserRepository;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.samples.petclinic.service.exceptions.WrongPastDateInHotelsException;
 import org.springframework.stereotype.Service;
@@ -92,5 +90,11 @@ public class PetHotelService {
 	public List<Owner> findAllOwners() throws DataAccessException {
 		return (List<Owner>) ownerRepository.findAll();
 	}
+
+	public void delete(PetHotel petHotel) {
+		
+		petHotelRepository.delete(petHotel);
+	}
+	
 	
 }
