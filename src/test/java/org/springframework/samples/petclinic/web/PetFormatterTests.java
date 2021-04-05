@@ -1,5 +1,12 @@
 package org.springframework.samples.petclinic.web;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,12 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.samples.petclinic.model.Pet;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.samples.petclinic.service.PetHotelService;
 
 @ExtendWith(MockitoExtension.class)

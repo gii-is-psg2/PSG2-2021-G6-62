@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
-import org.springframework.format.Parser;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.PetHotelService;
 

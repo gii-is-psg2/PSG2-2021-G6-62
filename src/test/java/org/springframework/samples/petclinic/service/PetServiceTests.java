@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,9 +19,10 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
@@ -193,6 +195,7 @@ class PetServiceTests {
 		
 		newPet.setName("testName");
 		newPet.setBirthDate(LocalDate.now());
+		newPet.setHotel(new ArrayList<PetHotel>());
 		
 		newAuthority.setAuthority("admin");
 		newAuthority.setUser(newUser);
@@ -228,6 +231,7 @@ class PetServiceTests {
 		
 		newPet.setName("testName");
 		newPet.setBirthDate(LocalDate.now());
+		newPet.setHotel(new ArrayList<PetHotel>());
 		
 		newAuthority.setAuthority("admin");
 		newAuthority.setUser(newUser);

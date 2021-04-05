@@ -20,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
-import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
@@ -41,9 +40,6 @@ public class PetHotelControllerTest {
 	private static final String TEST_HACKER = "un_hacker_peligroso";
 	private static final String TEST_USER_ADMIN = "el_admin";
 	private static final String TEST_USER_OWNER = "el_owner";
-	
-	@Autowired
-	private PetHotelController petHotelController;
 	
 	@MockBean
 	private PetHotelService petHotelService;

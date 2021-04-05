@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
 import static org.hamcrest.Matchers.is;
-
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,8 +41,6 @@ class PetControllerTests {
 	private static final int TEST_PET_ID = 1;
 	private static final int TEST_PET_NOT_FOUND_ID = 2;
 
-	@Autowired
-	private PetController petController;
 
 
 	@MockBean
