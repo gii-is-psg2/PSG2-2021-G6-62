@@ -19,10 +19,10 @@ El día 1 empieza el 11/04/2021
 | Day           | felescgon    | nicolasdeory  | Jotaeme55     | MaToSan24     |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
 | Day 1         | :smile:       |                |                |                |
-| Day 2         | :smile:       |                |                |                |
-| Day 3         | :smile:       |                |                |                |
-| Day 4         | :smile:       |                |                |                |
-| Day 5         | :smile:       |                |                |                |
+| Day 2         | :alien:       |                |                |                |
+| Day 3         | :alien:       |                |                |                |
+| Day 4         | :alien:       |                |                |                |
+| Day 5         | :alien:       |                |                |                |
 | Day 6         | :smile:       |                |                |                |
 | Day 7         | :smile:       |                |                |                |
 | Day 8         | :smile:       |                |                |                |
