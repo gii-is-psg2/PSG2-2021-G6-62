@@ -16,14 +16,14 @@ El día 1 empieza el 11/04/2021
 
 ## Sprint 3
 
-| Day           | felescgon    | nicolasdeory  | Jotaeme55     | MaToSan24     |
+| Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
-| Day 1         | :smile:       |                |                |                |
-| Day 2         | :alien:       |                |                |                |
-| Day 3         | :alien:       |                |                |                |
-| Day 4         | :alien:       |                |                |                |
-| Day 5         | :alien:       |                |                |                |
-| Day 6         | :smile:       |                |                |                |
+| Day 1         | :smile:       |                | :smile:        |                |
+| Day 2         | :alien:       |                | :alien:        |                |
+| Day 3         | :alien:       |                | :alien:        |                |
+| Day 4         | :alien:       |                | :alien:        |                |
+| Day 5         | :alien:       |                | :smile:        |                |
+| Day 6         | :smile:       |                | :smile:        |                |
 | Day 7         | :smile:       |                |                |                |
 | Day 8         | :smile:       |                |                |                |
 | Day 9         | :smile:       |                |                |                |
