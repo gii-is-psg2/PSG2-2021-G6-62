@@ -92,6 +92,12 @@
                                     <spring:param name="petId" value="${pet.id}"/>
                                 </spring:url>
                                 <a href="${fn:escapeXml(petUrl)}"><spring:message code="pet.edit" /></a><br>
+                                
+                                <spring:url value="/adoptions/{petId}/new" var="adoptionUrl">
+                                    <spring:param name="petId" value="${pet.id}"/>
+                                </spring:url>
+                                <a href="${fn:escapeXml(adoptionUrl)}"><spring:message code="adoption.adoptionRequest" /></a><br>
+                                
                                 <spring:url value="/owners/{ownerId}/pets/{petId}/delete" var="deletePetUrl">
                                     <spring:param name="ownerId" value="${owner.id}"/>
                                     <spring:param name="petId" value="${pet.id}"/>
@@ -104,7 +110,6 @@
                                     <spring:param name="petId" value="${pet.id}"/>
                                 </spring:url>
                                 <a href="${fn:escapeXml(addVisitUrl)}"><spring:message code="visit.addVisit" /></a>
-                            </td>
                             </td>
                         </tr>
                     </table>
