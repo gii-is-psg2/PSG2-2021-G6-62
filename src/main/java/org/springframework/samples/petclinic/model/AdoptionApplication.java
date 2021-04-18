@@ -6,8 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.lang.NonNull;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "adoptionApplication")
@@ -21,7 +20,7 @@ public class AdoptionApplication extends BaseEntity {
 	private String description;
 	
 	@OneToOne
-	@NonNull
+	@NotNull
 	private Owner owner;
 
 	public AdoptionRequest getAdoptionRequest() {

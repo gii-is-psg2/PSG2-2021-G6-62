@@ -1,7 +1,5 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,12 +14,12 @@ import org.springframework.samples.petclinic.model.AdoptionRequest;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.AdoptionApplicationService;
 import org.springframework.samples.petclinic.service.AdoptionRequestService;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.web.validators.AdoptionApplicationValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -57,6 +55,11 @@ public class AdoptionController {
 		dataBinder.setDisallowedFields("id");
 	}
 	
+	@InitBinder("adoptionApplication")
+	public void initLineupBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new AdoptionApplicationValidator());
+	}
+	
 	@ModelAttribute("ownersOfUser")
 	public List<Owner> getOwnersOfUser() {
 		return this.ownerService.findOwnerByUserUsername(this.userService.getUserSession().getUsername());
@@ -76,7 +79,6 @@ public class AdoptionController {
 	@GetMapping(value = "/adoptions/{petId}/new")
 	public String requestAdoptionForPet(@PathVariable("petId") int petId, Map<String, Object> model) {
 
-//		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
 		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
 
 		Optional<Pet> pet = this.petService.findById(petId);
@@ -125,7 +127,7 @@ public class AdoptionController {
 	
 	@PostMapping(value = "/adoptions/{adoptionRequestId}/apply")
 	public String applyForAdoptionPost(@PathVariable("adoptionRequestId") int adoptionRequestId, 
-			@Valid AdoptionApplication adoptionApplication, Map<String, Object> model, BindingResult result,
+			@Valid AdoptionApplication adoptionApplication, BindingResult result, Map<String, Object> model,
 			RedirectAttributes redirectAttributes) {
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
@@ -136,6 +138,8 @@ public class AdoptionController {
 		
 		if (authority.equals("owner")) {
 			if (result.hasErrors()) {
+				model.put("adoptionApplication", adoptionApplication);
+				model.put("adoptionRequest", adoptionRequest.get());
 				vista = "adoptions/applyForAdoptionForm";
 			} else {
 				if (adoptionRequest.isPresent()) {
@@ -166,17 +170,25 @@ public class AdoptionController {
 	}
 	
 	 @GetMapping(value = "/adoptions/{adoptionApplicationId}/adopt")
-	 public String changePetOwner(@PathVariable("adoptionApplicationId") int adoptionApplicationId, Map<String, Object> model) {
+	 public String changePetOwner(@PathVariable("adoptionApplicationId") int adoptionApplicationId, Map<String, Object> model,
+				RedirectAttributes redirectAttributes) {
 		 Optional<AdoptionApplication> adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId);
 		 User currentUser = this.userService.getUserSession();
 		 Pet petInAdoption = adoptionApplication.get().getAdoptionRequest().getPet();
-		 if (adoptionApplication.isPresent() && petInAdoption.getOwner().getUser().equals(currentUser)) {
-			 Owner newOwner = adoptionApplication.get().getOwner();
-			 Owner oldOwner = adoptionApplication.get().getAdoptionRequest().getPet().getOwner();
-			 oldOwner.removePet(petInAdoption);
-			 newOwner.addPet(adoptionApplication.get().getAdoptionRequest().getPet());
-			 this.ownerService.saveOwner(oldOwner);
-			 this.ownerService.saveOwner(newOwner);
+		 String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+
+		 if (authority.equals("owner")) {
+			 if (adoptionApplication.isPresent() && petInAdoption.getOwner().getUser().equals(currentUser)) {
+				 Owner newOwner = adoptionApplication.get().getOwner();
+				 Owner oldOwner = adoptionApplication.get().getAdoptionRequest().getPet().getOwner();
+				 oldOwner.removePet(petInAdoption);
+				 newOwner.addPet(adoptionApplication.get().getAdoptionRequest().getPet());
+				 this.ownerService.saveOwner(oldOwner);
+				 this.ownerService.saveOwner(newOwner);
+				 this.adoptionRequestService.delete(adoptionApplication.get().getAdoptionRequest());
+			 }
+		 } else {
+			 redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
 		 }
 		 return "adoptions/adoptionApplicationsList";
 	 }

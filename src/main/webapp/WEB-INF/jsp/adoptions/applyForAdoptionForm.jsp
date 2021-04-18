@@ -20,16 +20,28 @@
             
             <petclinic:inputField label="${description}" name="description"/>
 
-			<spring:message code="owner.owner" var="owner" />
-			<label for="ownerSelect"><c:out value="${owner}" /></label>
-			<form:select id="ownerSelect" class="form-control" path="owner" size="5">
-				<c:forEach var="owner" items="${ownersOfUser}">
-					<form:option value="${owner.id}">
-						<c:out value="${owner.lastName} ${owner.firstName}" />
-					</form:option>
-				</c:forEach>
-			</form:select>
-
+		<spring:bind path="owner">
+    		<c:set var="valid" value="${not status.error and not empty status.actualValue}"/>
+    	    <div class="${cssGroup}">
+				<spring:message code="owner.owner" var="owner" />
+				
+				<label for="ownerSelect"><c:out value="${owner}" /></label>
+				<form:select id="ownerSelect" class="form-control" path="owner" size="5">
+					<c:forEach var="owner" items="${ownersOfUser}">
+						<form:option value="${owner.id}">
+							<c:out value="${owner.lastName} ${owner.firstName}" />
+						</form:option>
+					</c:forEach>
+				</form:select>
+				
+				<c:if test="${valid}">
+	                <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+	            </c:if>
+	            <c:if test="${status.error}">
+	                <span class="help-inline">${status.errorMessage}</span>
+	            </c:if>
+	        </div>
+		</spring:bind>
 		</div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
