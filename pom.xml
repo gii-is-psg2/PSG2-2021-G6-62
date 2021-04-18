@@ -47,14 +47,6 @@
                 <role>Development Team Member</role>
             </roles>
         </developer>
-        <developer>
-            <id>pablogiraldez17</id>
-            <name>Pablo Giráldez Álvarez</name>
-            <email>pablogiraldez17@gmail.com</email>
-            <roles>
-                <role>Development Team Member</role>
-            </roles>
-        </developer>
 	</developers>
 
     <properties>
@@ -72,6 +64,10 @@
 
         <jacoco.version>0.8.5</jacoco.version>
         <spring-format.version>0.0.19</spring-format.version>
+        
+        <sonar.projectKey>gii-is-psg2_PSG2-2021-G6-62</sonar.projectKey>
+ 	 	<sonar.organization>gii-is-psg2</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
     </properties>
 
