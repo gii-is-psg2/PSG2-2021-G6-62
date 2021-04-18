@@ -12,7 +12,7 @@
 | Day 4         |    :worried: (Meaning that I feel I have serious difficulties to accomplish the task, or the productivity of my day was awful)           |
 | Day 5         |    :fearful:   (I´m desperate, I need help)        |
 
-El día 1 empieza el 11/04/2021
+El día 1 empieza el 11/04/2021. El día 8 es el 18/04/21
 
 ## Sprint 3
 
@@ -24,19 +24,19 @@ El día 1 empieza el 11/04/2021
 | Day 4         | :alien:       |                | :alien:        | :alien:        |
 | Day 5         | :alien:       |                | :smile:        | :smile:        |
 | Day 6         | :smile:       |                | :smile:        | :smile:        |
-| Day 7         | :smile:       |                |                |                |
+| Day 7         | :alien:       |                |                |                |
 | Day 8         | :smile:       |                |                |                |
-| Day 9         | :smile:       |                |                |                |
-| Day 10        | :smile:       |                |                |                |
-| Day 11        | :smile:       |                |                |                |
-| Day 12        | :smile:       |                |                |                |
-| Day 13        | :smile:       |                |                |                |
-| Day 14        | :smile:       |                |                |                |
-| Day 15        | :smile:       |                |                |                |
-| Day 16        | :smile:       |                |                |                |
-| Day 17        | :smile:       |                |                |                |
-| Day 18        | :smile:       |                |                |                |
-| Day 19        | :smile:       |                |                |                |
-| Day 20        | :smile:       |                |                |                |
-| Day 21        | :smile:       |                |                |                |
-| Day 22        | :smile:       |                |                |                |
+| Day 9         |               |                |                |                |
+| Day 10        |               |                |                |                |
+| Day 11        |               |                |                |                |
+| Day 12        |               |                |                |                |
+| Day 13        |               |                |                |                |
+| Day 14        |               |                |                |                |
+| Day 15        |               |                |                |                |
+| Day 16        |               |                |                |                |
+| Day 17        |               |                |                |                |
+| Day 18        |               |                |                |                |
+| Day 19        |               |                |                |                |
+| Day 20        |               |                |                |                |
+| Day 21        |               |                |                |                |
+| Day 22        |               |                |                |                |
