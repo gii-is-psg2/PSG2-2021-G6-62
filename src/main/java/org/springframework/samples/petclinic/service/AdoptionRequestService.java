@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.AdoptionRequest;
+import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.repository.AdoptionRequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +43,9 @@ public class AdoptionRequestService {
 
 	public Optional<AdoptionRequest> findAdoptionRequestById(Integer id) {
 		return adoptionRequestRepository.findById(id);
+	}
+	
+	public List<Pet> findPetsInAdoption() {
+		return this.adoptionRequestRepository.findPetsInAdoption();
 	}
 }

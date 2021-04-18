@@ -82,7 +82,7 @@ public class AdoptionController {
 		Optional<Pet> pet = this.petService.findById(petId);
 		String vista = "redirect:/adoptions";
 		
-		if (pet.isPresent() && pet.get().getOwner().getUser().equals(currentUser)) {
+		if (pet.isPresent() && pet.get().getOwner().getUser().equals(currentUser) && !this.adoptionRequestService.findPetsInAdoption().contains(pet.get())) {
 			AdoptionRequest adoptionRequest = new AdoptionRequest();
 			adoptionRequest.setPet(pet.get());
 			this.adoptionRequestService.save(adoptionRequest);
@@ -95,47 +95,19 @@ public class AdoptionController {
 	public String applyForAdoptionGet(@PathVariable("adoptionRequestId") int adoptionRequestId, Map<String, Object> model, 
 			RedirectAttributes redirectAttributes) {
 
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
 		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
 
 		String vista = "redirect:/adoptions";
 		
-		if (adoptionRequest.isPresent() && !adoptionRequest.get().getPet().getOwner().getUser().equals(currentUser)) {
-			if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner().getUser())
-					.collect(Collectors.toSet()).contains(currentUser)) {
-			model.put("adoptionApplication", new AdoptionApplication());
-			model.put("adoptionRequest", adoptionRequest.get());
-			vista = "adoptions/applyForAdoptionForm";
-			} else {
-				if (Locale.getDefault().getDisplayLanguage().equals("español")) {
-					redirectAttributes.addFlashAttribute("message", "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
-				} else {
-					redirectAttributes.addFlashAttribute("message", "You can't apply for the adoption of the same pet twice or more!");
-				}
-			}
-		}
-
-		return vista;
-	}
-	
-	@PostMapping(value = "/adoptions/{adoptionRequestId}/apply")
-	public String applyForAdoptionPost(@PathVariable("adoptionRequestId") int adoptionRequestId, 
-			@Valid AdoptionApplication adoptionApplication, Map<String, Object> model, BindingResult result,
-			RedirectAttributes redirectAttributes) {
-
-		Owner selectedOwner = adoptionApplication.getOwner();
-		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
-		
-		String vista = "redirect:/adoptions";
-		
-		if (result.hasErrors()) {
-			vista = "adoptions/applyForAdoptionForm";
-		} else {
-			if (adoptionRequest.isPresent()) {
-				if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner())
-						.collect(Collectors.toSet()).contains(selectedOwner)) {
-					adoptionApplication.setAdoptionRequest(adoptionRequest.get());
-					this.adoptionApplicationService.save(adoptionApplication);
+		if (authority.equals("owner")) {
+			if (adoptionRequest.isPresent() && !adoptionRequest.get().getPet().getOwner().getUser().equals(currentUser)) {
+				if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner().getUser())
+						.collect(Collectors.toSet()).contains(currentUser)) {
+				model.put("adoptionApplication", new AdoptionApplication());
+				model.put("adoptionRequest", adoptionRequest.get());
+				vista = "adoptions/applyForAdoptionForm";
 				} else {
 					if (Locale.getDefault().getDisplayLanguage().equals("español")) {
 						redirectAttributes.addFlashAttribute("message", "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
@@ -144,6 +116,44 @@ public class AdoptionController {
 					}
 				}
 			}
+		} else {
+			redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
+		}
+		
+		return vista;
+	}
+	
+	@PostMapping(value = "/adoptions/{adoptionRequestId}/apply")
+	public String applyForAdoptionPost(@PathVariable("adoptionRequestId") int adoptionRequestId, 
+			@Valid AdoptionApplication adoptionApplication, Map<String, Object> model, BindingResult result,
+			RedirectAttributes redirectAttributes) {
+
+		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		Owner selectedOwner = adoptionApplication.getOwner();
+		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
+		
+		String vista = "redirect:/adoptions";
+		
+		if (authority.equals("owner")) {
+			if (result.hasErrors()) {
+				vista = "adoptions/applyForAdoptionForm";
+			} else {
+				if (adoptionRequest.isPresent()) {
+					if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner())
+							.collect(Collectors.toSet()).contains(selectedOwner)) {
+						adoptionApplication.setAdoptionRequest(adoptionRequest.get());
+						this.adoptionApplicationService.save(adoptionApplication);
+					} else {
+						if (Locale.getDefault().getDisplayLanguage().equals("español")) {
+							redirectAttributes.addFlashAttribute("message", "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
+						} else {
+							redirectAttributes.addFlashAttribute("message", "You can't apply for the adoption of the same pet twice or more!");
+						}
+					}
+				}
+			}
+		} else {
+			redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
 		}
 		return vista;
 	}

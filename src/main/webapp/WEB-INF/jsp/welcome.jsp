@@ -21,7 +21,16 @@
 
     
     <sec:authorize access="hasAuthority('owner')">
-    	<h1><spring:message code="home.booking" /></h1>
+<%--     	<h1><spring:message code="home.booking" /></h1> --%>
 		<a class="btn btn-default" href='<spring:url value="/pethotel/${nombre}/new" htmlEscape="true"/>'><spring:message code="home.bookARoom" /></a>
+	</sec:authorize><br>
+	
+	<sec:authorize access="hasAnyAuthority('admin,owner')">
+		<a class="btn btn-default" href='<spring:url value="/adoptions" htmlEscape="true"/>'><spring:message code="menu.adoptions" /></a>
+	</sec:authorize><br>
+				
+	<sec:authorize access="hasAnyAuthority('owner')">
+		<a class="btn btn-default" href='<spring:url value="adoptionApplications" htmlEscape="true"/>'><spring:message code="menu.adoptionApplications" /></a>
 	</sec:authorize>
+		
 </petclinic:layout>

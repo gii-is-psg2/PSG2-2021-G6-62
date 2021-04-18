@@ -35,24 +35,14 @@
                     </petclinic:menuItem>
 				</sec:authorize>
 
-                <spring:message code="menu.findOwners" var="findOwners"/>
-				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find" title="${findOwners}">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span><spring:message code="menu.findOwners" /></span>
-				</petclinic:menuItem>
+				<sec:authorize access="hasAnyAuthority('admin,owner')">
+	                <spring:message code="menu.findOwners" var="findOwners"/>
+					<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find" title="${findOwners}">
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						<span><spring:message code="menu.findOwners" /></span>
+					</petclinic:menuItem>
+				</sec:authorize>
 				
-				<spring:message code="menu.adoptions" var="adoptions"/>
-				<petclinic:menuItem active="${name eq 'adoptions'}" url="/adoptions" title="${adoptions}">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span><spring:message code="menu.adoptions" /></span>
-				</petclinic:menuItem>
-				
-				<spring:message code="menu.adoptionApplications" var="adoptionApplications"/>
-				<petclinic:menuItem active="${name eq 'adoptionApplications'}" url="/adoptionApplications" title="${adoptionApplications}">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span><spring:message code="menu.adoptionApplications" /></span>
-				</petclinic:menuItem>
-
 				<sec:authorize access="hasAnyAuthority('admin')">
                 <spring:message code="menu.veterinarians" var="veterinarians"/>
 				<petclinic:menuItem active="${name eq 'vets'}" url="/vets" title="veterinarians">
