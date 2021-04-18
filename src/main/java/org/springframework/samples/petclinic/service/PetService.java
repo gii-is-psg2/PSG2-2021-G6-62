@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.AdoptionRequest;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.PetType;
@@ -23,13 +24,15 @@ public class PetService {
 	private PetRepository petRepository;
 	private VisitRepository visitRepository;
 	private PetHotelService petHotelService;
+	private AdoptionRequestService adoptionRequestService;
 
 	@Autowired
 	public PetService(PetRepository petRepository,
-			VisitRepository visitRepository, PetHotelService petHotelService) {
+			VisitRepository visitRepository, PetHotelService petHotelService, AdoptionRequestService adoptionRequestService) {
 		this.petRepository = petRepository;
 		this.visitRepository = visitRepository;
 		this.petHotelService = petHotelService;
+		this.adoptionRequestService = adoptionRequestService;
 	}
 	
 	@Transactional(readOnly = true)
@@ -84,6 +87,12 @@ public class PetService {
 			if(p != null)
 			petHotelService.delete(p);
 		}
+		
+		for (AdoptionRequest a : pet.getAdoptionRequests()) {
+			if(a != null)
+			adoptionRequestService.delete(a);
+		}
+		
 		
 		petRepository.delete(pet);
 	}
