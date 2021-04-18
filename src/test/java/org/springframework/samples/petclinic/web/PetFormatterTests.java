@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetHotelService;
+import org.springframework.samples.petclinic.web.formatters.PetFormatter;
 
 @ExtendWith(MockitoExtension.class)
 class PetFormatterTests {

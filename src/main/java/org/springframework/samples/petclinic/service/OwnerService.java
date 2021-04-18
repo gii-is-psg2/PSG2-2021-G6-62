@@ -84,7 +84,6 @@ public class OwnerService {
 		authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
 	}	
 	
-	@Transactional
 	public void delete(Owner owner) {
 		for (Pet p : owner.getPets()) {
 			petService.delete(p);

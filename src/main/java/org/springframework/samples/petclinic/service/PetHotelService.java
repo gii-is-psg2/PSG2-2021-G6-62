@@ -12,6 +12,7 @@ import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.repository.PetHotelRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
+import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.samples.petclinic.service.exceptions.WrongPastDateInHotelsException;
 import org.springframework.stereotype.Service;
@@ -40,19 +41,30 @@ public class PetHotelService {
 	}
 	
 	@Transactional(rollbackFor = WrongDatesInHotelsException.class)
-	public void saveHotel(PetHotel petHotel) throws DataAccessException, WrongDatesInHotelsException {
-		if(petHotel.getStartDate().isAfter(petHotel.getEndDate())) {
+	public void saveHotel(PetHotel petHotel) throws DataAccessException, WrongDatesInHotelsException, OverlappingBookingDatesException {
+		if (petHotel.getStartDate().isAfter(petHotel.getEndDate())) {
 			throw new WrongDatesInHotelsException();
-		}else {
+		} else {
+			for (PetHotel ph : this.petHotelRepository.findPetHotelByPetId(petHotel.getPet().getId())) {
+				if (petHotel.getStartDate().isBefore(ph.getEndDate()) && petHotel.getEndDate().isAfter(ph.getStartDate())) {
+					throw new OverlappingBookingDatesException();
+				}
+			}
 			petHotelRepository.save(petHotel);
 		}
 	}
 	
 	@Transactional(rollbackFor = WrongPastDateInHotelsException.class)
-	public void saveHotelForOwner(PetHotel petHotel) throws DataAccessException, WrongPastDateInHotelsException {
-		if(petHotel.getStartDate().isAfter(petHotel.getEndDate())||!petHotel.getStartDate().isAfter(LocalDate.now().plusDays(1))) {
+	public void saveHotelForOwner(PetHotel petHotel) throws DataAccessException, WrongPastDateInHotelsException, OverlappingBookingDatesException {
+		if (petHotel.getStartDate().isAfter(petHotel.getEndDate()) 
+				|| !petHotel.getStartDate().isAfter(LocalDate.now())) {
 			throw new WrongPastDateInHotelsException();
-		}else {
+		} else {
+			for (PetHotel ph : this.petHotelRepository.findPetHotelByPetId(petHotel.getPet().getId())) {
+				if (petHotel.getStartDate().isBefore(ph.getEndDate()) && petHotel.getEndDate().isAfter(ph.getStartDate())) {
+					throw new OverlappingBookingDatesException();
+				}
+			}
 			petHotelRepository.save(petHotel);
 		}
 	}
@@ -90,9 +102,13 @@ public class PetHotelService {
 	public List<Owner> findAllOwners() throws DataAccessException {
 		return (List<Owner>) ownerRepository.findAll();
 	}
+	
+	@Transactional
+	public List<PetHotel> findPetHotelByPetId(Integer petId) throws DataAccessException {
+		return petHotelRepository.findPetHotelByPetId(petId);
+	}
 
 	public void delete(PetHotel petHotel) {
-		
 		petHotelRepository.delete(petHotel);
 	}
 	
