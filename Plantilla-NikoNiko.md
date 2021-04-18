@@ -18,14 +18,14 @@ El día 1 empieza el 11/04/2021. El día 8 es el 18/04/21
 
 | Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
-| Day 1         | :smile:       |                | :smile:        | :smile:        |
-| Day 2         | :alien:       |                | :alien:        | :alien:        |
-| Day 3         | :alien:       |                | :alien:        | :alien:        |
-| Day 4         | :alien:       |                | :alien:        | :alien:        |
-| Day 5         | :alien:       |                | :smile:        | :alien:        |
-| Day 6         | :smile:       |                | :smile:        | :smile:        |
-| Day 7         | :alien:       |                |                | :smile:        |
-| Day 8         | :smile:       |                |                | :smile:        |
+| Day 1         | :smile:       |    :smile:     | :smile:        | :smile:        |
+| Day 2         | :alien:       |      :alien:   | :alien:        | :alien:        |
+| Day 3         | :alien:       |    :alien:     | :alien:        | :alien:        |
+| Day 4         | :alien:       |     :alien:    | :alien:        | :alien:        |
+| Day 5         | :alien:       |     :alien:    | :smile:        | :alien:        |
+| Day 6         | :smile:       |   :smile:      | :smile:        | :smile:        |
+| Day 7         | :alien:       |    :alien:     |                | :smile:        |
+| Day 8         | :smile:       |   :smile:      |                | :smile:        |
 | Day 9         |               |                |                |                |
 | Day 10        |               |                |                |                |
 | Day 11        |               |                |                |                |
