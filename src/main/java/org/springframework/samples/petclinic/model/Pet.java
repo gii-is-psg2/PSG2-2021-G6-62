@@ -67,6 +67,9 @@ public class Pet extends NamedEntity {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Visit> visits;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
+	private List<AdoptionRequest> adoptionRequests;
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
@@ -95,9 +98,17 @@ public class Pet extends NamedEntity {
 	public List<PetHotel> getHotel() {
 		return hotel;
 	}
+	
+	public List<AdoptionRequest> getAdoptionRequests() {
+		return adoptionRequests;
+	}
 
 	public void setHotel(List<PetHotel> petHotel) {
 		this.hotel = petHotel;
+	}
+	
+	public void setAdoptionRequest(List<AdoptionRequest> adoptionRequests) {
+		this.adoptionRequests = adoptionRequests;
 	}
 	
 	protected Set<Visit> getVisitsInternal() {

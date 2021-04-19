@@ -26,6 +26,8 @@ import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
+import org.springframework.samples.petclinic.web.formatters.PetFormatter;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -192,6 +194,44 @@ public class PetHotelControllerTest {
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
 			.andExpect(status().isOk())
+			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessPetHotelCreationFormOverlappingDatesOwner() throws Exception {
+		user.setUsername(TEST_USER_OWNER);
+		given(this.userService.getUserSession()).willReturn(user);
+		Mockito.doThrow(OverlappingBookingDatesException.class).when(this.petHotelService).saveHotelForOwner(Mockito.any());
+		mockMvc.perform(post("/pethotel/save")
+				.with(csrf())
+				.param("description", "Es muy calladito")
+				.param("pet", "Pipas_G")
+				.param("userName", "spring")
+				.param("startDate","2021/11/01")
+				.param("endDate", "2021/11/02")
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().is2xxSuccessful())
+			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessPetHotelCreationFormOverlappingDatesAdmin() throws Exception {
+		user.setUsername(TEST_USER_ADMIN);
+		given(this.userService.getUserSession()).willReturn(user);
+		Mockito.doThrow(OverlappingBookingDatesException.class).when(this.petHotelService).saveHotel(Mockito.any());
+		mockMvc.perform(post("/pethotel/save")
+				.with(csrf())
+				.param("description", "Es muy calladito")
+				.param("pet", "Pipas_G")
+				.param("userName", "spring")
+				.param("startDate","2021/11/01")
+				.param("endDate", "2021/11/02")
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().is2xxSuccessful())
 			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
 	}
 	

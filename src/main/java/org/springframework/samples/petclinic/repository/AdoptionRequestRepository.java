@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.samples.petclinic.model.AdoptionRequest;
@@ -12,4 +13,8 @@ public interface AdoptionRequestRepository extends CrudRepository<AdoptionReques
 
 	@Query("SELECT ar.pet FROM AdoptionRequest ar")
 	List<Pet> findPetsInAdoption();
+	
+	@Modifying
+	@Query("DELETE FROM AdoptionRequest a WHERE a = ?1")
+	void delete(AdoptionRequest adoptionRequest);
 }

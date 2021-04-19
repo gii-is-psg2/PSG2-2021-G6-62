@@ -13,6 +13,8 @@ public interface PetHotelRepository extends CrudRepository<PetHotel, Integer> {
 	@Query("SELECT h FROM PetHotel h")
 	List<PetHotel> encontrarReservas() throws DataAccessException;
 	
+	List<PetHotel> findPetHotelByPetId(Integer petId);
+	
 	@Modifying
 	@Query("DELETE FROM PetHotel p WHERE p = ?1")
 	void delete(PetHotel petHotel);

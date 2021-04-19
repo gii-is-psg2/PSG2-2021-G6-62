@@ -16,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
+import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class PetHotelServiceTest {
 
 	@Test
 	@Transactional
-	void shouldSaveBooking() {
+	void shouldSaveBooking() throws OverlappingBookingDatesException {
 		PetHotel booking = new PetHotel();
 		Pet pet = this.petService.findPetById(1);
 
@@ -89,6 +90,60 @@ public class PetHotelServiceTest {
 	
 	@Test
 	@Transactional
+	void shouldNotSaveBookingOverlappingDates() throws DataAccessException, WrongDatesInHotelsException, OverlappingBookingDatesException {
+		PetHotel booking = new PetHotel();
+		PetHotel booking2 = new PetHotel();
+		Pet pet = this.petService.findPetById(1);
+
+		booking.setDescription("Este pet imaginario se va de casa");
+		booking.setUserName("owner1");
+		booking.setPet(pet);
+		booking.setStartDate(LocalDate.of(2065, 12, 1));
+		booking.setEndDate(LocalDate.of(2065, 12, 13));
+		this.petHotelService.saveHotel(booking);
+
+		booking2.setDescription("Este pet imaginario se va de casa");
+		booking2.setUserName("owner1");
+		booking2.setPet(pet);
+		booking2.setStartDate(LocalDate.of(2065, 12, 2));
+		booking2.setEndDate(LocalDate.of(2065, 12, 14));
+		
+		Assertions.assertThrows(OverlappingBookingDatesException.class, () -> {
+			this.petHotelService.saveHotel(booking2);
+		});
+
+		assertThat(booking2.getId()).isNull();
+	}
+	
+	@Test
+	@Transactional
+	void shouldNotSaveBookingOverlappingDates2() throws DataAccessException, WrongDatesInHotelsException, OverlappingBookingDatesException {
+		PetHotel booking = new PetHotel();
+		PetHotel booking2 = new PetHotel();
+		Pet pet = this.petService.findPetById(1);
+
+		booking.setDescription("Este pet imaginario se va de casa");
+		booking.setUserName("owner1");
+		booking.setPet(pet);
+		booking.setStartDate(LocalDate.of(2065, 12, 1));
+		booking.setEndDate(LocalDate.of(2065, 12, 13));
+		this.petHotelService.saveHotel(booking);
+
+		booking2.setDescription("Este pet imaginario se va de casa");
+		booking2.setUserName("owner1");
+		booking2.setPet(pet);
+		booking2.setStartDate(LocalDate.of(2065, 12, 5));
+		booking2.setEndDate(LocalDate.of(2065, 12, 10));
+		
+		Assertions.assertThrows(OverlappingBookingDatesException.class, () -> {
+			this.petHotelService.saveHotel(booking2);
+		});
+
+		assertThat(booking2.getId()).isNull();
+	}
+	
+	@Test
+	@Transactional
 	void shouldNotSaveBookingNullPet() {
 		PetHotel booking = new PetHotel();
 
@@ -97,7 +152,7 @@ public class PetHotelServiceTest {
 		booking.setStartDate(LocalDate.of(2065, 12, 12));
 		booking.setEndDate(LocalDate.of(2065, 12, 14));
 
-		Assertions.assertThrows(ConstraintViolationException.class, () -> {
+		Assertions.assertThrows(NullPointerException.class, () -> {
 			this.petHotelService.saveHotel(booking);
 		});
 

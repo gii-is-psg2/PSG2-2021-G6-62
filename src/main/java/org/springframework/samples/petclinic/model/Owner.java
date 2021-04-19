@@ -62,6 +62,9 @@ public class Owner extends Person {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
 	private Set<Pet> pets;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+	private List<AdoptionApplication> adoptionApplications;
+	
 	//
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
@@ -124,6 +127,14 @@ public class Owner extends Person {
 	
 	public boolean removePet(Pet pet) {
 		return getPetsInternal().remove(pet);
+	}
+	
+	public List<AdoptionApplication> getAdoptionApplications() {
+		return adoptionApplications;
+	}
+	
+	public void setApplications(List<AdoptionApplication> adoptionApplications) {
+		this.adoptionApplications = adoptionApplications;
 	}
 
 	/**

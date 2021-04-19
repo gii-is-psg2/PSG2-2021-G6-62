@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.web;
+package org.springframework.samples.petclinic.web.formatters;
 
 import java.text.ParseException;
 import java.util.Collection;

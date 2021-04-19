@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.samples.petclinic.model.AdoptionApplication;
 import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -108,6 +110,8 @@ class OwnerServiceTests {
 		newOwner.setCity("testCity");
 		newOwner.setTelephone("4444444444");
 		newOwner.setUser(newUser);
+		
+		newOwner.setApplications(new ArrayList<AdoptionApplication>());
 
 		this.ownerService.saveOwner(newOwner);
 		this.ownerService.delete(newOwner);
@@ -125,6 +129,8 @@ class OwnerServiceTests {
 		User newUser = new User();
 		Owner newOwner = new Owner();
 		Authorities newAuthority = new Authorities();
+		
+		newOwner.setApplications(new ArrayList<AdoptionApplication>());
 		
 		newAuthority.setAuthority("admin");
 		newAuthority.setUser(newUser);
