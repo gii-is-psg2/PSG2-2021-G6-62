@@ -12,23 +12,24 @@
 | Day 4         |    :worried: (Meaning that I feel I have serious difficulties to accomplish the task, or the productivity of my day was awful)           |
 | Day 5         |    :fearful:   (I´m desperate, I need help)        |
 
-El día 1 empieza el 11/04/2021. El día 8 es el 18/04/21
+El día 1 empieza el 09/04/2021.
+El día 11 se corresponde al 19/04/2021
 
 ## Sprint 3
 
 | Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
 | Day 1         | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 2         | :alien:       | :alien:        | :alien:        | :alien:        |
-| Day 3         | :alien:       | :alien:        | :alien:        | :alien:        |
+| Day 2         | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 3         | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 4         | :alien:       | :alien:        | :alien:        | :alien:        |
-| Day 5         | :alien:       | :alien:        | :smile:        | :alien:        |
-| Day 6         | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 7         | :alien:       | :alien:        | :alien:        | :smile:        |
+| Day 5         | :alien:       | :alien:        | :alien:        | :alien:        |
+| Day 6         | :alien:       | :alien:        | :alien:        | :alien:        |
+| Day 7         | :alien:       | :alien:        | :smile:        | :alien:        |
 | Day 8         | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 9         |               |                | :smile:        |                |
-| Day 10        |               |                |                |                |
-| Day 11        |               |                |                |                |
+| Day 9         | :alien:       | :alien:        | :alien:        | :smile:        |
+| Day 10        | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 11        | :smile:       |                | :smile:        |                |
 | Day 12        |               |                |                |                |
 | Day 13        |               |                |                |                |
 | Day 14        |               |                |                |                |
@@ -40,3 +41,5 @@ El día 1 empieza el 11/04/2021. El día 8 es el 18/04/21
 | Day 20        |               |                |                |                |
 | Day 21        |               |                |                |                |
 | Day 22        |               |                |                |                |
+| Day 23        |               |                |                |                |
+| Day 24        |               |                |                |                |
