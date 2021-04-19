@@ -105,7 +105,7 @@
                                 </spring:url>
                                 <a href="${fn:escapeXml(addVisitUrl)}"><spring:message code="visit.addVisit" /></a>
                             </td>
-                            </td>
+                            
                         </tr>
                     </table>
                 </td>

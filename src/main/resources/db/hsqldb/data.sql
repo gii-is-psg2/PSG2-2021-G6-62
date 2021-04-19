@@ -65,3 +65,6 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04',
 INSERT INTO hotels(id,description,user_name,start_date, end_date, pet_id) 
 VALUES (1, 'necesito que cuideis bien de él porque lo siento deprimido últimamente', 'owner1','2021-03-17', '2022-03-20',2);
 
+INSERT INTO cause(id,organization,description,target) VALUES (1, 'caritasDogs', 'se encarga de dar refugio a perros callejeros y proporcionarles un hogar', 400);
+INSERT INTO cause(id,organization,description,target) VALUES (2, 'pets', 'se encarga de alimentar a perros, gatos y demás animales abandonados', 500);
+INSERT INTO cause(id,organization,description,target) VALUES (3, 'PatasUnidas', 'se encarga de cuidar y medicar a perros abandonados y posteriormente llevarlos a un centro para proporcionarles un hogar', 600);
