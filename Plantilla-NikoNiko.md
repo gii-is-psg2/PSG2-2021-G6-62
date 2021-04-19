@@ -26,7 +26,7 @@ El día 1 empieza el 11/04/2021. El día 8 es el 18/04/21
 | Day 6         | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 7         | :alien:       | :alien:        | :alien:        | :smile:        |
 | Day 8         | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 9         |               |                |                |                |
+| Day 9         |               |                | :smile:        |                |
 | Day 10        |               |                |                |                |
 | Day 11        |               |                |                |                |
 | Day 12        |               |                |                |                |
