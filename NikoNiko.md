@@ -30,8 +30,8 @@ El día 11 se corresponde al 19/04/2021
 | Day 9         | :alien:       | :alien:        | :alien:        | :smile:        |
 | Day 10        | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 11        | :smile:       |                | :smile:        |                |
-| Day 12        |               |                |                |                |
-| Day 13        |               |                |                |                |
+| Day 12        | :smile:       |                |                |                |
+| Day 13        | :smile:       |                |                |                |
 | Day 14        |               |                |                |                |
 | Day 15        |               |                |                |                |
 | Day 16        |               |                |                |                |
