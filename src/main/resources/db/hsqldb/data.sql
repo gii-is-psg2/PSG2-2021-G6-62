@@ -66,3 +66,5 @@ INSERT INTO hotels(id,description,user_name,start_date, end_date, pet_id)
 VALUES (1, 'necesito que cuideis bien de él porque lo siento deprimido últimamente', 'owner1','2021-03-17', '2021-03-20',2);
 
 INSERT INTO adoption_request(id,pet_id) VALUES (1, 1);
+
+INSERT INTO adoption_application(adoption_request_id,description,owner_id) VALUES (1,'Necesito esa mascota',2);

@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
