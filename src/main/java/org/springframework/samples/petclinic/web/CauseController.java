@@ -68,7 +68,7 @@ public class CauseController {
 			try {
 				this.causeService.saveCauses(cause);
 			} catch (WrongTargetException e) {
-				result.rejectValue("target", "duplicated", "el valor no puede ser menor a 0");
+				result.rejectValue("target", "duplicated", "el valor no puede ser menor a 0.01");
 				model.put("errors", result.getAllErrors());
 				return "cause/newCause";
 			}

@@ -27,7 +27,7 @@ public class CauseService {
 	
 	@Transactional(rollbackFor = WrongTargetException.class)
 	public void saveCauses(Cause cause) throws DataAccessException, WrongTargetException {
-		if(cause.getTarget()<0) {
+		if(cause.getTarget()<0.01) {
 			throw new WrongTargetException();
 		}else {
 			causeRepository.save(cause);
