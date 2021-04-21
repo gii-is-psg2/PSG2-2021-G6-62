@@ -29,16 +29,22 @@
                 </td>
                 <td valign="top">
                     <table class="table-condensed">
-                        <thead>
-                        <tr>
-                            <th><spring:message code="cause.description" /></th> 
-                            <td><c:out value="${cause.description}"/></td>
-                        </tr>
-                        </thead>
+                    
+                       
+                       <tr>
+                           <th><spring:message code="cause.description" /></th> 
+                           <td><c:out value="${cause.description}"/></td>
+                       </tr>
+                       <td> 
+                            <spring:url value="/donation/{causeId}" var="causeurl"> 
+                                <spring:param name="causeId" value="${cause.id}"/> 
+                            </spring:url> 
+ 							<a href="${fn:escapeXml(causeurl)}"><spring:message code="cause.details" /></a> 
+                        </td> 
                
                     </table>
-                </td>
-            </tr>
+                    </td>       
+            	</tr>
 
         </c:forEach>
     </table>
