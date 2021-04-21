@@ -61,10 +61,14 @@ public class DonationController {
 	public String DonationNew(@Valid Donation donation, BindingResult result,@PathVariable("causeId") int causeId ,Map<String, Object> model) { 
 		if(result.hasErrors()|| donation.getAmount()<=0) { 
 			return "redirect:/donation/"+causeId; 
-		} 
+		}
 		//create donation 
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
 		Cause cause= this.causeService.findCausesById(causeId);  
+		if(this.donationService.cantidadAcumuladaEnCausa(causeId) > cause.getTarget()) {
+			result.rejectValue("amount", "wrong", "No intente introducir una donación sobre una causa cerrada");
+			return "redirect:/donation/"+causeId; 
+		}
 		Donation donRes= this.donationService.creaDonacion(donation, userName, cause); 
 		 
 		//save 
