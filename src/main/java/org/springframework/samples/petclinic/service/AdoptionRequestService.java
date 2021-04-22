@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.AdoptionApplication;
 import org.springframework.samples.petclinic.model.AdoptionRequest;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.repository.AdoptionRequestRepository;
@@ -15,10 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdoptionRequestService {
 
 	private AdoptionRequestRepository adoptionRequestRepository;
+	private AdoptionApplicationService adoptionApplicationService;
 
 	@Autowired
-	public AdoptionRequestService(AdoptionRequestRepository adoptionRequestRepository) {
+	public AdoptionRequestService(AdoptionRequestRepository adoptionRequestRepository,
+			AdoptionApplicationService adoptionApplicationService) {
 		this.adoptionRequestRepository = adoptionRequestRepository;
+		this.adoptionApplicationService = adoptionApplicationService;
 	}		
 
 	@Transactional(readOnly = true)	
@@ -33,6 +37,9 @@ public class AdoptionRequestService {
 	
 	@Transactional
 	public void delete(AdoptionRequest adoptionRequest) {
+		for (AdoptionApplication a : adoptionRequest.getAdoptionApplications()) {
+			adoptionApplicationService.delete(a);
+		}
 		adoptionRequestRepository.delete(adoptionRequest);
 	}
 	
