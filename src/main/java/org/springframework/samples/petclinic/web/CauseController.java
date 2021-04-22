@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Cause;
 import org.springframework.samples.petclinic.service.CauseService;
-import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.samples.petclinic.service.exceptions.WrongTargetException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,20 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CauseController {
 	
 	private CauseService causeService;
-	private UserService userService;
-	
 	
 	@Autowired
-	public CauseController(CauseService causeService,UserService userService) {
+	public CauseController(CauseService causeService) {
 		super();
 		this.causeService = causeService;
-		this.userService = userService;
 	}
 
 
 
 	@GetMapping()
-	public String listPetHotel( Map<String, Object> model) {
+	public String listCauses( Map<String, Object> model) {
 		
 		String vista = "cause/listCauses";
 		List<Cause> causes = this.causeService.findAllCauses();
@@ -44,14 +40,7 @@ public class CauseController {
 	
 	@GetMapping("/new")
 	public String causeNew( Map<String, Object> model) {
-		
-		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		String vista = "redirect:/cause";
-		
-		if(!authority.equals("owner")&&!authority.equals("admin")) {
-			return vista;
-		}
-		
 		vista = "cause/newCause";
 		Cause cause= new Cause();
 		model.put("cause", cause);
@@ -68,7 +57,7 @@ public class CauseController {
 			try {
 				this.causeService.saveCauses(cause);
 			} catch (WrongTargetException e) {
-				result.rejectValue("target", "duplicated", "el valor no puede ser menor a 0.01");
+				result.rejectValue("target", "notValid", "el valor no puede ser menor a 0.01");
 				model.put("errors", result.getAllErrors());
 				return "cause/newCause";
 			}
