@@ -12,8 +12,8 @@
 | Day 4         |    :worried: (Meaning that I feel I have serious difficulties to accomplish the task, or the productivity of my day was awful)           |
 | Day 5         |    :fearful:   (I´m desperate, I need help)        |
 
-El día 1 empieza el 09/04/2021.
 El día 11 se corresponde al 19/04/2021
+El día 14 se corresponde al 22/04/2021
 
 ## Sprint 3
 
@@ -32,7 +32,7 @@ El día 11 se corresponde al 19/04/2021
 | Day 11        | :smile:       | :alien:        | :smile:        | :smile:        |
 | Day 12        | :smile:       | :smile:        |                | :alien:        |
 | Day 13        | :smile:       | :neutral_face: |                | :alien:        |
-| Day 14        |               |                |                |                |
+| Day 14        | :smile:       |                |                |                |
 | Day 15        |               |                |                |                |
 | Day 16        |               |                |                |                |
 | Day 17        |               |                |                |                |
