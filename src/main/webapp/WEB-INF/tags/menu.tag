@@ -43,6 +43,13 @@
 					</petclinic:menuItem>
 				</sec:authorize>
 				
+				<spring:message code="menu.cause" var="causes"/>
+				<petclinic:menuItem active="${name eq 'cause'}" url="/cause"
+					title="${causes}">
+					<span class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span>
+					<span><spring:message code="menu.cause" /></span>
+				</petclinic:menuItem>
+
 				<sec:authorize access="hasAnyAuthority('admin')">
                 <spring:message code="menu.veterinarians" var="veterinarians"/>
 				<petclinic:menuItem active="${name eq 'vets'}" url="/vets" title="veterinarians">
