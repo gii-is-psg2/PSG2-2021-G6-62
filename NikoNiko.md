@@ -12,6 +12,7 @@
 | Day 4         |    :worried: (Meaning that I feel I have serious difficulties to accomplish the task, or the productivity of my day was awful)           |
 | Day 5         |    :fearful:   (I´m desperate, I need help)        |
 
+El día 1 se corresponde al 09/04/2021
 El día 11 se corresponde al 19/04/2021
 El día 14 se corresponde al 22/04/2021
 
