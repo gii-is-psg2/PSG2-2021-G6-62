@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.dao.DataAccessException; 
 import org.springframework.samples.petclinic.model.Cause; 
 import org.springframework.samples.petclinic.model.Donation; 
-import org.springframework.samples.petclinic.model.PetHotel; 
 import org.springframework.samples.petclinic.repository.DonationRepository; 
 import org.springframework.stereotype.Service; 
  
