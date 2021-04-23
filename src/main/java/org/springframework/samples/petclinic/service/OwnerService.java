@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.AdoptionApplication;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
@@ -40,13 +41,16 @@ public class OwnerService {
 	private PetService petService;	
 	private UserService userService;
 	private AuthoritiesService authoritiesService;
+	private AdoptionApplicationService adoptionApplicationService;
 
 	@Autowired
-	public OwnerService(OwnerRepository ownerRepository, UserService userService, PetService petService, AuthoritiesService authoritiesService) {
+	public OwnerService(OwnerRepository ownerRepository, UserService userService, PetService petService, AuthoritiesService authoritiesService
+			, AdoptionApplicationService adoptionApplicationService) {
 		this.ownerRepository = ownerRepository;
 		this.userService = userService;
 		this.petService = petService;
 		this.authoritiesService = authoritiesService;
+		this.adoptionApplicationService = adoptionApplicationService;
 	}	
 	
 	@Transactional(readOnly = true)
@@ -68,6 +72,11 @@ public class OwnerService {
 	public Collection<Owner> findOwnerByLastNameAdmin(String lastName) throws DataAccessException {
 		return ownerRepository.findByLastName(lastName);
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Owner> findOwnerByUserUsername(String username) throws DataAccessException {
+		return ownerRepository.findOwnerByUserUsername(username);
+	}
 
 	@Transactional
 	public void saveOwner(Owner owner) throws DataAccessException {
@@ -79,10 +88,13 @@ public class OwnerService {
 		authoritiesService.saveAuthorities(owner.getUser().getUsername(), "owner");
 	}	
 	
-	@Transactional
 	public void delete(Owner owner) {
 		for (Pet p : owner.getPets()) {
 			petService.delete(p);
+		}
+		for (AdoptionApplication a : owner.getAdoptionApplications()) {
+			if(a != null)
+			adoptionApplicationService.delete(a);
 		}
 		
 		ownerRepository.delete(owner);

@@ -63,5 +63,16 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
 INSERT INTO hotels(id,description,user_name,start_date, end_date, pet_id) 
-VALUES (1, 'necesito que cuideis bien de él porque lo siento deprimido últimamente', 'owner1','2021-03-17', '2022-03-20',2);
+VALUES (1, 'necesito que cuideis bien de él porque lo siento deprimido últimamente', 'owner1','2021-03-17', '2021-03-20',2);
 
+INSERT INTO adoption_request(id,pet_id) VALUES (1, 1);
+
+INSERT INTO adoption_application(adoption_request_id,description,owner_id) VALUES (1,'Necesito esa mascota',2);
+
+INSERT INTO cause(id,organization,description,target) VALUES (1, 'caritasDogs', 'se encarga de dar refugio a perros callejeros y proporcionarles un hogar', 400);
+INSERT INTO cause(id,organization,description,target) VALUES (2, 'pets', 'se encarga de alimentar a perros, gatos y demás animales abandonados', 500);
+INSERT INTO cause(id,organization,description,target) VALUES (3, 'PatasUnidas', 'se encarga de cuidar y medicar a perros abandonados y posteriormente llevarlos a un centro para proporcionarles un hogar', 600);
+ 
+INSERT INTO donations(id,donation_date,amount,user_name, cause_id)VALUES(1,'2013-01-02',30,'owner1',1); 
+INSERT INTO donations(id,donation_date,amount,user_name, cause_id)VALUES(2,'2013-01-03',50,'owner1',1); 
+INSERT INTO donations(id,donation_date,amount,user_name, cause_id)VALUES(3,'2013-01-03',500,'owner1',2);

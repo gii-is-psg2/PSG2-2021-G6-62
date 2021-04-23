@@ -22,14 +22,12 @@
 			<ul class="nav navbar-nav">
 
                 <spring:message code="menu.home" var="home"/>
-				<petclinic:menuItem active="${name eq 'home'}" url="/"
-					title="${home}">
+				<petclinic:menuItem active="${name eq 'home'}" url="/" title="${home}">
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span><spring:message code="menu.home" /></span>
 				</petclinic:menuItem>
 
-				<sec:authorize access="hasAnyAuthority('admin,owner')">
-                    <spring:message code="menu.hotel" var="petHotel"/>
+				<sec:authorize access="hasAnyAuthority('admin,owner')"> <spring:message code="menu.hotel" var="petHotel"/>
                     <petclinic:menuItem active="${name eq 'pethotel'}" url="/pethotel"
                         title="${petHotel}">
                         <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
@@ -37,17 +35,24 @@
                     </petclinic:menuItem>
 				</sec:authorize>
 
-                <spring:message code="menu.findOwners" var="findOwners"/>
-				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
-					title="${findOwners}">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span><spring:message code="menu.findOwners" /></span>
+				<sec:authorize access="hasAnyAuthority('admin,owner')">
+	                <spring:message code="menu.findOwners" var="findOwners"/>
+					<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find" title="${findOwners}">
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						<span><spring:message code="menu.findOwners" /></span>
+					</petclinic:menuItem>
+				</sec:authorize>
+				
+				<spring:message code="menu.cause" var="causes"/>
+				<petclinic:menuItem active="${name eq 'cause'}" url="/cause"
+					title="${causes}">
+					<span class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span>
+					<span><spring:message code="menu.cause" /></span>
 				</petclinic:menuItem>
 
 				<sec:authorize access="hasAnyAuthority('admin')">
                 <spring:message code="menu.veterinarians" var="veterinarians"/>
-				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
-					title="veterinarians">
+				<petclinic:menuItem active="${name eq 'vets'}" url="/vets" title="veterinarians">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span><spring:message code="menu.veterinarians" /></span>
 				</petclinic:menuItem>

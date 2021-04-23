@@ -11,6 +11,7 @@ import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
 import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.samples.petclinic.service.exceptions.WrongPastDateInHotelsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -140,40 +141,45 @@ public class PetHotelController {
 
 	@PostMapping(value = "/save")
 	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result, Map<String, Object> model) {
+		
 		if (result.hasErrors()) {
 			return "hotel/createOrUpdateHotelForm";
 		} else {
 			Object nombre = SecurityContextHolder.getContext().getAuthentication().getName();
 			String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-			
+
 			if(!authority.equals("admin")) {
 				String nombreOwner=petHotel.getUserName();
-				
+
 				if(!nombreOwner.equals(nombre)) {
-					
 					return "redirect:/pethotel/"+nombre;
-					
-				}else {
-					
-				try {
-					
-					this.petHotelService.saveHotelForOwner(petHotel);
-					
-				} catch (WrongPastDateInHotelsException e) {
-					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final y despues de la de actual");
-					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
-					model.put("nombre", petHotel.getUserName());
-					return "hotel/createOrUpdateHotelForm";
-				}
+				} else {
+					try {
+						this.petHotelService.saveHotelForOwner(petHotel);
+					} catch (WrongPastDateInHotelsException e) {
+						result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final y despues de la de actual");
+						result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+						model.put("nombre", petHotel.getUserName());
+						return "hotel/createOrUpdateHotelForm";
+					} catch (OverlappingBookingDatesException e) {
+						result.rejectValue("startDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
+						result.rejectValue("endDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
+						model.put("nombre", petHotel.getUserName());
+						return "hotel/createOrUpdateHotelForm";
+					}
 					return "redirect:/pethotel/" + nombre;
 				}
-			}
-			else {
+			} else {
 				try {
 					this.petHotelService.saveHotel(petHotel);
 				} catch (WrongDatesInHotelsException e) {
 					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final");
 					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+					model.put("nombre", petHotel.getUserName());
+					return "hotel/createOrUpdateHotelForm";
+				} catch (OverlappingBookingDatesException e) {
+					result.rejectValue("startDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
+					result.rejectValue("endDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
 					model.put("nombre", petHotel.getUserName());
 					return "hotel/createOrUpdateHotelForm";
 				}

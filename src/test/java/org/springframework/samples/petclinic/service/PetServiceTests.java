@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.samples.petclinic.model.AdoptionRequest;
 import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -196,6 +197,7 @@ class PetServiceTests {
 		newPet.setName("testName");
 		newPet.setBirthDate(LocalDate.now());
 		newPet.setHotel(new ArrayList<PetHotel>());
+		newPet.setAdoptionRequest(new ArrayList<AdoptionRequest>());
 		
 		newAuthority.setAuthority("admin");
 		newAuthority.setUser(newUser);
@@ -232,6 +234,7 @@ class PetServiceTests {
 		newPet.setName("testName");
 		newPet.setBirthDate(LocalDate.now());
 		newPet.setHotel(new ArrayList<PetHotel>());
+		newPet.setAdoptionRequest(new ArrayList<AdoptionRequest>());
 		
 		newAuthority.setAuthority("admin");
 		newAuthority.setUser(newUser);

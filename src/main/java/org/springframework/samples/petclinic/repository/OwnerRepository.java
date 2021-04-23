@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -54,4 +55,6 @@ public interface OwnerRepository extends CrudRepository<Owner, Integer> {
 	@Modifying
 	@Query("DELETE FROM Owner o WHERE o = ?1")
 	void delete(Owner owner);
+	
+	public List<Owner> findOwnerByUserUsername(String username);
 }
