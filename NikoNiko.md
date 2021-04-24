@@ -9,8 +9,8 @@
 | Day 1         |    :smile: (Estoy trabajando adecuadamente con respecto al esfuerzo que me supone y sin verme afectado por situaciones externas/internas al trabajo) |
 | Day 2         |    :alien: (No he podido trabajar pero no me he visto afectado por situaciones externas/internas al trabajo)           |
 | Day 3         |    :neutral_face:  (He trabajado pero no cómo me gustaría, al verme afectado por situaciones externas/internas al trabajo)          |:fearful:
-| Day 4         |    :worried: (He trabajado y me está suponiendo un mayor esfuerzo el progresar, estoy preocupado por situaciones externas/internas al trabajo)           |
-| Day 5         |    :fearful:   (He trabajado y me cuesta avanzar mucho, mi situación no me deja implicarme en el trabajo por el estrés que este supone o por situaciones externas, estoy desmotivado)        |
+| Day 4         |    :worried: (Me está suponiendo un mayor esfuerzo el progresar, estoy preocupado por situaciones externas/internas al trabajo)           |
+| Day 5         |    :fearful:   (Me cuesta avanzar mucho, mi situación no me deja implicarme en el trabajo por el estrés que este supone o por situaciones externas, estoy desmotivado)        |
 
 El día 1 se corresponde al 09/04/2021
 El día 11 se corresponde al 19/04/2021
