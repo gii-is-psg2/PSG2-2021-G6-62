@@ -30,6 +30,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
 	
+	private static final String OWNER = "owner";
+	private static final String ADMIN = "admin";
+	private static final String VET = "vet";
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
@@ -37,17 +41,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
 				.antMatchers("/users/new").permitAll()
 				.antMatchers("/pets/**").permitAll()
-				.antMatchers("/pethotel/**").hasAnyAuthority("owner","admin")	
-				.antMatchers("/admin/**").hasAnyAuthority("admin")
-				.antMatchers("/owners/**").hasAnyAuthority("owner","admin")				
-				.antMatchers("/adoptions/**").hasAnyAuthority("owner","admin")				
-				.antMatchers("/adoptionApplications/**").hasAnyAuthority("owner","admin")				
-				.antMatchers("/vets/**").hasAnyAuthority("admin")
+				.antMatchers("/pethotel/**").hasAnyAuthority(OWNER,ADMIN)	
+				.antMatchers("/admin/**").hasAnyAuthority(ADMIN)
+				.antMatchers("/owners/**").hasAnyAuthority(OWNER,ADMIN)				
+				.antMatchers("/adoptions/**").hasAnyAuthority(OWNER,ADMIN)				
+				.antMatchers("/adoptionApplications/**").hasAnyAuthority(OWNER,ADMIN)				
+				.antMatchers("/vets/**").hasAnyAuthority(ADMIN)
 				.antMatchers("/cause").permitAll()
-				.antMatchers("/cause/new").hasAnyAuthority("admin","vet","owner")
-				.antMatchers("/cause/save").hasAnyAuthority("admin","vet","owner")
-				.antMatchers("/donation/**/save").hasAnyAuthority("vet","owner")
-				.antMatchers("/donation/**").hasAnyAuthority("admin","vet","owner")
+				.antMatchers("/cause/new").hasAnyAuthority(ADMIN,VET,OWNER)
+				.antMatchers("/cause/save").hasAnyAuthority(ADMIN,VET,OWNER)
+				.antMatchers("/donation/**/save").hasAnyAuthority(VET,OWNER)
+				.antMatchers("/donation/**").hasAnyAuthority(ADMIN,VET,OWNER)
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin()
@@ -81,8 +85,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {	    
-		PasswordEncoder encoder =  NoOpPasswordEncoder.getInstance();
-	    return encoder;
+	    return NoOpPasswordEncoder.getInstance();
 	}
 	
 }

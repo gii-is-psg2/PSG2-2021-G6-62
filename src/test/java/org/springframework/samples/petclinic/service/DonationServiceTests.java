@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class DonationServiceTests {
+class DonationServiceTests {
 
 	@Autowired
 	protected DonationService donationService;
@@ -29,19 +29,19 @@ public class DonationServiceTests {
 	void shouldNotGetDonationsOfCause() {
 		List<Donation> lDonation = this.donationService.getDonationsOfCause(-21);
 		assertThat(lDonation).isNotNull();
-		assertThat(lDonation.size()).isEqualTo(0);
+		assertThat(lDonation.size()).isZero();
 	}
 	
 	@Test
 	void shouldGetCantidadAcumuladaEnCausa() {
 		Double acum = this.donationService.cantidadAcumuladaEnCausa(1);
-		assertThat(acum).isNotEqualTo(0.0);
+		assertThat(acum).isNotZero();
 	}
 	
 	@Test
 	void shouldNotGetCantidadAcumuladaEnCausa() {
 		Double acum = this.donationService.cantidadAcumuladaEnCausa(-211);
-		assertThat(acum).isEqualTo(0.0);
+		assertThat(acum).isZero();
 	}
 	
 	@Test

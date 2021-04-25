@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +24,6 @@ import org.springframework.samples.petclinic.model.AdoptionApplication;
 import org.springframework.samples.petclinic.model.AdoptionRequest;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AdoptionApplicationService;
 import org.springframework.samples.petclinic.service.AdoptionRequestService;
@@ -34,29 +31,21 @@ import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.UserService;
-import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
 import org.springframework.samples.petclinic.web.formatters.OwnerFormatter;
 import org.springframework.samples.petclinic.web.formatters.PetFormatter;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.mvc.method.annotation.RedirectAttributesMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 @WebMvcTest(value = AdoptionController.class,
 includeFilters = @ComponentScan.Filter(value = {PetFormatter.class,OwnerFormatter.class}, type = FilterType.ASSIGNABLE_TYPE),
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
-public class AdoptionControllerTest {
+class AdoptionControllerTest {
 	
-	private static final String TEST_NOMBRE = "spring";
-	private static final String TEST_HACKER = "un_hacker_peligroso";
-	private static final String TEST_USER_ADMIN = "el_admin";
 	private static final String TEST_USER_OWNER = "el_owner";
 	private static final int TEST_PET_ID = 1;
 	private static final int TEST_REQUEST_ID = 1;
-	private static final int TEST_USER_OWNER_2 = 2;
-	
 	@MockBean
 	private PetService petService;
 	
@@ -86,7 +75,6 @@ public class AdoptionControllerTest {
 	private Optional<AdoptionRequest> adoptionRequest;
 	private User otroUser;
 	private Optional<User> otroUser2;
-	private List<Owner> owners;
 	private AdoptionApplication adoptionApplication;
 	private Optional<AdoptionApplication> adoptionApplication2;
 	

@@ -24,6 +24,8 @@ public class DonationController {
 	 
 	private DonationService donationService; 
 	private CauseService causeService; 
+	
+	private static final String REDIRECT_TO_DONATION = "redirect:/donation/";
  
 	public DonationController(DonationService donationService, CauseService causeService) { 
 		super(); 
@@ -34,7 +36,7 @@ public class DonationController {
  
  
 	@GetMapping("/{causeId}") 
-	public String CauseDetails(@PathVariable("causeId") int causeId, Map<String, Object> model) { 
+	public String causeDetails(@PathVariable("causeId") int causeId, Map<String, Object> model) { 
 		String vista= "cause/causeDetails"; 
 		List<Donation> donations= this.donationService.getDonationsOfCause(causeId); 
 		model.put("donations", donations); 
@@ -58,16 +60,16 @@ public class DonationController {
 	} 
 	 
 	@PostMapping("/{causeId}/save") 
-	public String DonationNew(@Valid Donation donation, BindingResult result,@PathVariable("causeId") int causeId ,Map<String, Object> model) { 
+	public String donationNew(@Valid Donation donation, BindingResult result,@PathVariable("causeId") int causeId ,Map<String, Object> model) { 
 		if(result.hasErrors()|| donation.getAmount()<=0) { 
-			return "redirect:/donation/"+causeId; 
+			return REDIRECT_TO_DONATION+causeId; 
 		}
 		//create donation 
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName(); 
 		Cause cause= this.causeService.findCausesById(causeId);  
 		if(this.donationService.cantidadAcumuladaEnCausa(causeId) > cause.getTarget()) {
 			result.rejectValue("amount", "wrong", "No intente introducir una donación sobre una causa cerrada");
-			return "redirect:/donation/"+causeId; 
+			return REDIRECT_TO_DONATION+causeId; 
 		}
 		Donation donRes= this.donationService.creaDonacion(donation, userName, cause); 
 		 
@@ -77,7 +79,7 @@ public class DonationController {
 		Double umbral= target-budgetAchieved; 
 	 
 		this.donationService.saveDonation(donRes,umbral); 
-		return "redirect:/donation/"+causeId; 
+		return REDIRECT_TO_DONATION+causeId; 
 		 
 		 
 		 

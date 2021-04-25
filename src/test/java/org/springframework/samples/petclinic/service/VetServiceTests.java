@@ -37,7 +37,7 @@ class VetServiceTests {
 	@Test
 	void shouldFindSpecialties() {
 		Collection<Specialty> specs = this.vetService.getAllSpecialties();
-		assertThat(specs.size()).isNotEqualTo(0);
+		assertThat(specs.size()).isNotZero();
 	}
 	
 	@Test
@@ -45,25 +45,25 @@ class VetServiceTests {
 		Specialty spec = this.vetService.getAllSpecialties().stream().findFirst().get();
 		
 		Optional<Specialty> spec2 = this.vetService.findSpecialtyByName(spec.getName());
-		assertThat(spec2.isPresent()).isTrue();
+		assertThat(spec2).isPresent();
 	}
 	
 	@Test
 	void shouldNotFindCertainSpecialty() {
 		Optional<Specialty> spec = this.vetService.findSpecialtyByName("Esta especialidad no existe");
-		assertThat(spec.isPresent()).isFalse();
+		assertThat(spec).isNotPresent();
 	}
 	
 	@Test
 	void shouldFindVetById() {
 		Optional<Vet> vet = this.vetService.findById(1);
-		assertThat(vet.isPresent()).isTrue();
+		assertThat(vet).isPresent();
 	}
 	
 	@Test
 	void shouldNotFindVetById() {
-		Optional<Vet> vetFail = this.vetService.findById(9999);
-		assertThat(vetFail.isPresent()).isFalse();
+		Optional<Vet> vetFail = this.vetService.findById(-1);
+		assertThat(vetFail).isEmpty();
 	}
 
 	@Test

@@ -21,6 +21,8 @@ public class CauseController {
 	
 	private CauseService causeService;
 	
+	private static final String TO_NEW_CAUSE = "cause/newCause";
+	
 	@Autowired
 	public CauseController(CauseService causeService) {
 		super();
@@ -40,11 +42,9 @@ public class CauseController {
 	
 	@GetMapping("/new")
 	public String causeNew( Map<String, Object> model) {
-		String vista = "redirect:/cause";
-		vista = "cause/newCause";
 		Cause cause= new Cause();
 		model.put("cause", cause);
-		return vista;
+		return TO_NEW_CAUSE;
 	}
 	
 	@PostMapping("/save")
@@ -52,14 +52,14 @@ public class CauseController {
 		
 		if(result.hasErrors()) {
 			model.put("errors", result.getAllErrors());
-			return "cause/newCause";
+			return TO_NEW_CAUSE;
 		}else {
 			try {
 				this.causeService.saveCauses(cause);
 			} catch (WrongTargetException e) {
 				result.rejectValue("target", "notValid", "el valor no puede ser menor a 0.01");
 				model.put("errors", result.getAllErrors());
-				return "cause/newCause";
+				return TO_NEW_CAUSE;
 			}
 			
 			return "redirect:/cause";

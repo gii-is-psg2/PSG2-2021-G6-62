@@ -29,16 +29,16 @@ class AdoptionApplicationServiceTests {
 	void shouldFindAdoptionApplications() {
 		Collection<AdoptionApplication> adoptionApplications = this.adoptionApplicationService.findAllAdoptionApplications();
 		
-		assertThat(adoptionApplications.isEmpty()).isFalse();
-		assertThat(adoptionApplications.size()).isGreaterThan(0);
+		assertThat(adoptionApplications).isNotEmpty();
+		assertThat(adoptionApplications.size()).isPositive();
 	}
 	
 	@Test
 	void shouldFindAdoptionApplicationByApplicantName() {
 		Collection<AdoptionApplication> adoptionApplications = this.adoptionApplicationService.findAdoptionApplications("owner1");
 		
-		assertThat(adoptionApplications.isEmpty()).isFalse();
-		assertThat(adoptionApplications.size()).isGreaterThan(0);
+		assertThat(adoptionApplications).isNotEmpty();
+		assertThat(adoptionApplications.size()).isPositive();
 	}
 	
 	@Test
