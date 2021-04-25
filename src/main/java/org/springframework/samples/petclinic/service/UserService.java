@@ -57,8 +57,9 @@ public class UserService {
         User usuario = new User();
         try {
               Optional<User> user = findUser(SecurityContextHolder.getContext().getAuthentication().getName());
-              usuario =  user.get();
+              usuario =  user.orElse(null);
           }catch (Exception e) {
+        	  e.printStackTrace();
           }
         return usuario;
     }

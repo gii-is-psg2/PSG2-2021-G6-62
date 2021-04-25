@@ -85,12 +85,12 @@ public class PetService {
 		
 		for (PetHotel p : pet.getHotel()) {
 			if(p != null)
-			petHotelService.delete(p);
+				petHotelService.delete(p);
 		}
 		
 		for (AdoptionRequest a : pet.getAdoptionRequests()) {
 			if(a != null)
-			adoptionRequestService.delete(a);
+				adoptionRequestService.delete(a);
 		}
 		
 		

@@ -32,6 +32,9 @@ public class PetHotelController {
 
 	private PetHotelService petHotelService;
 	private UserService userService;
+	
+	private static final String TOO_MANY_BOOKINGS = "Ya dispones de una o más reservas en este intervalo de tiempo!";
+	private static final String NOMBRE = "nombre";
 
 	@Autowired
 	public PetHotelController(PetHotelService petHotelService, UserService userService) {
@@ -119,7 +122,7 @@ public class PetHotelController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		
 		if(authority.equals("admin")) {
-			List<Pet>pets=this.petHotelService.findPetsByUser(nombre.toString());
+			List<Pet>pets=this.petHotelService.findPetsByUser(nombre);
 			model.put("pets", pets);
 		}else {
 			
@@ -128,14 +131,11 @@ public class PetHotelController {
 			}
 		}
 		
+		PetHotel petHotel = new PetHotel();
+		model.put(NOMBRE, nombre);
+		model.put("petHotel", petHotel);
 
-			PetHotel petHotel = new PetHotel();
-			model.put("nombre", nombre);
-			model.put("petHotel", petHotel);
-
-		String vista = "hotel/createOrUpdateHotelForm";
-
-		return vista;
+		return "hotel/createOrUpdateHotelForm";
 		
 	}
 
@@ -159,12 +159,12 @@ public class PetHotelController {
 					} catch (WrongPastDateInHotelsException e) {
 						result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final y despues de la de actual");
 						result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
-						model.put("nombre", petHotel.getUserName());
+						model.put(NOMBRE, petHotel.getUserName());
 						return "hotel/createOrUpdateHotelForm";
 					} catch (OverlappingBookingDatesException e) {
-						result.rejectValue("startDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
-						result.rejectValue("endDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
-						model.put("nombre", petHotel.getUserName());
+						result.rejectValue("startDate", "duplicated", TOO_MANY_BOOKINGS);
+						result.rejectValue("endDate", "duplicated", TOO_MANY_BOOKINGS);
+						model.put(NOMBRE, petHotel.getUserName());
 						return "hotel/createOrUpdateHotelForm";
 					}
 					return "redirect:/pethotel/" + nombre;
@@ -175,12 +175,12 @@ public class PetHotelController {
 				} catch (WrongDatesInHotelsException e) {
 					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final");
 					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
-					model.put("nombre", petHotel.getUserName());
+					model.put(NOMBRE, petHotel.getUserName());
 					return "hotel/createOrUpdateHotelForm";
 				} catch (OverlappingBookingDatesException e) {
-					result.rejectValue("startDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
-					result.rejectValue("endDate", "duplicated", "Ya dispones de una o más reservas en este intervalo de tiempo!");
-					model.put("nombre", petHotel.getUserName());
+					result.rejectValue("startDate", "duplicated", TOO_MANY_BOOKINGS);
+					result.rejectValue("endDate", "duplicated", TOO_MANY_BOOKINGS);
+					model.put(NOMBRE, petHotel.getUserName());
 					return "hotel/createOrUpdateHotelForm";
 				}
 

@@ -31,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class PetController {
 
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+	private static final String REDIRECT_TO_X_OWNER = "redirect:/owners/{ownerId}";
 
 	private final PetService petService;
 	private final OwnerService ownerService;
@@ -50,16 +51,6 @@ public class PetController {
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
 		return this.ownerService.findOwnerById(ownerId);
 	}
-
-	/*@ModelAttribute("pet")
-	public Pet findPet(@PathVariable("petId") Integer petId) {
-            Pet result=null;
-		if(petId!=null)
-                    result=this.clinicService.findPetById(petId);
-                else
-                    result=new Pet();
-            return result;
-	}*/
 
 	@InitBinder("owner")
 	public void initOwnerBinder(WebDataBinder dataBinder) {
@@ -93,7 +84,7 @@ public class PetController {
 				result.rejectValue("name", "duplicate", "already exists");
 				return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 			}
-			return "redirect:/owners/{ownerId}";
+			return REDIRECT_TO_X_OWNER;
 		}
 	}
 
@@ -119,7 +110,7 @@ public class PetController {
 				result.rejectValue("name", "duplicate", "already exists");
 				return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 			}
-			return "redirect:/owners/{ownerId}";
+			return REDIRECT_TO_X_OWNER;
 		}
 	}
 
@@ -135,7 +126,7 @@ public class PetController {
 			redirectAttributes.addFlashAttribute("message", "Pet not found!");
 		}
 
-		return "redirect:/owners/{ownerId}";
+		return REDIRECT_TO_X_OWNER;
 	}
 
 }

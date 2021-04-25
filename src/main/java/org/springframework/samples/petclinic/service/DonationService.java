@@ -22,7 +22,7 @@ public class DonationService {
 	 
 	public List<Donation> getDonationsOfCause(Integer causeId)throws DataAccessException{ 
 		List<Donation> donations=(List<Donation>) donationRepository.findAll(); 
-		List<Donation> res= new ArrayList<Donation>(); 
+		List<Donation> res= new ArrayList<>(); 
 		for(Donation p: donations) { 
 				if(p.getCause().getId().equals(causeId)) { 
 					res.add(p); 
