@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class CauseServiceTests {
+class CauseServiceTests {
 
 	@Autowired
 	protected CauseService causeService;
@@ -32,12 +32,12 @@ public class CauseServiceTests {
 	void findAllCauses() {
 		List<Cause> cList = this.causeService.findAllCauses();
 		assertThat(cList).isNotNull();
-		assertThat(cList.size()).isNotEqualTo(0);
+		assertThat(cList.size()).isNotZero();
 	}
 	
 	@Test
 	@Transactional
-	public void shouldInsertCause() {
+	void shouldInsertCause() {
 		List<Cause> oldCauses = this.causeService.findAllCauses();
 		int oldCausesNum = oldCauses.size();
 
@@ -60,7 +60,7 @@ public class CauseServiceTests {
 	
 	@Test
 	@Transactional
-	public void shouldNotInsertCause() {
+	void shouldNotInsertCause() {
 		List<Cause> oldCauses = this.causeService.findAllCauses();
 		int oldCausesNum = oldCauses.size();
 

@@ -94,7 +94,7 @@ public class OwnerService {
 		}
 		for (AdoptionApplication a : owner.getAdoptionApplications()) {
 			if(a != null)
-			adoptionApplicationService.delete(a);
+				adoptionApplicationService.delete(a);
 		}
 		
 		ownerRepository.delete(owner);

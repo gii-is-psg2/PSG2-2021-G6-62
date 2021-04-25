@@ -30,6 +30,9 @@ public class OwnerController {
 
 	private final OwnerService ownerService;
 	private UserService userService;
+	
+	private static final String ADMIN = "admin";
+	private static final String REDIRECT = "redirect:/";
 
 	@Autowired
 	public OwnerController(OwnerService ownerService, UserService userService, AuthoritiesService authoritiesService) {
@@ -71,15 +74,14 @@ public class OwnerController {
 
 	@GetMapping(value = "/owners")
 	public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-		// allow parameterless GET request for /owners to return all records
 		if (owner.getLastName() == null) {
 			owner.setLastName(""); // empty string signifies broadest possible search
 		}
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		Collection<Owner> results = new ArrayList<Owner>();
-		// find owners by last name
-		if (authority.equals("admin")) {
+		Collection<Owner> results = new ArrayList<>();
+
+		if (authority.equals(ADMIN)) {
 			 results = this.ownerService.findOwnerByLastNameAdmin(owner.getLastName());
 
 		} else {
@@ -107,11 +109,11 @@ public class OwnerController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		Owner owner = this.ownerService.findOwnerById(ownerId);
 		
-		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			model.addAttribute(owner);
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		} else {
-			return "redirect:/";
+			return REDIRECT;
 		}
 	}
 
@@ -120,7 +122,7 @@ public class OwnerController {
 		
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
-		if(authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if(authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			if (result.hasErrors()) {
 				return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 			}
@@ -130,7 +132,7 @@ public class OwnerController {
 				return "redirect:/owners/{ownerId}";
 			}
 		} else {
-			return "redirect:/";
+			return REDIRECT;
 		}
 	}
 
@@ -144,11 +146,11 @@ public class OwnerController {
 		Owner owner = this.ownerService.findOwnerById(ownerId);
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		ModelAndView mav;
-		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			mav = new ModelAndView("owners/ownerDetails");
 			mav.addObject(owner);
 		} else {
-			mav = new ModelAndView("redirect:/");
+			mav = new ModelAndView(REDIRECT);
 		}
 		return mav;
 	}
@@ -159,7 +161,7 @@ public class OwnerController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
 		if (owner != null) {
-			if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+			if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 				ownerService.delete(owner);
 				redirectAttributes.addFlashAttribute("message", "Owner successfully deleted!");
 			}

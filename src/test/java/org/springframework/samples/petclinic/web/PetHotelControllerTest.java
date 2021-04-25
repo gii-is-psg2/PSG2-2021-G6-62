@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 includeFilters = @ComponentScan.Filter(value = PetFormatter.class, type = FilterType.ASSIGNABLE_TYPE),
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
-public class PetHotelControllerTest {
+class PetHotelControllerTest {
 	
 	private static final String TEST_NOMBRE = "spring";
 	private static final String TEST_HACKER = "un_hacker_peligroso";

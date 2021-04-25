@@ -137,11 +137,6 @@ public class Owner extends Person {
 		this.adoptionApplications = adoptionApplications;
 	}
 
-	/**
-	 * Return the Pet with the given name, or null if none found for this Owner.
-	 * @param name to test
-	 * @return true if pet name is already in use
-	 */
 	public Pet getPet(String name) {
 		return getPet(name, false);
 	}
@@ -157,12 +152,7 @@ public class Owner extends Person {
 		}
 		return null;
 	}
-
-	/**
-	 * Return the Pet with the given name, or null if none found for this Owner.
-	 * @param name to test
-	 * @return true if pet name is already in use
-	 */
+	
 	public Pet getPet(String name, boolean ignoreNew) {
 		name = name.toLowerCase();
 		for (Pet pet : getPetsInternal()) {
@@ -187,16 +177,4 @@ public class Owner extends Person {
 		return firstName+" "+lastName;
 	}
 	
-
-//	@Override
-//	public String toString() {
-//		return new ToStringCreator(this)
-//
-//				.append("id", this.getId()).append("new", this.isNew()).append("lastName", this.getLastName())
-//				.append("firstName", this.getFirstName()).append("address", this.address).append("city", this.city)
-//				.append("telephone", this.telephone).toString();
-//	}
-	
-	
-
 }

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class PetHotelServiceTest {
+class PetHotelServiceTest {
 
 	@Autowired
 	protected PetHotelService petHotelService;
@@ -31,13 +31,13 @@ public class PetHotelServiceTest {
 	@Test
 	void shouldDoBookingsOfPersonsWithName() {
 		Collection<PetHotel> petHotels = petHotelService.bookingsOfPersonsWithUserName("owner1");
-		assertThat(petHotels.size()).isEqualTo(1);
+		assertThat(petHotels).hasSize(1);
 	}
 	
 	@Test
 	void shouldDoBookingsOfPersonsWithUnknownName() {
 		Collection<PetHotel> petHotels2test = petHotelService.bookingsOfPersonsWithUserName("SAUBS7ns22bs2");
-		assertThat(petHotels2test.isEmpty()).isTrue();
+		assertThat(petHotels2test).isEmpty();
 	}
 
 	@Test

@@ -37,18 +37,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Michael Isvy
- */
 @Controller
 public class VisitController {
 
 	private final PetService petService;
 	private final OwnerService ownerService;
 	private final UserService userService;
+	
+	private static final String ADMIN = "admin";
 
 	@Autowired
 	public VisitController(PetService petService, OwnerService ownerService, UserService userService) {
@@ -62,15 +58,6 @@ public class VisitController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-//	@ModelAttribute("visit")
-//	public Visit loadPetWithVisit(@PathVariable("petId") int petId) {
-//		Pet pet = this.petService.findPetById(petId);
-//		Visit visit = new Visit();
-//		pet.addVisit(visit);
-//		return visit;
-//	}
-
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
 	public String initNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId, Map<String, Object> model) {
 		Owner owner = this.ownerService.findOwnerById(ownerId);
@@ -78,7 +65,7 @@ public class VisitController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		String vista = "redirect:/";
 
-		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			Visit visit = new Visit();
 			pet.addVisit(visit);
 			model.put("visit", visit);
@@ -87,7 +74,6 @@ public class VisitController {
 		return vista;
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@PathVariable("petId") int petId, @PathVariable("ownerId") int ownerId,
 			@Valid Visit visit, BindingResult result) {
@@ -96,7 +82,7 @@ public class VisitController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		String vista = "redirect:/";
 
-		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			if (result.hasErrors()) {
 				vista = "pets/createOrUpdateVisitForm";
 			} else {
@@ -107,12 +93,6 @@ public class VisitController {
 		}
 		return vista;
 	}
-
-//	@GetMapping(value = "/owners/*/pets/{petId}/visits")
-//	public String showVisits(@PathVariable int petId, Map<String, Object> model) {
-//		model.put("visits", this.petService.findPetById(petId).getVisits());
-//		return "visitList";
-//	}
 	
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/visits/{visitId}/delete")
 	public String deleteVisit(@PathVariable("visitId") int visitId, @PathVariable("ownerId") int ownerId, ModelMap model, RedirectAttributes redirectAttributes) {
@@ -120,7 +100,7 @@ public class VisitController {
 		Owner owner = this.ownerService.findOwnerById(ownerId);
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
-		if (authority.equals("admin") || owner.getUser().equals(this.userService.getUserSession())) {
+		if (authority.equals(ADMIN) || owner.getUser().equals(this.userService.getUserSession())) {
 			if (visit.isPresent()) {
 				petService.deleteVisit(visit.get());
 				redirectAttributes.addFlashAttribute("message", "Visit successfully deleted!");

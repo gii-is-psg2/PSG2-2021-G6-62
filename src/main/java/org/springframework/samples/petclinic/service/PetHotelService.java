@@ -37,7 +37,7 @@ public class PetHotelService {
 	
 	@Transactional(readOnly = true)
 	public PetHotel findHotelById(int id) throws DataAccessException {
-		return petHotelRepository.findById(id).get();
+		return petHotelRepository.findById(id).orElse(null);
 	}
 	
 	@Transactional(rollbackFor = WrongDatesInHotelsException.class)
@@ -72,7 +72,7 @@ public class PetHotelService {
 	@Transactional 
 	public List<PetHotel> bookingsOfPersonsWithUserName(String name)throws DataAccessException {
 		List<PetHotel> reservas=petHotelRepository.encontrarReservas();
-		List<PetHotel> res= new ArrayList<PetHotel>();
+		List<PetHotel> res= new ArrayList<>();
 		for(PetHotel p: reservas) {
 			if(p.getUserName().equals(name)) {
 				res.add(p);
@@ -85,7 +85,7 @@ public class PetHotelService {
 
 	@Transactional
 	public List<Pet> findPetsByUser(String username) throws DataAccessException {
-		return (List<Pet>) petRepository.findPetsByUser(username);
+		return petRepository.findPetsByUser(username);
 	}
 	
 	@Transactional

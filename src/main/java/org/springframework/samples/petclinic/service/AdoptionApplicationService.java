@@ -27,7 +27,7 @@ public class AdoptionApplicationService {
 	
 	@Transactional(readOnly = true)	
 	public List<AdoptionApplication> findAdoptionApplications(String username) throws DataAccessException {
-		return (List<AdoptionApplication>) adoptionApplicationRepository.getAdoptionApplicationByUserUsername(username);
+		return adoptionApplicationRepository.getAdoptionApplicationByUserUsername(username);
 	}
 	
 	@Transactional(readOnly = true)	

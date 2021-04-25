@@ -39,6 +39,12 @@ public class AdoptionController {
 	private final UserService userService;
 	private final OwnerService ownerService;
 	private final AdoptionApplicationService adoptionApplicationService;
+	
+	private static final String MESSAGE = "message";
+	private static final String OWNER = "owner";
+	private static final String ONLY_OWNERS_SHOULD_ADOPT = "Only owners can adopt pets!";
+	
+	private static final String REDIRECT_TO_ADOPTIONS = "redirect:/adoptions";
 
 	@Autowired
 	public AdoptionController(PetService petService, AdoptionRequestService adoptionRequestService, UserService userService,
@@ -82,7 +88,7 @@ public class AdoptionController {
 		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
 
 		Optional<Pet> pet = this.petService.findById(petId);
-		String vista = "redirect:/adoptions";
+		String vista = REDIRECT_TO_ADOPTIONS;
 		
 		if (pet.isPresent() && pet.get().getOwner().getUser().equals(currentUser) && !this.adoptionRequestService.findPetsInAdoption().contains(pet.get())) {
 			AdoptionRequest adoptionRequest = new AdoptionRequest();
@@ -101,9 +107,9 @@ public class AdoptionController {
 		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
 		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
 
-		String vista = "redirect:/adoptions";
+		String vista = REDIRECT_TO_ADOPTIONS;
 		
-		if (authority.equals("owner")) {
+		if (authority.equals(OWNER)) {
 			if (adoptionRequest.isPresent() && !adoptionRequest.get().getPet().getOwner().getUser().equals(currentUser)) {
 				if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner().getUser())
 						.collect(Collectors.toSet()).contains(currentUser)) {
@@ -112,14 +118,14 @@ public class AdoptionController {
 				vista = "adoptions/applyForAdoptionForm";
 				} else {
 					if (Locale.getDefault().getDisplayLanguage().equals("español")) {
-						redirectAttributes.addFlashAttribute("message", "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
+						redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
 					} else {
-						redirectAttributes.addFlashAttribute("message", "You can't apply for the adoption of the same pet twice or more!");
+						redirectAttributes.addFlashAttribute(MESSAGE , "You can't apply for the adoption of the same pet twice or more!");
 					}
 				}
 			}
 		} else {
-			redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
+			redirectAttributes.addFlashAttribute(MESSAGE , ONLY_OWNERS_SHOULD_ADOPT);
 		}
 		
 		return vista;
@@ -134,9 +140,9 @@ public class AdoptionController {
 		Owner selectedOwner = adoptionApplication.getOwner();
 		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
 		
-		String vista = "redirect:/adoptions";
+		String vista = REDIRECT_TO_ADOPTIONS;
 		
-		if (authority.equals("owner")) {
+		if (authority.equals(OWNER)) {
 			if (result.hasErrors()) {
 				model.put("adoptionApplication", adoptionApplication);
 				model.put("adoptionRequest", adoptionRequest.get());
@@ -149,15 +155,15 @@ public class AdoptionController {
 						this.adoptionApplicationService.save(adoptionApplication);
 					} else {
 						if (Locale.getDefault().getDisplayLanguage().equals("español")) {
-							redirectAttributes.addFlashAttribute("message", "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
+							redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
 						} else {
-							redirectAttributes.addFlashAttribute("message", "You can't apply for the adoption of the same pet twice or more!");
+							redirectAttributes.addFlashAttribute(MESSAGE, "You can't apply for the adoption of the same pet twice or more!");
 						}
 					}
 				}
 			}
 		} else {
-			redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
+			redirectAttributes.addFlashAttribute(MESSAGE, ONLY_OWNERS_SHOULD_ADOPT);
 		}
 		return vista;
 	}
@@ -177,7 +183,7 @@ public class AdoptionController {
 		 Pet petInAdoption = adoptionApplication.get().getAdoptionRequest().getPet();
 		 String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
-		 if (authority.equals("owner")) {
+		 if (authority.equals(OWNER)) {
 			 if (adoptionApplication.isPresent() && petInAdoption.getOwner().getUser().equals(currentUser)) {
 				 Owner newOwner = adoptionApplication.get().getOwner();
 				 Owner oldOwner = adoptionApplication.get().getAdoptionRequest().getPet().getOwner();
@@ -188,7 +194,7 @@ public class AdoptionController {
 				 this.adoptionRequestService.delete(adoptionApplication.get().getAdoptionRequest());
 			 }
 		 } else {
-			 redirectAttributes.addFlashAttribute("message", "Only owners can adopt pets!");
+			 redirectAttributes.addFlashAttribute(MESSAGE, ONLY_OWNERS_SHOULD_ADOPT);
 		 }
 		 return "adoptions/adoptionApplicationsList";
 	 }
@@ -201,14 +207,14 @@ public class AdoptionController {
 		 if (adoptionRequest.isPresent()) {
 			 if (adoptionRequest.get().getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
 				 this.adoptionRequestService.delete(adoptionRequest.get());
-				 redirectAttributes.addFlashAttribute("message", "Adoption request successfully deleted!");
+				 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption request successfully deleted!");
 			 } else {
-				 redirectAttributes.addFlashAttribute("message", "This adoption request is not yours!");
+				 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption request is not yours!");
 			 }
 		 } else {
-			 redirectAttributes.addFlashAttribute("message", "Adoption request not found!");
+			 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption request not found!");
 		 }
-		 return "redirect:/adoptions";
+		 return REDIRECT_TO_ADOPTIONS;
 	 }
 
 	 
@@ -220,12 +226,12 @@ public class AdoptionController {
 		 if (adoptionApplication.isPresent()) {
 			 if (adoptionApplication.get().getAdoptionRequest().getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
 				 this.adoptionApplicationService.delete(adoptionApplication.get());
-				 redirectAttributes.addFlashAttribute("message", "Adoption application successfully deleted!");
+				 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption application successfully deleted!");
 			 } else {
-				 redirectAttributes.addFlashAttribute("message", "This adoption application is not for you!");
+				 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption application is not for you!");
 			 }
 		 } else {
-			 redirectAttributes.addFlashAttribute("message", "Adoption application not found!");
+			 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption application not found!");
 		 }
 		 return "redirect:/adoptionApplications";
 	 }
