@@ -22,7 +22,7 @@ class DonationServiceTests {
 	void shouldGetDonationsOfCause() {
 		List<Donation> lDonation = this.donationService.getDonationsOfCause(1);
 		assertThat(lDonation).isNotNull();
-		assertThat(lDonation.size()).isNotEqualTo(0);
+		assertThat(lDonation.size()).isNotZero();
 	}
 
 	@Test

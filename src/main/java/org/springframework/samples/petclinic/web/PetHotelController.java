@@ -30,10 +30,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/pethotel")
 public class PetHotelController {
 
+	private static final String END_DATE = "endDate";
+	private static final String START_DATE = "startDate";
+	private static final String PET_HOTEL = "petHotel";
+	private static final String ADMIN = "admin";
+	private static final String REDIRECT_PETHOTEL = "redirect:/pethotel/";
+	private static final String DUPLICATED = "duplicated";
 	private PetHotelService petHotelService;
 	private UserService userService;
 	
 	private static final String TOO_MANY_BOOKINGS = "Ya dispones de una o más reservas en este intervalo de tiempo!";
+	private static final String CREATE_OR_UPDATE_FORM_VIEW = "hotel/createOrUpdateHotelForm";
+	private static final String LIST_PET_HOTEL_VIEW = "hotel/listPetHotel";
 	private static final String NOMBRE = "nombre";
 
 	@Autowired
@@ -57,14 +65,14 @@ public class PetHotelController {
 	public String listPetHotel( Map<String, Object> model) {
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		String vista = "hotel/listPetHotel";
+		String vista = LIST_PET_HOTEL_VIEW;
 		
-		if(!authority.equals("admin")) {
-			return "redirect:/pethotel/" + nombreOwner;
+		if(!authority.equals(ADMIN)) {
+			return REDIRECT_PETHOTEL + nombreOwner;
 		}
 		
 		List<PetHotel> petHotel = this.petHotelService.findAllBookings();
-		model.put("petHotel", petHotel);
+		model.put(PET_HOTEL, petHotel);
 		
 		return vista;
 	}
@@ -74,17 +82,17 @@ public class PetHotelController {
 		
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		String vista = "hotel/listPetHotel";
+		String vista = "hotel/userSelect";
 		
-		if(!authority.equals("admin")) {
-			return "redirect:/pethotel/" + nombreOwner;
+		if(!authority.equals(ADMIN)) {
+			return REDIRECT_PETHOTEL + nombreOwner;
 		}
 		
-		vista= "hotel/userSelect";
+		
 		List<Owner> owners = petHotelService.findAllOwners(); 
 		model.put("owners", owners);
 		
-		model.put("petHotel", new PetHotel());
+		model.put(PET_HOTEL, new PetHotel());
 		return vista;
 	}
 	
@@ -94,11 +102,11 @@ public class PetHotelController {
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		
-		if(!authority.equals("admin")) {
-			return "redirect:/pethotel/" + nombreOwner;
+		if(!authority.equals(ADMIN)) {
+			return REDIRECT_PETHOTEL + nombreOwner;
 		}
 		
-		return "redirect:/pethotel/"+ userName +"/new";
+		return REDIRECT_PETHOTEL+ userName +"/new";
 	}
 	
 	@GetMapping("/{nombre}")
@@ -106,12 +114,12 @@ public class PetHotelController {
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		if(!nombreOwner.equals(nombre)) {
-			return "redirect:/pethotel/"+nombreOwner;
+			return REDIRECT_PETHOTEL+nombreOwner;
 		}
 		
-		String vista= "hotel/listPetHotel";
+		String vista= LIST_PET_HOTEL_VIEW;
 		List<PetHotel> petHotel = this.petHotelService.bookingsOfPersonsWithUserName(nombre);
-		model.put("petHotel", petHotel);
+		model.put(PET_HOTEL, petHotel);
 		return vista;
 	}
 
@@ -121,21 +129,21 @@ public class PetHotelController {
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		
-		if(authority.equals("admin")) {
+		if(authority.equals(ADMIN)) {
 			List<Pet>pets=this.petHotelService.findPetsByUser(nombre);
 			model.put("pets", pets);
 		}else {
 			
 			if(!nombreOwner.equals(nombre)) {
-				return "redirect:/pethotel/"+nombreOwner+"/new";
+				return REDIRECT_PETHOTEL+nombreOwner+"/new";
 			}
 		}
 		
 		PetHotel petHotel = new PetHotel();
 		model.put(NOMBRE, nombre);
-		model.put("petHotel", petHotel);
+		model.put(PET_HOTEL, petHotel);
 
-		return "hotel/createOrUpdateHotelForm";
+		return CREATE_OR_UPDATE_FORM_VIEW;
 		
 	}
 
@@ -143,45 +151,45 @@ public class PetHotelController {
 	public String processCreationForm(@Valid PetHotel petHotel, BindingResult result, Map<String, Object> model) {
 		
 		if (result.hasErrors()) {
-			return "hotel/createOrUpdateHotelForm";
+			return CREATE_OR_UPDATE_FORM_VIEW;
 		} else {
 			Object nombre = SecurityContextHolder.getContext().getAuthentication().getName();
 			String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
-			if(!authority.equals("admin")) {
+			if(!authority.equals(ADMIN)) {
 				String nombreOwner=petHotel.getUserName();
 
 				if(!nombreOwner.equals(nombre)) {
-					return "redirect:/pethotel/"+nombre;
+					return REDIRECT_PETHOTEL+nombre;
 				} else {
 					try {
 						this.petHotelService.saveHotelForOwner(petHotel);
 					} catch (WrongPastDateInHotelsException e) {
-						result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final y despues de la de actual");
-						result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+						result.rejectValue(START_DATE, DUPLICATED, "la fecha de inicio debe ser antes de la final y despues de la de actual");
+						result.rejectValue(END_DATE, DUPLICATED, "la fecha final debe ser después de la de inicio");
 						model.put(NOMBRE, petHotel.getUserName());
-						return "hotel/createOrUpdateHotelForm";
+						return CREATE_OR_UPDATE_FORM_VIEW;
 					} catch (OverlappingBookingDatesException e) {
-						result.rejectValue("startDate", "duplicated", TOO_MANY_BOOKINGS);
-						result.rejectValue("endDate", "duplicated", TOO_MANY_BOOKINGS);
+						result.rejectValue(START_DATE, DUPLICATED, TOO_MANY_BOOKINGS);
+						result.rejectValue(END_DATE, DUPLICATED, TOO_MANY_BOOKINGS);
 						model.put(NOMBRE, petHotel.getUserName());
-						return "hotel/createOrUpdateHotelForm";
+						return CREATE_OR_UPDATE_FORM_VIEW;
 					}
-					return "redirect:/pethotel/" + nombre;
+					return REDIRECT_PETHOTEL + nombre;
 				}
 			} else {
 				try {
 					this.petHotelService.saveHotel(petHotel);
 				} catch (WrongDatesInHotelsException e) {
-					result.rejectValue("startDate", "duplicated", "la fecha de inicio debe ser antes de la final");
-					result.rejectValue("endDate", "duplicated", "la fecha final debe ser después de la de inicio");
+					result.rejectValue(START_DATE, DUPLICATED, "la fecha de inicio debe ser antes de la final");
+					result.rejectValue(END_DATE, DUPLICATED, "la fecha final debe ser después de la de inicio");
 					model.put(NOMBRE, petHotel.getUserName());
-					return "hotel/createOrUpdateHotelForm";
+					return CREATE_OR_UPDATE_FORM_VIEW;
 				} catch (OverlappingBookingDatesException e) {
-					result.rejectValue("startDate", "duplicated", TOO_MANY_BOOKINGS);
-					result.rejectValue("endDate", "duplicated", TOO_MANY_BOOKINGS);
+					result.rejectValue(START_DATE, DUPLICATED, TOO_MANY_BOOKINGS);
+					result.rejectValue(END_DATE, DUPLICATED, TOO_MANY_BOOKINGS);
 					model.put(NOMBRE, petHotel.getUserName());
-					return "hotel/createOrUpdateHotelForm";
+					return CREATE_OR_UPDATE_FORM_VIEW;
 				}
 
 				return "redirect:/pethotel";

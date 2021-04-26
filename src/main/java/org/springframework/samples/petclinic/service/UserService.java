@@ -54,14 +54,7 @@ public class UserService {
 
 	@Transactional
 	public User getUserSession() {
-        User usuario = new User();
-        try {
-              Optional<User> user = findUser(SecurityContextHolder.getContext().getAuthentication().getName());
-              usuario =  user.orElse(null);
-          }catch (Exception e) {
-        	  e.printStackTrace();
-          }
-        return usuario;
+		return findUser(SecurityContextHolder.getContext().getAuthentication().getName()).orElse(new User());
     }
 
 	@Transactional
