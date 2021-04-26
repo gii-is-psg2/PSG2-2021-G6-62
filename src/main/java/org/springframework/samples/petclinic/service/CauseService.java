@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.service;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Cause;
@@ -22,7 +23,7 @@ public class CauseService {
 	
 	@Transactional(readOnly = true)
 	public Cause findCausesById(int id) throws DataAccessException {
-		return causeRepository.findById(id).get();
+		return causeRepository.findById(id).orElseThrow(NoSuchElementException::new);
 	}
 	
 	@Transactional(rollbackFor = WrongTargetException.class)

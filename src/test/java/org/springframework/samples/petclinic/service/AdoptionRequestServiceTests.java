@@ -27,8 +27,8 @@ class AdoptionRequestServiceTests {
 	void shouldFindAdoptionRequests() {
 		Collection<AdoptionRequest> adoptionRequests = this.adoptionRequestService.findAdoptionRequests();
 		
-		assertThat(adoptionRequests.isEmpty()).isFalse();
-		assertThat(adoptionRequests.size()).isGreaterThan(0);
+		assertThat(adoptionRequests).isNotEmpty();
+		assertThat(adoptionRequests.size()).isPositive();
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ class AdoptionRequestServiceTests {
 		Collection<Pet> pets = this.adoptionRequestService.findPetsInAdoption();
 		
 		assertThat(pets).isNotNull();
-		assertThat(pets.size()).isGreaterThan(0);
+		assertThat(pets.size()).isPositive();
 	}
 	
 

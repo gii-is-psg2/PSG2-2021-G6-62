@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.web;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,7 @@ public class AdoptionController {
 	@GetMapping(value = "/adoptions/{petId}/new")
 	public String requestAdoptionForPet(@PathVariable("petId") int petId, Map<String, Object> model) {
 
-		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
+		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).orElseThrow(NoSuchElementException::new);
 
 		Optional<Pet> pet = this.petService.findById(petId);
 		String vista = REDIRECT_TO_ADOPTIONS;
@@ -105,7 +106,7 @@ public class AdoptionController {
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
-		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).get();
+		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).orElseThrow(NoSuchElementException::new);
 
 		String vista = REDIRECT_TO_ADOPTIONS;
 		
@@ -145,11 +146,11 @@ public class AdoptionController {
 		if (authority.equals(OWNER)) {
 			if (result.hasErrors()) {
 				model.put("adoptionApplication", adoptionApplication);
-				model.put("adoptionRequest", adoptionRequest.get());
+				model.put("adoptionRequest", adoptionRequest.orElseThrow(NoSuchElementException::new));
 				vista = "adoptions/applyForAdoptionForm";
 			} else {
 				if (adoptionRequest.isPresent()) {
-					if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner())
+					if (!adoptionRequest.get().getAdoptionApplications().stream().map(AdoptionApplication::getOwner)
 							.collect(Collectors.toSet()).contains(selectedOwner)) {
 						adoptionApplication.setAdoptionRequest(adoptionRequest.get());
 						this.adoptionApplicationService.save(adoptionApplication);
@@ -180,7 +181,7 @@ public class AdoptionController {
 				RedirectAttributes redirectAttributes) {
 		 Optional<AdoptionApplication> adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId);
 		 User currentUser = this.userService.getUserSession();
-		 Pet petInAdoption = adoptionApplication.get().getAdoptionRequest().getPet();
+		 Pet petInAdoption = adoptionApplication.orElseThrow(NoSuchElementException::new).getAdoptionRequest().getPet();
 		 String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
 		 if (authority.equals(OWNER)) {

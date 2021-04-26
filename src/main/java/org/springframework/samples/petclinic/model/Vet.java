@@ -54,10 +54,6 @@ public class Vet extends Person {
 		return this.specialties;
 	}
 
-	public void setSpecialtiesInternal(Set<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-
 	public List<Specialty> getSpecialties() {
 		List<Specialty> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
 		PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
