@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -79,7 +78,7 @@ public class OwnerController {
 		}
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		Collection<Owner> results = new ArrayList<>();
+		Collection<Owner> results;
 
 		if (authority.equals(ADMIN)) {
 			 results = this.ownerService.findOwnerByLastNameAdmin(owner.getLastName());

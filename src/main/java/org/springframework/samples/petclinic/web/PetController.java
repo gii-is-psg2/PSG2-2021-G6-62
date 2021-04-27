@@ -30,6 +30,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 
+	private static final String OWNER = "owner";
+	private static final String MESSAGE = "message";
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 	private static final String REDIRECT_TO_X_OWNER = "redirect:/owners/{ownerId}";
 
@@ -47,12 +49,12 @@ public class PetController {
 		return this.petService.findPetTypes();
 	}
 
-	@ModelAttribute("owner")
+	@ModelAttribute(OWNER)
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
 		return this.ownerService.findOwnerById(ownerId);
 	}
 
-	@InitBinder("owner")
+	@InitBinder(OWNER)
 	public void initOwnerBinder(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
@@ -103,7 +105,7 @@ public class PetController {
 		}
 		else {
 			Pet petToUpdate=this.petService.findPetById(petId);
-			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                                                  
+			BeanUtils.copyProperties(pet, petToUpdate, "id",OWNER,"visits");                                                                                  
 			try {                    
 				this.petService.savePet(petToUpdate);                    
 			} catch (DuplicatedPetNameException ex) {
@@ -117,13 +119,13 @@ public class PetController {
 	@GetMapping(path = "/pets/{petId}/delete")
 	public String eliminarPet(@PathVariable("petId") int petId, ModelMap model, RedirectAttributes redirectAttributes) {
 		Optional<Pet> pet = this.petService.findById(petId);
-		if (pet.isPresent() && model.getAttribute("owner") != null) {
+		if (pet.isPresent() && model.getAttribute(OWNER) != null) {
 			petService.delete(pet.get());
-			redirectAttributes.addFlashAttribute("message", "Pet successfully deleted!");
-		} else if (model.getAttribute("owner") == null) {
-			redirectAttributes.addFlashAttribute("message", "Owner not found!");
+			redirectAttributes.addFlashAttribute(MESSAGE, "Pet successfully deleted!");
+		} else if (model.getAttribute(OWNER) == null) {
+			redirectAttributes.addFlashAttribute(MESSAGE, "Owner not found!");
 		} else {
-			redirectAttributes.addFlashAttribute("message", "Pet not found!");
+			redirectAttributes.addFlashAttribute(MESSAGE, "Pet not found!");
 		}
 
 		return REDIRECT_TO_X_OWNER;

@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -26,6 +27,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class VetController {
 
+	private static final String REDIRECT_VETS = "redirect:/vets";
+	private static final String VETS_VETS_EDIT = "vets/vetsEdit";
+	private static final String MESSAGE = "message";
 	private final VetService vetService;
 
 	@Autowired
@@ -65,39 +69,39 @@ public class VetController {
 	@GetMapping(path="/vets/new")
 	public String nuevoVetGet(ModelMap model) {	
 		model.addAttribute("vet", new Vet());
-		return "vets/vetsEdit";
+		return VETS_VETS_EDIT;
 	}
 	
 	@PostMapping(path="/vets/new")
 	public String nuevoVetPost(@Valid Vet vet, BindingResult results, ModelMap model, RedirectAttributes redirectAttributes) {	
 		if (results.hasErrors()) {
 			model.addAttribute("errors", results.getAllErrors());
-			return "vets/vetsEdit";
+			return VETS_VETS_EDIT;
 		} else {
 			this.vetService.save(vet);
-			redirectAttributes.addFlashAttribute("message","Vet created succesfully!");
+			redirectAttributes.addFlashAttribute(MESSAGE,"Vet created succesfully!");
 		}
 		
-		return "redirect:/vets";
+		return REDIRECT_VETS;
 	}
 	
 	@GetMapping(path="/vets/{vetId}/edit")
 	public String editarVet(@PathVariable("vetId") int vetId, ModelMap model) {
 		Optional<Vet> vet = this.vetService.findById(vetId);
-		model.put("vet", vet.get());
-		return "vets/vetsEdit";
+		model.put("vet", vet.orElseThrow(NoSuchElementException::new));
+		return VETS_VETS_EDIT;
 	}
 
 	@PostMapping(path="/vets/{vetId}/edit")
 	public String editarVetPost(@PathVariable("vetId") int vetId, @Valid Vet vet, BindingResult result, ModelMap model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
-			return "vets/vetsEdit";
+			return VETS_VETS_EDIT;
 		} else {
 			vet.setId(vetId);
 			model.put("vet", vet);
 			this.vetService.save(vet);
-			redirectAttributes.addFlashAttribute("message", "Vet successfully updated!");
-			return "redirect:/vets";
+			redirectAttributes.addFlashAttribute(MESSAGE, "Vet successfully updated!");
+			return REDIRECT_VETS;
 		}
 	}
 	
@@ -107,12 +111,12 @@ public class VetController {
 		Optional<Vet> vet = this.vetService.findById(vetId);
 		if (vet.isPresent()) {
 			vetService.delete(vet.get());
-			redirectAttributes.addFlashAttribute("message", "Vet successfully deleted!");
+			redirectAttributes.addFlashAttribute(MESSAGE, "Vet successfully deleted!");
 		} else {
-			redirectAttributes.addFlashAttribute("message", "Vet not found!");
+			redirectAttributes.addFlashAttribute(MESSAGE, "Vet not found!");
 		}
 
-		return "redirect:/vets";
+		return REDIRECT_VETS;
 	}
 
 }
