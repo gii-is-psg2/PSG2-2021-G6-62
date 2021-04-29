@@ -41,7 +41,7 @@ El día 14 se corresponde al 22/04/2021
 | Day 18        | :worried:     | :alien:        |                | :smile:        |
 | Day 19        | :smile:       | :worried:      |                | :alien:        |
 | Day 20        |               | :fearful:      |                | :smile:        |
-| Day 21        |               | :smile:        |                |                |
+| Day 21        |               | :smile:        |                | :smile:        |
 | Day 22        |               | :neutral_face: |                |                |
 | Day 23        |               |                |                |                |
 | Day 24        |               |                |                |                |
