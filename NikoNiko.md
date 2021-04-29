@@ -36,13 +36,13 @@ El día 14 se corresponde al 22/04/2021
 | Day 13        | :smile:       | :neutral_face: | :smile:        | :alien:        |
 | Day 14        | :smile:       | :smile:        | :alien:        | :smile:        |
 | Day 15        | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 16        | :neutral_face:|                |                | :alien:        |
-| Day 17        | :neutral_face:|                |                | :alien:        |
-| Day 18        | :worried:     |                |                | :smile:        |
-| Day 19        | :smile:       |                |                | :alien:        |
-| Day 20        |               |                |                | :smile:        |
-| Day 21        |               |                |                |                |
-| Day 22        |               |                |                |                |
+| Day 16        | :neutral_face:| :neutral_face: |                | :alien:        |
+| Day 17        | :neutral_face:| :alien:        |                | :alien:        |
+| Day 18        | :worried:     | :alien:        |                | :smile:        |
+| Day 19        | :smile:       | :worried:      |                | :alien:        |
+| Day 20        |               | :fearful:      |                | :smile:        |
+| Day 21        |               | :smile:        |                |                |
+| Day 22        |               | :neutral_face: |                |                |
 | Day 23        |               |                |                |                |
 | Day 24        |               |                |                |                |
 
