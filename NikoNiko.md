@@ -41,10 +41,10 @@ El día 14 se corresponde al 22/04/2021
 | Day 18        | :worried:     | :alien:        | :smile:        | :smile:        |
 | Day 19        | :worried:     | :worried:      | :fearful:      | :alien:        |
 | Day 20        | :worried:     | :fearful:      | :fearful:      | :smile:        |
-| Day 21        | :smile:       | :smile:        |  :smile:       | :smile:        |
-| Day 22        |               | :neutral_face: |                |                |
-| Day 23        |               |                |                |                |
-| Day 24        |               |                |                |                |
+| Day 21        | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 22        |               | :neutral_face: | :smile:        | :smile:        |
+| Day 23        |               |                | :smile:        | :smile:        |
+| Day 24        |               |                | :alien:        | :alien:        |
 
 
 ### Nota
