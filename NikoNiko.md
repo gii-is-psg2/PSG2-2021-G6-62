@@ -16,6 +16,8 @@
 El día 1 se corresponde al 09/04/2021
 El día 11 se corresponde al 19/04/2021
 El día 14 se corresponde al 22/04/2021
+El día 20 se corresponde al 28/04/2021
+El día 23 se corresponde al 1/05/2021
 
 ## Sprint 3
 
@@ -42,9 +44,8 @@ El día 14 se corresponde al 22/04/2021
 | Day 19        | :worried:     | :worried:      | :fearful:      | :alien:        |
 | Day 20        | :worried:     | :fearful:      | :fearful:      | :smile:        |
 | Day 21        | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 22        |               | :neutral_face: | :smile:        | :smile:        |
-| Day 23        |               |                | :smile:        | :smile:        |
-| Day 24        |               |                | :alien:        | :alien:        |
+| Day 22        | :smile:       | :neutral_face: | :smile:        | :smile:        |
+| Day 23        | :smile:       | :smile:        | :smile:        | :smile:        |
 
 
 ### Nota
