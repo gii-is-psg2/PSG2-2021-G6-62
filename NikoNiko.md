@@ -13,11 +13,41 @@
 | Day 5         |    :fearful:   (Me cuesta avanzar mucho, mi situación no me deja implicarme en el trabajo por el estrés que este supone o por situaciones externas, estoy desmotivado)        |
 | Day 6         |    :ambulance:   (Necesito un descanso o una reducción de trabajo... no puedo avanzar en estas condiciones)        |
 
+El día 1 se corresponde al 07/05/2021
+
+## Sprint 4
+
+| Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
+| ------------- | ------------- | -------------  | -------------  | -------------  |
+| Day 1         | :smile:       |                |                |                |
+| Day 2         |               |                |                |                |
+| Day 3         |               |                |                |                |
+| Day 4         |               |                |                |                |
+| Day 5         |               |                |                |                |
+| Day 6         |               |                |                |                |
+| Day 7         |               |                |                |                |
+| Day 8         |               |                |                |                |
+| Day 9         |               |                |                |                |
+| Day 10        |               |                |                |                |
+| Day 11        |               |                |                |                |
+| Day 12        |               |                |                |                |
+| Day 13        |               |                |                |                |
+| Day 14        |               |                |                |                |
+| Day 15        |               |                |                |                |
+| Day 16        |               |                |                |                |
+| Day 17        |               |                |                |                |
+| Day 18        |               |                |                |                |
+| Day 19        |               |                |                |                |
+| Day 20        |               |                |                |                |
+| Day 21        |               |                |                |                |
+| Day 22        |               |                |                |                |
+| Day 23        |               |                |                |                |
+
+
+
+
+
 El día 1 se corresponde al 09/04/2021
-El día 11 se corresponde al 19/04/2021
-El día 14 se corresponde al 22/04/2021
-El día 20 se corresponde al 28/04/2021
-El día 23 se corresponde al 1/05/2021
 
 ## Sprint 3
 
