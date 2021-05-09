@@ -20,8 +20,8 @@ El día 1 se corresponde al 07/05/2021
 | Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
 | Day 1         | :smile:       | :smile:        |                | :smile:        |
-| Day 2         |               |                |                |                |
-| Day 3         |               |                |                |                |
+| Day 2         |               |                |                | :smile:        |
+| Day 3         |               |                |                | :smile:        |
 | Day 4         |               |                |                |                |
 | Day 5         |               |                |                |                |
 | Day 6         |               |                |                |                |
