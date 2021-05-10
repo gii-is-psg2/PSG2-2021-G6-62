@@ -66,15 +66,16 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
-		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
+		pet.setOwner(owner6);
 
 		try {
+			this.ownerService.saveOwner(owner6);
 			this.petService.savePet(pet);
+			owner6.addPet(pet);
+			assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		this.ownerService.saveOwner(owner6);
 
 		owner6 = this.ownerService.findOwnerById(6);
 		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
@@ -92,6 +93,9 @@ class PetServiceTests {
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
 		owner6.addPet(pet);
+		
+		this.ownerService.saveOwner(owner6);
+		
 		try {
 			petService.savePet(pet);		
 		} catch (DuplicatedPetNameException e) {
@@ -105,6 +109,7 @@ class PetServiceTests {
 		anotherPetWithTheSameName.setBirthDate(LocalDate.now().minusWeeks(2));
 		Assertions.assertThrows(DuplicatedPetNameException.class, () ->{
 			owner6.addPet(anotherPetWithTheSameName);
+			this.ownerService.saveOwner(owner6);
 			petService.savePet(anotherPetWithTheSameName);
 		});		
 	}
@@ -140,6 +145,8 @@ class PetServiceTests {
 		anotherPet.setBirthDate(LocalDate.now().minusWeeks(2));
 		owner6.addPet(anotherPet);
 
+		this.ownerService.saveOwner(owner6);
+		
 		try {
 			petService.savePet(pet);
 			petService.savePet(anotherPet);
@@ -213,8 +220,8 @@ class PetServiceTests {
 		newOwner.setUser(newUser);
 		newOwner.addPet(newPet);
 
-		this.petService.savePet(newPet);
 		this.ownerService.saveOwner(newOwner);
+		this.petService.savePet(newPet);
 		this.petService.delete(newPet);
 		List<Pet> allPetsAfterInsertAndDelete = this.petService.findAll();
 
