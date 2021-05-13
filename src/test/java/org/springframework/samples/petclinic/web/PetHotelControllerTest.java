@@ -24,9 +24,9 @@ import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.repository.PetHotelRepository;
 import org.springframework.samples.petclinic.service.PetHotelService;
 import org.springframework.samples.petclinic.service.UserService;
-import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
 import org.springframework.samples.petclinic.web.formatters.PetFormatter;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -45,6 +45,9 @@ class PetHotelControllerTest {
 	
 	@MockBean
 	private PetHotelService petHotelService;
+	
+	@MockBean
+	private PetHotelRepository petHotelRepository;
 	
 	@MockBean
 	private UserService userService;
@@ -75,8 +78,7 @@ class PetHotelControllerTest {
 		user.setUsername("spring");
 		owner.setUser(user);
 	
-		given(this.petHotelService.bookingsOfPersonsWithUserName(TEST_NOMBRE))
-		.willReturn(new ArrayList<PetHotel>());
+		given(this.petHotelService.bookingsOfPersonsWithUserName(TEST_NOMBRE)).willReturn(new ArrayList<PetHotel>());
 		given(this.petHotelService.findAllPets()).willReturn(Lists.newArrayList(pet));
 
 		given(pet.getOwner()).willReturn(owner);
@@ -178,19 +180,19 @@ class PetHotelControllerTest {
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
 			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/pethotel/" + TEST_NOMBRE));
+			.andExpect(view().name("redirect:/pethotel/"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessPetHotelCreationFormNonExistentPet() throws Exception {
+		user.setUsername(TEST_USER_OWNER);
+		given(this.userService.getUserSession()).willReturn(user);
+		
 		mockMvc.perform(post("/pethotel/save")
 				.with(csrf())
 				.param("userName", "spring")
-				.param("description", "Es muy calladito")
-				.param("pet", "Mascota inexistente")
-				.param("startDate","2020/01/01")
-				.param("endDate", "2020/01/02")
+				.param("description", "")
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
 			.andExpect(status().isOk())
@@ -199,39 +201,68 @@ class PetHotelControllerTest {
 	
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessPetHotelCreationFormOverlappingDatesOwner() throws Exception {
+	void testProcessPetHotelCreationFormValidatorErrorEndDate() throws Exception {
 		user.setUsername(TEST_USER_OWNER);
 		given(this.userService.getUserSession()).willReturn(user);
-		Mockito.doThrow(OverlappingBookingDatesException.class).when(this.petHotelService).saveHotelForOwner(Mockito.any());
+		
 		mockMvc.perform(post("/pethotel/save")
 				.with(csrf())
 				.param("description", "Es muy calladito")
 				.param("pet", "Pipas_G")
 				.param("userName", "spring")
 				.param("startDate","2021/11/01")
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
+
+	//	testProcessPetHotelCreationFormValidatorErrorNotAdminStartDateBeforeNow()
+		
+		mockMvc.perform(post("/pethotel/save")
+				.with(csrf())
+				.param("description", "Es muy calladito")
+				.param("pet", "Pipas_G")
+				.param("userName", "spring")
+				.param("startDate","2000/11/01")
 				.param("endDate", "2021/11/02")
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
-			.andExpect(status().is2xxSuccessful())
+			.andExpect(status().isOk())
+			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
+	
+	// testProcessPetHotelCreationFormValidatorErrorStartDateAfterEndDate()
+		
+		user.setUsername(TEST_USER_OWNER);
+		given(this.userService.getUserSession()).willReturn(user);
+		mockMvc.perform(post("/pethotel/save")
+				.with(csrf())
+				.param("description", "Es muy calladito")
+				.param("pet", "Pipas_G")
+				.param("userName", "spring")
+				.param("startDate","2099/11/01")
+				.param("endDate", "2021/11/02")
+				.param("firstName", "testFirstName")
+				.param("lastName", "testLastName"))
+			.andExpect(status().isOk())
 			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessPetHotelCreationFormOverlappingDatesAdmin() throws Exception {
-		user.setUsername(TEST_USER_ADMIN);
+	void testProcessPetHotelCreationFormValidatorErrorPetNull() throws Exception {
+		user.setUsername(TEST_USER_OWNER);
 		given(this.userService.getUserSession()).willReturn(user);
-		Mockito.doThrow(OverlappingBookingDatesException.class).when(this.petHotelService).saveHotel(Mockito.any());
+		given(petHotel.getPet()).willReturn(null);
+		
 		mockMvc.perform(post("/pethotel/save")
 				.with(csrf())
 				.param("description", "Es muy calladito")
-				.param("pet", "Pipas_G")
 				.param("userName", "spring")
 				.param("startDate","2021/11/01")
 				.param("endDate", "2021/11/02")
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
-			.andExpect(status().is2xxSuccessful())
+			.andExpect(status().isOk())
 			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
 	}
 	
@@ -247,8 +278,8 @@ class PetHotelControllerTest {
 				.param("userName", "spring")
 				.param("description", "Es muy calladito")
 				.param("pet", "Pipas_G")
-				.param("startDate","2020/01/01")
-				.param("endDate", "2020/01/02")
+				.param("startDate","2022/01/01")
+				.param("endDate", "2022/01/02")
 				.param("firstName", "testFirstName")
 				.param("lastName", "testLastName"))
 			.andExpect(status().is3xxRedirection())

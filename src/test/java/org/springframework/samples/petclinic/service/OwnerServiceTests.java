@@ -33,11 +33,15 @@ class OwnerServiceTests {
 	
 	@Test
 	void shouldFindOwnersByLastName() {
-		Collection<Owner> owners = this.ownerService.findOwnerByLastNameAdmin("Davis");
+		List<Owner> owners = (List<Owner>) this.ownerService.findOwnerByLastNameAdmin("Davis");
 		assertThat(owners).hasSize(2);
+		Owner owner = owners.get(0);
+		assertThat(owner.getPet("Basil")).isNotNull();
+		assertThat(owner.getPet("test")).isNull();
+		assertThat(owner.toString()).hasToString("Betty Davis");
 
-		owners = this.ownerService.findOwnerByLastNameAdmin("Daviss");
-		assertThat(owners).isEmpty();;
+		owners = (List<Owner>) this.ownerService.findOwnerByLastNameAdmin("Daviss");
+		assertThat(owners).isEmpty();
 	}
 
 	@Test

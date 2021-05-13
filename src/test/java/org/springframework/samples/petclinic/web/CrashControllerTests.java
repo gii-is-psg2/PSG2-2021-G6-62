@@ -1,27 +1,32 @@
 package org.springframework.samples.petclinic.web;
 
-/**
- * Test class for {@link CrashController}
- *
- * @author Colin But
- */
-//Waiting https://github.com/spring-projects/spring-boot/issues/5574
-/*@WebMvcTest(CrashController.class)
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+@WebMvcTest(value = CrashController.class,
+excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
+excludeAutoConfiguration= SecurityConfiguration.class)
 class CrashControllerTests {
 
 	@Autowired
-	private CrashController crashController;
-
-	
-	@Autowired
 	private MockMvc mockMvc;
 	
-
-	@Test
-	void testTriggerException() throws Exception {
-		mockMvc.perform(get("/oups")).andExpect(view().name("exception"))
-				.andExpect(model().attributeExists("exception")).andExpect(forwardedUrl("exception"))
+	@WithMockUser(value = "spring")
+    @Test
+	void testProcessCreationFormSuccess() throws Exception {
+		
+		mockMvc.perform(get("/oups"))
 				.andExpect(status().isOk());
 	}
 
-}*/
+}

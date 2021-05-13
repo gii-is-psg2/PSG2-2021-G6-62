@@ -1,5 +1,9 @@
 package org.springframework.samples.petclinic.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +14,6 @@ import org.springframework.samples.petclinic.model.Cause;
 import org.springframework.samples.petclinic.service.exceptions.WrongTargetException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))

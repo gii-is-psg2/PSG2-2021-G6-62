@@ -1,9 +1,11 @@
 package org.springframework.samples.petclinic.web;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -46,6 +48,8 @@ class AdoptionControllerTest {
 	private static final String TEST_USER_OWNER = "el_owner";
 	private static final int TEST_PET_ID = 1;
 	private static final int TEST_REQUEST_ID = 1;
+	private static final int TEST_APPLICATION_ID = 1;
+	
 	@MockBean
 	private PetService petService;
 	
@@ -68,16 +72,12 @@ class AdoptionControllerTest {
 	private MockMvc mockMvc;
 	
 	private User user;
-	private Optional<Pet> pet;
+	private Pet pet;
 	private Owner owner;
 	private Owner owner2;
-	private Optional<User> user2;
 	private Optional<AdoptionRequest> adoptionRequest;
 	private User otroUser;
-	private Optional<User> otroUser2;
 	private AdoptionApplication adoptionApplication;
-	private Optional<AdoptionApplication> adoptionApplication2;
-	
 	
 	@BeforeEach
 	void setup() {
@@ -87,6 +87,7 @@ class AdoptionControllerTest {
 		otroUser.setUsername("otra_persona");
 		
 		owner = new Owner();
+		owner.setId(11);
 		owner.setUser(user);
 		
 		owner2 = new Owner();
@@ -97,39 +98,37 @@ class AdoptionControllerTest {
 		owners.add(owner);
 		owners.add(owner2);
 		
-		Pet optional = new Pet();
-		optional.setId(TEST_PET_ID);
-		optional.setOwner(owner);
-		
+		pet = new Pet();
+		pet.setId(TEST_PET_ID);
+		pet.setOwner(owner);
+
 		AdoptionRequest optionalAdoptionRequest = new AdoptionRequest();
 		optionalAdoptionRequest.setAdoptionApplication(new ArrayList<AdoptionApplication>());
 		optionalAdoptionRequest.setId(TEST_REQUEST_ID);
-		optionalAdoptionRequest.setPet(optional);
+		optionalAdoptionRequest.setPet(pet);
 		
 		adoptionApplication = new AdoptionApplication();
-		adoptionApplication.setId(1);
+		adoptionApplication.setId(TEST_APPLICATION_ID);
 		adoptionApplication.setAdoptionRequest(optionalAdoptionRequest);
+		adoptionApplication.setOwner(owner);
 		
-		adoptionApplication2 = Optional.of(adoptionApplication);
-		pet = Optional.of(optional);
-		user2 = Optional.of(user);
 		adoptionRequest = Optional.of(optionalAdoptionRequest);
-		otroUser2 = Optional.of(otroUser);
 		
 		given(this.adoptionRequestService.findPetsInAdoption()).willReturn(new ArrayList<Pet>());
 		given(this.userService.getUserSession()).willReturn(user);
 		given(this.ownerService.findOwnerByUserUsername(this.userService.getUserSession().getUsername())).willReturn(new ArrayList<Owner>());
 		given(this.adoptionRequestService.findAdoptionRequests()).willReturn(new ArrayList<AdoptionRequest>());
-		given(this.petService.findById(TEST_PET_ID)).willReturn(pet);
-		given(this.userService.findUser(TEST_USER_OWNER)).willReturn(user2);
-		given(this.userService.findUser("otra_persona")).willReturn(otroUser2);
+		given(this.petService.findById(TEST_PET_ID)).willReturn(Optional.of(pet));
+		given(this.userService.findUser(TEST_USER_OWNER)).willReturn(Optional.of(user));
+		given(this.userService.findUser("otra_persona")).willReturn(Optional.of(otroUser));
 		given(this.userService.findAuthoritiesByUsername(TEST_USER_OWNER)).willReturn("owner");
 		given(this.userService.findAuthoritiesByUsername("otra_persona")).willReturn("owner");
 		given(this.adoptionRequestService.findAdoptionRequestById(TEST_REQUEST_ID)).willReturn(adoptionRequest);
 		given(this.adoptionRequestService.findById(TEST_REQUEST_ID)).willReturn(adoptionRequest);
 		given(this.petHotelService.findAllOwners()).willReturn(owners);
     	given(this.adoptionApplicationService.findAdoptionApplications(user.getUsername())).willReturn(new ArrayList<AdoptionApplication>());
-    	given(this.adoptionApplicationService.findById(1)).willReturn(adoptionApplication2);
+    	given(this.adoptionApplicationService.findById(TEST_REQUEST_ID)).willReturn(Optional.of(adoptionApplication));
+    	given(this.adoptionApplicationService.findById(TEST_APPLICATION_ID)).willReturn(Optional.of(adoptionApplication));
 	}
 	
     @WithMockUser(value = "el_owner")
@@ -179,6 +178,20 @@ class AdoptionControllerTest {
 				.andExpect(view().name("adoptions/applyForAdoptionForm"));
 	}	
     
+//    @WithMockUser(value = "otra_persona")
+//	@Test
+//	void testApplyForAdoptionPost() throws Exception {
+//		given(this.userService.getUserSession()).willReturn(user);
+//    	given(this.ownerService.findOwnerById(11)).willReturn(owner);
+//
+//		mockMvc.perform(post("/adoptions/{adoptionRequestId}/apply", TEST_REQUEST_ID)
+//				.with(csrf())
+//				.param("description", "holaaaaaaa")
+//				.param("owner", "11"))
+//				.andExpect(status().isOk())
+//				.andExpect(view().name("redirect:/adoptions"));
+//	}
+    
     @WithMockUser(value = "otra_persona")
 	@Test
 	void testApplyForAdoptionPostDifferentOwnerError() throws Exception {
@@ -189,6 +202,43 @@ class AdoptionControllerTest {
 				.param("description", "holaaaaaaa"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("adoptions/applyForAdoptionForm"));
+	}
+    
+    @WithMockUser(value = "otra_persona")
+	@Test
+	void testApplyForAdoptionPostDescriptionError() throws Exception {
+		given(this.userService.getUserSession()).willReturn(otroUser);
+		this.adoptionApplication.setDescription(null);
+		
+		mockMvc.perform(post("/adoptions/{adoptionRequestId}/apply", TEST_REQUEST_ID)
+				.with(csrf()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("adoptions/applyForAdoptionForm"));
+
+		mockMvc.perform(post("/adoptions/{adoptionRequestId}/apply", TEST_REQUEST_ID)
+				.with(csrf())
+				.param("description", "  "))
+				.andExpect(status().isOk())
+				.andExpect(view().name("adoptions/applyForAdoptionForm"));
+	}
+    
+    @WithMockUser(value = "el_owner")
+	@Test
+	void testAdoptSameOwner() throws Exception {
+		mockMvc.perform(get("/adoptions/{adoptionRequestId}/adopt", TEST_REQUEST_ID))
+				.andExpect(status().isOk())
+				.andExpect(view().name("adoptions/adoptionApplicationsList"));
+	}	
+    
+    @WithMockUser(value = "otra_persona")
+	@Test
+	void testAdoptDifferentOwner() throws Exception {
+		given(this.userService.getUserSession()).willReturn(otroUser);
+		
+		mockMvc.perform(get("/adoptions/{adoptionRequestId}/adopt", TEST_REQUEST_ID))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(flash().attribute("message", is("No eres el dueño de esta mascota!")))
+				.andExpect(view().name("redirect:/adoptions"));
 	}	
     
     @WithMockUser(value = "otra_persona")
@@ -196,7 +246,7 @@ class AdoptionControllerTest {
 	void testDeleteAdoptionApplicationError() throws Exception {
 		given(this.userService.getUserSession()).willReturn(otroUser);
 		
-		mockMvc.perform(get("/adoptionApplications/{adoptionApplicationId}/delete", 1))
+		mockMvc.perform(get("/adoptionApplications/{adoptionApplicationId}/delete", TEST_APPLICATION_ID))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/adoptionApplications"));
 	}	
@@ -204,7 +254,7 @@ class AdoptionControllerTest {
     @WithMockUser(value = "el_owner")
 	@Test
 	void testDeleteAdoptionApplication() throws Exception {
-		mockMvc.perform(get("/adoptionApplications/{adoptionApplicationId}/delete", 1))
+		mockMvc.perform(get("/adoptionApplications/{adoptionApplicationId}/delete", TEST_APPLICATION_ID))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/adoptionApplications"));
 	}	
@@ -214,7 +264,7 @@ class AdoptionControllerTest {
 	void testDeleteAdoptionRequestError() throws Exception {
 		given(this.userService.getUserSession()).willReturn(otroUser);
 		
-		mockMvc.perform(get("/adoptions/{adoptionRequestId}/delete", 1))
+		mockMvc.perform(get("/adoptions/{adoptionRequestId}/delete", TEST_APPLICATION_ID))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/adoptions"));
 	}	
@@ -222,7 +272,7 @@ class AdoptionControllerTest {
     @WithMockUser(value = "el_owner")
 	@Test
 	void testDeleteAdoptionRequest() throws Exception {
-		mockMvc.perform(get("/adoptions/{adoptionRequestId}/delete", 1))
+		mockMvc.perform(get("/adoptions/{adoptionRequestId}/delete", TEST_APPLICATION_ID))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/adoptions"));
 	}	

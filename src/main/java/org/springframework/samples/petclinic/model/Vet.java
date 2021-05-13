@@ -68,9 +68,4 @@ public class Vet extends Person {
 		getSpecialtiesInternal().add(specialty);
 	}
 
-	public void setSpecialties(Set<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-
-	
 }
