@@ -16,8 +16,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
-import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
-import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +48,7 @@ class PetHotelServiceTest {
 
 	@Test
 	@Transactional
-	void shouldSaveBooking() throws OverlappingBookingDatesException {
+	void shouldSaveBooking() {
 		PetHotel booking = new PetHotel();
 		Pet pet = this.petService.findPetById(1);
 

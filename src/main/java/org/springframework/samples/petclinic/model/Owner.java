@@ -169,12 +169,6 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return  firstName+ " " + lastName;
+		return  firstName + " " + lastName;
 	}
-	
-	
-	public String getFullName(String firstName, String lastName) {
-		return firstName+" "+lastName;
-	}
-	
 }

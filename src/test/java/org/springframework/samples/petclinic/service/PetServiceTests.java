@@ -268,8 +268,7 @@ class PetServiceTests {
 	void shouldAlsoDeleteOwnerPets() throws DataAccessException {
 		int oldPets = this.petService.findAll().size();
 
-		Owner oldOwner = this.ownerService.findAll().stream()
-				.filter(x -> x.getPets().size() > 0).findFirst().get();
+		Owner oldOwner = this.ownerService.findAll().stream().filter(x -> x.getPets().size() > 0).findFirst().get();
 		Pet oldPet = oldOwner.getPets().stream().findFirst().get();
 		
 		this.petService.delete(oldPet);

@@ -36,14 +36,14 @@ public class PetHotelController {
 	private static final String LIST_PET_HOTEL_VIEW = "hotel/listPetHotel";
 	private static final String NOMBRE = "nombre";
 	
-	private PetHotelService petHotelService;
 	private PetHotelRepository petHotelRepository;
+	private PetHotelService petHotelService;
 	private UserService userService;
 
 	@Autowired
-	public PetHotelController(PetHotelService petHotelService, UserService userService, PetHotelRepository petHotelRepository) {
-		this.petHotelService = petHotelService;
+	public PetHotelController(UserService userService, PetHotelService petHotelService, PetHotelRepository petHotelRepository) {
 		this.userService = userService;
+		this.petHotelService = petHotelService;
 		this.petHotelRepository = petHotelRepository;
 	}
 
@@ -67,7 +67,6 @@ public class PetHotelController {
 	public String listPetHotel(Map<String, Object> model) {
 		Object nombreOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		String vista = LIST_PET_HOTEL_VIEW;
 		
 		if(!authority.equals(ADMIN)) {
 			return REDIRECT_PETHOTEL + nombreOwner;
@@ -76,7 +75,7 @@ public class PetHotelController {
 		List<PetHotel> petHotel = this.petHotelService.findAllBookings();
 		model.put(PET_HOTEL, petHotel);
 		
-		return vista;
+		return LIST_PET_HOTEL_VIEW;
 	}
 	
 	@GetMapping("/selectUser")
@@ -132,7 +131,7 @@ public class PetHotelController {
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 		
 		if(authority.equals(ADMIN)) {
-			List<Pet>pets = this.petHotelService.findPetsByUser(nombre);
+			List<Pet> pets = this.petHotelService.findPetsByUser(nombre);
 			model.put("pets", pets);
 		} else if (!nombreOwner.equals(nombre)) {
 			return REDIRECT_PETHOTEL + nombreOwner + "/new";

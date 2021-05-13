@@ -9,19 +9,20 @@ import org.springframework.format.Formatter;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.PetHotelService;
 
-public class OwnerFormatter implements Formatter<Owner>{
-	private final PetHotelService peService;
+public class OwnerFormatter implements Formatter<Owner> {
 	
 	@Autowired
+	private final PetHotelService petHotelService;
+	
 	public OwnerFormatter(PetHotelService petHotelService) {
-		this.peService = petHotelService;
+		this.petHotelService = petHotelService;
 	}
 	
 	@Override
 	public Owner parse(String text, Locale locale) throws ParseException {
-		Collection<Owner> findOwners = this.peService.findAllOwners();
+		Collection<Owner> findOwners = this.petHotelService.findAllOwners();
 		for (Owner o : findOwners) {
-			if ((o.getFirstName()+ " " + o.getLastName()).equals(text)) {
+			if ((o.getFirstName() + " " + o.getLastName()).equals(text)) {
 				return o;
 			}
 		}
