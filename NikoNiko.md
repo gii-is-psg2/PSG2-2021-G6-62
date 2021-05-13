@@ -23,10 +23,10 @@ El día 6 se corresponde al 12/05/2021
 | Day 1         | :smile:       | :smile:        |                | :smile:        |
 | Day 2         | :alien:       | :alien:        |                | :smile:        |
 | Day 3         | :alien:       | :neutral_face: |                | :smile:        |
-| Day 4         | :alien:       | :fearful:      |                |                |
-| Day 5         | :alien:       |                |                |                |
-| Day 6         | :smile:       |                |                |                |
-| Day 7         |               |                |                |                |
+| Day 4         | :alien:       | :fearful:      |                | :smile:        |
+| Day 5         | :alien:       |                |                | :smile:        |
+| Day 6         | :smile:       |                |                | :alien:        |
+| Day 7         |               |                |                | :smile:        |
 | Day 8         |               |                |                |                |
 | Day 9         |               |                |                |                |
 | Day 10        |               |                |                |                |
