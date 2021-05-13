@@ -20,13 +20,13 @@ El día 6 se corresponde al 12/05/2021
 
 | Day           | felescgon     | nicolasdeory   | Jotaeme55      | MaToSan24      |
 | ------------- | ------------- | -------------  | -------------  | -------------  |
-| Day 1         | :smile:       | :smile:        |                | :smile:        |
-| Day 2         | :alien:       | :alien:        |                | :smile:        |
-| Day 3         | :alien:       | :neutral_face: |                | :smile:        |
-| Day 4         | :alien:       | :fearful:      |                | :smile:        |
-| Day 5         | :alien:       | :fearful:      |                | :smile:        |
-| Day 6         | :smile:       | :neutral_face: |                | :alien:        |
-| Day 7         |               | :smile:        |                | :smile:        |
+| Day 1         | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 2         | :alien:       | :alien:        | :alien:        | :smile:        |
+| Day 3         | :alien:       | :neutral_face: | :smile:        | :smile:        |
+| Day 4         | :alien:       | :fearful:      | :smile:        | :smile:        |
+| Day 5         | :alien:       | :fearful:      | :alien:        | :smile:        |
+| Day 6         | :smile:       | :neutral_face: | :alien:        | :alien:        |
+| Day 7         |               | :smile:        | :smile:        | :smile:        |
 | Day 8         |               |                |                |                |
 | Day 9         |               |                |                |                |
 | Day 10        |               |                |                |                |
