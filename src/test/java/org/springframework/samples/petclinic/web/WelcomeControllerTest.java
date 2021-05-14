@@ -23,9 +23,7 @@ class WelcomeControllerTest {
 	
 	@WithMockUser(value = "spring")
 	@Test
-	void testNewUserGet() throws Exception {
-//    	given(SecurityContextHolder.getContext().getAuthentication().getName()).willReturn();
-    	
+	void testNewUserGet() throws Exception { 	
 		mockMvc.perform(get("/welcome"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("welcome"));

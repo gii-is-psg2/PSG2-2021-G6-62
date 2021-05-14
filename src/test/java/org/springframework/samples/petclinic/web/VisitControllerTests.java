@@ -119,18 +119,6 @@ class VisitControllerTests {
 				.andExpect(model().attributeHasErrors("visit")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateVisitForm"));
 	}
-
-// Metodo comentado en el controlador porque no se usa
-	
-//	@WithMockUser(value = "spring")
-//        @Test
-//	void testShowVisits() throws Exception {
-//		user.setUsername(TEST_USER_ADMIN);
-//		given(this.userService.getUserSession()).willReturn(user);
-//		
-//		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/visits", TEST_OWNER_ID, TEST_PET_ID)).andExpect(status().isOk())
-//				.andExpect(model().attributeExists("visits")).andExpect(view().name("visitList"));
-//	}
 	
 	@WithMockUser(value = "spring")
 	@Test

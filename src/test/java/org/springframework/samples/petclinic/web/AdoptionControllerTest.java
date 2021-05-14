@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -178,20 +179,6 @@ class AdoptionControllerTest {
 				.andExpect(view().name("adoptions/applyForAdoptionForm"));
 	}	
     
-//    @WithMockUser(value = "otra_persona")
-//	@Test
-//	void testApplyForAdoptionPost() throws Exception {
-//		given(this.userService.getUserSession()).willReturn(user);
-//    	given(this.ownerService.findOwnerById(11)).willReturn(owner);
-//
-//		mockMvc.perform(post("/adoptions/{adoptionRequestId}/apply", TEST_REQUEST_ID)
-//				.with(csrf())
-//				.param("description", "holaaaaaaa")
-//				.param("owner", "11"))
-//				.andExpect(status().isOk())
-//				.andExpect(view().name("redirect:/adoptions"));
-//	}
-    
     @WithMockUser(value = "otra_persona")
 	@Test
 	void testApplyForAdoptionPostDifferentOwnerError() throws Exception {
@@ -235,10 +222,17 @@ class AdoptionControllerTest {
 	void testAdoptDifferentOwner() throws Exception {
 		given(this.userService.getUserSession()).willReturn(otroUser);
 		
-		mockMvc.perform(get("/adoptions/{adoptionRequestId}/adopt", TEST_REQUEST_ID))
+		if (Locale.getDefault().getDisplayLanguage().equals("español")) {
+			mockMvc.perform(get("/adoptions/{adoptionRequestId}/adopt", TEST_REQUEST_ID))
+					.andExpect(status().is3xxRedirection())
+					.andExpect(flash().attribute("message", is("No eres el dueño de esta mascota!")))
+					.andExpect(view().name("redirect:/adoptions"));
+		} else {
+			mockMvc.perform(get("/adoptions/{adoptionRequestId}/adopt", TEST_REQUEST_ID))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(flash().attribute("message", is("No eres el dueño de esta mascota!")))
+				.andExpect(flash().attribute("message", is("This pet is not yours!")))
 				.andExpect(view().name("redirect:/adoptions"));
+		}
 	}	
     
     @WithMockUser(value = "otra_persona")

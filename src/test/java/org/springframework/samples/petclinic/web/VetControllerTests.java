@@ -160,8 +160,6 @@ class VetControllerTests {
 			.andExpect(model().attributeHasErrors("vet"))
 			.andExpect(model().attributeHasFieldErrors("vet", "firstName"))
 			.andExpect(view().name("vets/vetsEdit"));
-			
-		//OJO, REVISALO FELIPE
 	}
 
 	@WithMockUser(value = "spring")
