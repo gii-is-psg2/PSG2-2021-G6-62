@@ -27,7 +27,7 @@ El día 6 se corresponde al 12/05/2021
 | Day 5         | :alien:       | :fearful:      | :alien:        | :smile:        |
 | Day 6         | :smile:       | :neutral_face: | :alien:        | :alien:        |
 | Day 7         |               | :smile:        | :smile:        | :smile:        |
-| Day 8         |               | :worried:      |                | :smile:        |
+| Day 8         |               | :worried:      | :smile:        | :smile:        |
 | Day 9         |               |                |                |                |
 | Day 10        |               |                |                |                |
 | Day 11        |               |                |                |                |
