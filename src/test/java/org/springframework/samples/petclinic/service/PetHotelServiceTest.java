@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetHotel;
-import org.springframework.samples.petclinic.service.exceptions.OverlappingBookingDatesException;
-import org.springframework.samples.petclinic.service.exceptions.WrongDatesInHotelsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +48,7 @@ class PetHotelServiceTest {
 
 	@Test
 	@Transactional
-	void shouldSaveBooking() throws OverlappingBookingDatesException {
+	void shouldSaveBooking() {
 		PetHotel booking = new PetHotel();
 		Pet pet = this.petService.findPetById(1);
 
@@ -60,84 +60,11 @@ class PetHotelServiceTest {
 
 		try {
 			this.petHotelService.saveHotel(booking);
-		} catch (DataAccessException | WrongDatesInHotelsException e) {
+		} catch (DataAccessException e) {
 			e.printStackTrace();
 		}
 
 		assertThat(booking.getId()).isNotNull();
-	}
-
-	@Test
-	@Transactional
-	void shouldNotSaveBookingWrongDates() {
-		PetHotel booking = new PetHotel();
-		Pet pet = this.petService.findPetById(1);
-
-		booking.setDescription("Este pet imaginario se va de casa");
-		booking.setUserName("owner1");
-		booking.setPet(pet);
-		booking.setStartDate(LocalDate.of(2065, 12, 12));
-		booking.setEndDate(LocalDate.of(2065, 12, 1));
-
-		Assertions.assertThrows(WrongDatesInHotelsException.class, () -> {
-			this.petHotelService.saveHotel(booking);
-		});
-
-		assertThat(booking.getId()).isNull();
-	}
-	
-	@Test
-	@Transactional
-	void shouldNotSaveBookingOverlappingDates() throws DataAccessException, WrongDatesInHotelsException, OverlappingBookingDatesException {
-		PetHotel booking = new PetHotel();
-		PetHotel booking2 = new PetHotel();
-		Pet pet = this.petService.findPetById(1);
-
-		booking.setDescription("Este pet imaginario se va de casa");
-		booking.setUserName("owner1");
-		booking.setPet(pet);
-		booking.setStartDate(LocalDate.of(2065, 12, 1));
-		booking.setEndDate(LocalDate.of(2065, 12, 13));
-		this.petHotelService.saveHotel(booking);
-
-		booking2.setDescription("Este pet imaginario se va de casa");
-		booking2.setUserName("owner1");
-		booking2.setPet(pet);
-		booking2.setStartDate(LocalDate.of(2065, 12, 2));
-		booking2.setEndDate(LocalDate.of(2065, 12, 14));
-		
-		Assertions.assertThrows(OverlappingBookingDatesException.class, () -> {
-			this.petHotelService.saveHotel(booking2);
-		});
-
-		assertThat(booking2.getId()).isNull();
-	}
-	
-	@Test
-	@Transactional
-	void shouldNotSaveBookingOverlappingDates2() throws DataAccessException, WrongDatesInHotelsException, OverlappingBookingDatesException {
-		PetHotel booking = new PetHotel();
-		PetHotel booking2 = new PetHotel();
-		Pet pet = this.petService.findPetById(1);
-
-		booking.setDescription("Este pet imaginario se va de casa");
-		booking.setUserName("owner1");
-		booking.setPet(pet);
-		booking.setStartDate(LocalDate.of(2065, 12, 1));
-		booking.setEndDate(LocalDate.of(2065, 12, 13));
-		this.petHotelService.saveHotel(booking);
-
-		booking2.setDescription("Este pet imaginario se va de casa");
-		booking2.setUserName("owner1");
-		booking2.setPet(pet);
-		booking2.setStartDate(LocalDate.of(2065, 12, 5));
-		booking2.setEndDate(LocalDate.of(2065, 12, 10));
-		
-		Assertions.assertThrows(OverlappingBookingDatesException.class, () -> {
-			this.petHotelService.saveHotel(booking2);
-		});
-
-		assertThat(booking2.getId()).isNull();
 	}
 	
 	@Test
@@ -150,7 +77,7 @@ class PetHotelServiceTest {
 		booking.setStartDate(LocalDate.of(2065, 12, 12));
 		booking.setEndDate(LocalDate.of(2065, 12, 14));
 
-		Assertions.assertThrows(NullPointerException.class, () -> {
+		Assertions.assertThrows(ConstraintViolationException.class, () -> {
 			this.petHotelService.saveHotel(booking);
 		});
 

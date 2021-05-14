@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -35,6 +36,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class AdoptionController {
 
+	private static final String ESPANOL = "español";
 	private final PetService petService;
 	private final AdoptionRequestService adoptionRequestService;
 	private final UserService userService;
@@ -46,6 +48,9 @@ public class AdoptionController {
 	private static final String ONLY_OWNERS_SHOULD_ADOPT = "Only owners can adopt pets!";
 	
 	private static final String REDIRECT_TO_ADOPTIONS = "redirect:/adoptions";
+	private static final String REDIRECT_TO_ADOPTIONS2 = "redirect:/adoptions";
+	private static final String REDIRECT_ADOPTION_APPLICATIONS = "redirect:/adoptionApplications";
+	private static final String REDIRECT_ADOPTION_APPLICATIONS2 = "redirect:/adoptionApplications";
 
 	@Autowired
 	public AdoptionController(PetService petService, AdoptionRequestService adoptionRequestService, UserService userService,
@@ -63,7 +68,7 @@ public class AdoptionController {
 	}
 	
 	@InitBinder("adoptionApplication")
-	public void initLineupBinder(WebDataBinder dataBinder) {
+	public void initAdoptionApplicationBinder(WebDataBinder dataBinder) {
 		dataBinder.setValidator(new AdoptionApplicationValidator());
 	}
 	
@@ -84,20 +89,37 @@ public class AdoptionController {
 	}
 	
 	@GetMapping(value = "/adoptions/{petId}/new")
-	public String requestAdoptionForPet(@PathVariable("petId") int petId, Map<String, Object> model) {
+	public String requestAdoptionForPet(@PathVariable("petId") int petId, Map<String, Object> model, RedirectAttributes redirectAttributes) {
 
 		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).orElseThrow(NoSuchElementException::new);
-
 		Optional<Pet> pet = this.petService.findById(petId);
-		String vista = REDIRECT_TO_ADOPTIONS;
 		
-		if (pet.isPresent() && pet.get().getOwner().getUser().equals(currentUser) && !this.adoptionRequestService.findPetsInAdoption().contains(pet.get())) {
-			AdoptionRequest adoptionRequest = new AdoptionRequest();
-			adoptionRequest.setPet(pet.get());
-			this.adoptionRequestService.save(adoptionRequest);
+		Pet petOrElseThrow = pet.orElseThrow(NoSuchElementException::new);
+		
+		if (!petOrElseThrow.getOwner().getUser().equals(currentUser)) {
+			if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+				redirectAttributes.addFlashAttribute(MESSAGE , "No puedes poner en adopcion una mascota que no es tuya!");
+				return REDIRECT_TO_ADOPTIONS;
+			}
+			
+				redirectAttributes.addFlashAttribute(MESSAGE , "You can't request the adoption of a pet that is not yours!");
+				return REDIRECT_TO_ADOPTIONS;
 		}
 
-		return vista;
+		if (this.adoptionRequestService.findPetsInAdoption().contains(petOrElseThrow)) {
+			if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+				redirectAttributes.addFlashAttribute(MESSAGE , "Esta mascota ya se encuentra en adopcion!");
+				return REDIRECT_TO_ADOPTIONS;
+			}
+			
+				redirectAttributes.addFlashAttribute(MESSAGE , "This pet has already been requested for adoption!");
+				return REDIRECT_TO_ADOPTIONS;
+		}
+
+		AdoptionRequest adoptionRequest = new AdoptionRequest();
+		adoptionRequest.setPet(petOrElseThrow);
+		this.adoptionRequestService.save(adoptionRequest);
+		return REDIRECT_TO_ADOPTIONS2; 
 	}
 	
 	@GetMapping(value = "/adoptions/{adoptionRequestId}/apply")
@@ -105,31 +127,41 @@ public class AdoptionController {
 			RedirectAttributes redirectAttributes) {
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
-		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
-		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).orElseThrow(NoSuchElementException::new);
 
-		String vista = REDIRECT_TO_ADOPTIONS;
-		
-		if (authority.equals(OWNER)) {
-			if (adoptionRequest.isPresent() && !adoptionRequest.get().getPet().getOwner().getUser().equals(currentUser)) {
-				if (!adoptionRequest.get().getAdoptionApplications().stream().map(x -> x.getOwner().getUser())
-						.collect(Collectors.toSet()).contains(currentUser)) {
-				model.put("adoptionApplication", new AdoptionApplication());
-				model.put("adoptionRequest", adoptionRequest.get());
-				vista = "adoptions/applyForAdoptionForm";
-				} else {
-					if (Locale.getDefault().getDisplayLanguage().equals("español")) {
-						redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
-					} else {
-						redirectAttributes.addFlashAttribute(MESSAGE , "You can't apply for the adoption of the same pet twice or more!");
-					}
-				}
-			}
-		} else {
+		if (!authority.equals(OWNER)) {
 			redirectAttributes.addFlashAttribute(MESSAGE , ONLY_OWNERS_SHOULD_ADOPT);
+			return REDIRECT_TO_ADOPTIONS;
 		}
 		
-		return vista;
+		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
+		User currentUser = this.userService.findUser(this.userService.getUserSession().getUsername()).orElseThrow(NoSuchElementException::new);
+		
+		AdoptionRequest adoptionRequestOrElseThrow = adoptionRequest.orElseThrow(NoSuchElementException::new);
+		
+		if (adoptionRequestOrElseThrow.getPet().getOwner().getUser().equals(currentUser)) {
+			if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+				redirectAttributes.addFlashAttribute(MESSAGE , "No puedes intentar adoptar a tu propia mascota!");
+				return REDIRECT_TO_ADOPTIONS;
+			}
+			
+				redirectAttributes.addFlashAttribute(MESSAGE , "You can't apply for the adoption of your own pet!");
+				return REDIRECT_TO_ADOPTIONS;
+		}
+		
+		if (adoptionRequestOrElseThrow.getAdoptionApplications().stream().map(x -> x.getOwner().getUser())
+				.collect(Collectors.toSet()).contains(currentUser)) {
+			
+			if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+				redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
+				return REDIRECT_TO_ADOPTIONS;
+			}
+				redirectAttributes.addFlashAttribute(MESSAGE , "You can't apply for the adoption of the same pet twice or more!");
+				return REDIRECT_TO_ADOPTIONS;
+		}
+
+		model.put("adoptionApplication", new AdoptionApplication());
+		model.put("adoptionRequest", adoptionRequestOrElseThrow);
+		return "adoptions/applyForAdoptionForm";
 	}
 	
 	@PostMapping(value = "/adoptions/{adoptionRequestId}/apply")
@@ -138,35 +170,40 @@ public class AdoptionController {
 			RedirectAttributes redirectAttributes) {
 
 		String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
+		
+		if (!authority.equals(OWNER)) {
+			redirectAttributes.addFlashAttribute(MESSAGE, ONLY_OWNERS_SHOULD_ADOPT);
+			return REDIRECT_TO_ADOPTIONS;
+		}
+		
 		Owner selectedOwner = adoptionApplication.getOwner();
 		Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findAdoptionRequestById(adoptionRequestId);
 		
-		String vista = REDIRECT_TO_ADOPTIONS;
+		AdoptionRequest adoptionRequestOrElseThrow = adoptionRequest.orElseThrow(NoSuchElementException::new);
 		
-		if (authority.equals(OWNER)) {
-			if (result.hasErrors()) {
-				model.put("adoptionApplication", adoptionApplication);
-				model.put("adoptionRequest", adoptionRequest.orElseThrow(NoSuchElementException::new));
-				vista = "adoptions/applyForAdoptionForm";
-			} else {
-				if (adoptionRequest.isPresent()) {
-					if (!adoptionRequest.get().getAdoptionApplications().stream().map(AdoptionApplication::getOwner)
-							.collect(Collectors.toSet()).contains(selectedOwner)) {
-						adoptionApplication.setAdoptionRequest(adoptionRequest.get());
-						this.adoptionApplicationService.save(adoptionApplication);
-					} else {
-						if (Locale.getDefault().getDisplayLanguage().equals("español")) {
-							redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
-						} else {
-							redirectAttributes.addFlashAttribute(MESSAGE, "You can't apply for the adoption of the same pet twice or more!");
-						}
-					}
-				}
-			}
-		} else {
-			redirectAttributes.addFlashAttribute(MESSAGE, ONLY_OWNERS_SHOULD_ADOPT);
+		if (result.hasErrors()) {
+			model.put("adoptionApplication", adoptionApplication);
+			model.put("adoptionRequest", adoptionRequestOrElseThrow);
+			return "adoptions/applyForAdoptionForm";
 		}
-		return vista;
+
+		Set<Owner> applicantOwners = adoptionRequestOrElseThrow.getAdoptionApplications().stream()
+				.map(AdoptionApplication::getOwner).collect(Collectors.toSet());
+		
+		if (applicantOwners.contains(selectedOwner)) {
+			
+			if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+				redirectAttributes.addFlashAttribute(MESSAGE, "No puedes crear una solicitud de adopcion para la misma mascota mas de una vez!");
+				return REDIRECT_TO_ADOPTIONS;
+			}
+			
+			redirectAttributes.addFlashAttribute(MESSAGE, "You can't apply for the adoption of the same pet twice or more!");
+			return REDIRECT_TO_ADOPTIONS;
+		}
+		
+		adoptionApplication.setAdoptionRequest(adoptionRequestOrElseThrow);
+		this.adoptionApplicationService.save(adoptionApplication);
+		return REDIRECT_TO_ADOPTIONS;
 	}
 
 	@GetMapping(value = "/adoptionApplications")
@@ -179,62 +216,83 @@ public class AdoptionController {
 	 @GetMapping(value = "/adoptions/{adoptionApplicationId}/adopt")
 	 public String changePetOwner(@PathVariable("adoptionApplicationId") int adoptionApplicationId, Map<String, Object> model,
 				RedirectAttributes redirectAttributes) {
-		 Optional<AdoptionApplication> adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId);
-		 User currentUser = this.userService.getUserSession();
-		 Pet petInAdoption = adoptionApplication.orElseThrow(NoSuchElementException::new).getAdoptionRequest().getPet();
+		 
 		 String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
-		 if (authority.equals(OWNER)) {
-			 if (adoptionApplication.isPresent() && petInAdoption.getOwner().getUser().equals(currentUser)) {
-				 Owner newOwner = adoptionApplication.get().getOwner();
-				 Owner oldOwner = adoptionApplication.get().getAdoptionRequest().getPet().getOwner();
-				 oldOwner.removePet(petInAdoption);
-				 newOwner.addPet(adoptionApplication.get().getAdoptionRequest().getPet());
-				 this.ownerService.saveOwner(oldOwner);
-				 this.ownerService.saveOwner(newOwner);
-				 this.adoptionRequestService.delete(adoptionApplication.get().getAdoptionRequest());
-			 }
-		 } else {
+		 if (!authority.equals(OWNER)) {
 			 redirectAttributes.addFlashAttribute(MESSAGE, ONLY_OWNERS_SHOULD_ADOPT);
+			 return REDIRECT_TO_ADOPTIONS;
 		 }
+		 
+		 Optional<AdoptionApplication> adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId);
+		 User currentUser = this.userService.getUserSession();
+		 
+		 AdoptionApplication adoptionApplicationOrElseThrow = adoptionApplication.orElseThrow(NoSuchElementException::new);
+		 Pet petInAdoption = adoptionApplicationOrElseThrow.getAdoptionRequest().getPet();
+		 
+		 if (!petInAdoption.getOwner().getUser().equals(currentUser)) {
+			 if (Locale.getDefault().getDisplayLanguage().equals(ESPANOL)) {
+					redirectAttributes.addFlashAttribute(MESSAGE, "No eres el dueño de esta mascota!");
+					return REDIRECT_TO_ADOPTIONS;
+				}
+				
+				redirectAttributes.addFlashAttribute(MESSAGE, "This pet is not yours!");
+				return REDIRECT_TO_ADOPTIONS;
+		 }
+		 
+		 Owner newOwner = adoptionApplicationOrElseThrow.getOwner();
+		 Owner oldOwner = petInAdoption.getOwner();
+		 oldOwner.removePet(petInAdoption);
+		 newOwner.addPet(adoptionApplicationOrElseThrow.getAdoptionRequest().getPet());
+		 this.ownerService.saveOwner(oldOwner);
+		 this.ownerService.saveOwner(newOwner);
+		 this.adoptionRequestService.delete(adoptionApplicationOrElseThrow.getAdoptionRequest());
 		 return "adoptions/adoptionApplicationsList";
 	 }
 	 
 	 @GetMapping(value = "/adoptions/{adoptionRequestId}/delete")
 	 public String deleteAdoptionRequest(@PathVariable("adoptionRequestId") int adoptionRequestId, ModelMap model,
 			 RedirectAttributes redirectAttributes) {
-		 Optional<AdoptionRequest> adoptionRequest = this.adoptionRequestService.findById(adoptionRequestId);
 
-		 if (adoptionRequest.isPresent()) {
-			 if (adoptionRequest.get().getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
-				 this.adoptionRequestService.delete(adoptionRequest.get());
+		 try {
+			 AdoptionRequest adoptionRequest = this.adoptionRequestService.findById(adoptionRequestId).orElseThrow(NoSuchElementException::new);
+
+			 if (adoptionRequest.getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
+				 this.adoptionRequestService.delete(adoptionRequest);
 				 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption request successfully deleted!");
-			 } else {
-				 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption request is not yours!");
+				 return REDIRECT_TO_ADOPTIONS;
 			 }
-		 } else {
+			 
+				 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption request is not yours!");
+
+		 } catch (NoSuchElementException e) {
 			 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption request not found!");
 		 }
-		 return REDIRECT_TO_ADOPTIONS;
+		 
+		 return REDIRECT_TO_ADOPTIONS2;
 	 }
 
 	 
 	 @GetMapping(value = "/adoptionApplications/{adoptionApplicationId}/delete")
 	 public String deleteAdoptionApplication(@PathVariable("adoptionApplicationId") int adoptionApplicationId, ModelMap model,
 			 RedirectAttributes redirectAttributes) {
-		 Optional<AdoptionApplication> adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId);
-
-		 if (adoptionApplication.isPresent()) {
-			 if (adoptionApplication.get().getAdoptionRequest().getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
-				 this.adoptionApplicationService.delete(adoptionApplication.get());
+		 
+		 try {
+			 AdoptionApplication adoptionApplication = this.adoptionApplicationService.findById(adoptionApplicationId)
+				 .orElseThrow(NoSuchElementException::new);
+		 
+			 if (adoptionApplication.getAdoptionRequest().getPet().getOwner().getUser().equals(this.userService.getUserSession())) {
+				 this.adoptionApplicationService.delete(adoptionApplication);
 				 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption application successfully deleted!");
-			 } else {
-				 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption application is not for you!");
+				 return REDIRECT_ADOPTION_APPLICATIONS;
 			 }
-		 } else {
+			 
+			 redirectAttributes.addFlashAttribute(MESSAGE, "This adoption application is not for you!");
+				
+		 } catch (NoSuchElementException e) {
 			 redirectAttributes.addFlashAttribute(MESSAGE, "Adoption application not found!");
 		 }
-		 return "redirect:/adoptionApplications";
+		 
+		 return REDIRECT_ADOPTION_APPLICATIONS2;
 	 }
-
 }

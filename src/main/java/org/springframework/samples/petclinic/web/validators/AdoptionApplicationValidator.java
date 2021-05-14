@@ -22,7 +22,7 @@ public class AdoptionApplicationValidator implements Validator {
 		}
 				
 		// owner not selected validation
-		if (owner==null){
+		if (owner == null){
 			errors.rejectValue("owner", OWNER_NOT_SELECTED, OWNER_NOT_SELECTED);
 		}
 	}
