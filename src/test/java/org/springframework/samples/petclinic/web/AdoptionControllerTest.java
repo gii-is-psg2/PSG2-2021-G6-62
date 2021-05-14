@@ -179,20 +179,6 @@ class AdoptionControllerTest {
 				.andExpect(view().name("adoptions/applyForAdoptionForm"));
 	}	
     
-//    @WithMockUser(value = "otra_persona")
-//	@Test
-//	void testApplyForAdoptionPost() throws Exception {
-//		given(this.userService.getUserSession()).willReturn(user);
-//    	given(this.ownerService.findOwnerById(11)).willReturn(owner);
-//
-//		mockMvc.perform(post("/adoptions/{adoptionRequestId}/apply", TEST_REQUEST_ID)
-//				.with(csrf())
-//				.param("description", "holaaaaaaa")
-//				.param("owner", "11"))
-//				.andExpect(status().isOk())
-//				.andExpect(view().name("redirect:/adoptions"));
-//	}
-    
     @WithMockUser(value = "otra_persona")
 	@Test
 	void testApplyForAdoptionPostDifferentOwnerError() throws Exception {

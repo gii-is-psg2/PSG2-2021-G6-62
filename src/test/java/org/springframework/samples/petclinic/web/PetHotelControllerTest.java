@@ -215,8 +215,6 @@ class PetHotelControllerTest {
 				.param("lastName", "testLastName"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
-
-	//	testProcessPetHotelCreationFormValidatorErrorNotAdminStartDateBeforeNow()
 		
 		mockMvc.perform(post("/pethotel/save")
 				.with(csrf())
@@ -229,8 +227,6 @@ class PetHotelControllerTest {
 				.param("lastName", "testLastName"))
 			.andExpect(status().isOk())
 			.andExpect(view().name("hotel/createOrUpdateHotelForm"));
-	
-	// testProcessPetHotelCreationFormValidatorErrorStartDateAfterEndDate()
 		
 		user.setUsername(TEST_USER_OWNER);
 		given(this.userService.getUserSession()).willReturn(user);

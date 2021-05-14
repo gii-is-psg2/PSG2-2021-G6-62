@@ -79,7 +79,6 @@ class PetServiceTests {
 
 		owner6 = this.ownerService.findOwnerById(6);
 		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
-		// checks that id has been generated
 		assertThat(pet.getId()).isNotNull();
 	}
 
@@ -99,7 +98,6 @@ class PetServiceTests {
 		try {
 			petService.savePet(pet);		
 		} catch (DuplicatedPetNameException e) {
-			// The pet already exists!
 			e.printStackTrace();
 		}
 
@@ -151,7 +149,6 @@ class PetServiceTests {
 			petService.savePet(pet);
 			petService.savePet(anotherPet);
 		} catch (DuplicatedPetNameException e) {
-			// The pets already exists!
 			e.printStackTrace();
 		}				
 
