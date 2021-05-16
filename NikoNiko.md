@@ -14,7 +14,7 @@
 | Day 6         |    :ambulance:   (Necesito un descanso o una reducción de trabajo... no puedo avanzar en estas condiciones)        |
 
 El día 1 se corresponde al 07/05/2021
-El día 6 se corresponde al 12/05/2021
+El día 10 se corresponde al 16/05/2021
 
 ## Sprint 4
 
@@ -26,10 +26,10 @@ El día 6 se corresponde al 12/05/2021
 | Day 4         | :alien:       | :fearful:      | :smile:        | :smile:        |
 | Day 5         | :alien:       | :fearful:      | :alien:        | :smile:        |
 | Day 6         | :smile:       | :neutral_face: | :alien:        | :alien:        |
-| Day 7         |               | :smile:        | :smile:        | :smile:        |
-| Day 8         |               | :worried:      | :smile:        | :smile:        |
-| Day 9         |               |                |                |                |
-| Day 10        |               |                |                |                |
+| Day 7         | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 8         | :smile:       | :worried:      | :smile:        | :smile:        |
+| Day 9         | :smile:       |                |                |                |
+| Day 10        | :smile:       |                |                |                |
 | Day 11        |               |                |                |                |
 | Day 12        |               |                |                |                |
 | Day 13        |               |                |                |                |
