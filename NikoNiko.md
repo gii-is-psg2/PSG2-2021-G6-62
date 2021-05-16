@@ -28,8 +28,8 @@ El día 10 se corresponde al 16/05/2021
 | Day 6         | :smile:       | :neutral_face: | :alien:        | :alien:        |
 | Day 7         | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 8         | :smile:       | :worried:      | :smile:        | :smile:        |
-| Day 9         | :smile:       |                |                |                |
-| Day 10        | :smile:       |                |                |                |
+| Day 9         | :smile:       | :alien:        | :smile:        | :smile:        |
+| Day 10        | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 11        |               |                |                |                |
 | Day 12        |               |                |                |                |
 | Day 13        |               |                |                |                |
