@@ -33,8 +33,8 @@ El día 10 se corresponde al 16/05/2021
 | Day 11        |               |                |                | :alien:        |
 | Day 12        |               |                |                | :smile:        |
 | Day 13        |               |                |                | :smile:        |
-| Day 14        |               |                |                |                |
-| Day 15        |               |                |                |                |
+| Day 14        |               |                |                | :alien:        |
+| Day 15        |               |                |                | :smile:        |
 | Day 16        |               |                |                |                |
 | Day 17        |               |                |                |                |
 | Day 18        |               |                |                |                |
