@@ -65,7 +65,7 @@ public class PetController {
 	}
 
 	@GetMapping(value = "/pets/new")
-	public String initCreationForm(Owner owner, ModelMap model) {
+	public String initCreationForm(Owner owner, ModelMap model) throws DuplicatedPetNameException {
 		Pet pet = new Pet();
 		owner.addPet(pet);
 		model.put("pet", pet);
@@ -78,16 +78,15 @@ public class PetController {
 			model.put("pet", pet);
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
-		else {
-			try{
-				owner.addPet(pet);
-				this.petService.savePet(pet);
-			}catch(DuplicatedPetNameException ex){
-				result.rejectValue("name", "duplicate", "already exists");
-				return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-			}
-			return REDIRECT_TO_X_OWNER;
+		
+		try {
+			owner.addPet(pet);
+			this.petService.savePet(pet);
+		} catch(DuplicatedPetNameException ex){
+			result.rejectValue("name", "duplicate", "already exists");
+			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
+		return REDIRECT_TO_X_OWNER;
 	}
 
 	@GetMapping(value = "/pets/{petId}/edit")
