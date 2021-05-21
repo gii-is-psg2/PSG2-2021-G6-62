@@ -84,7 +84,7 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	void shouldThrowExceptionInsertingPetsWithTheSameName() {
+	void shouldThrowExceptionInsertingPetsWithTheSameName() throws DuplicatedPetNameException {
 		Owner owner6 = this.ownerService.findOwnerById(6);
 		Pet pet = new Pet();
 		pet.setName("wario");
@@ -128,7 +128,7 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	void shouldThrowExceptionUpdatingPetsWithTheSameName() {
+	void shouldThrowExceptionUpdatingPetsWithTheSameName() throws DuplicatedPetNameException {
 		Owner owner6 = this.ownerService.findOwnerById(6);
 		Pet pet = new Pet();
 		pet.setName("wario");
@@ -154,6 +154,7 @@ class PetServiceTests {
 
 		Assertions.assertThrows(DuplicatedPetNameException.class, () ->{
 			anotherPet.setName("wario");
+			owner6.addPet(anotherPet);
 			petService.savePet(anotherPet);
 		});		
 	}

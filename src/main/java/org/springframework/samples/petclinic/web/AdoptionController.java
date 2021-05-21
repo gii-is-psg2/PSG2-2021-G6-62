@@ -21,6 +21,7 @@ import org.springframework.samples.petclinic.service.AdoptionRequestService;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.web.validators.AdoptionApplicationValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -215,7 +216,7 @@ public class AdoptionController {
 	
 	 @GetMapping(value = "/adoptions/{adoptionApplicationId}/adopt")
 	 public String changePetOwner(@PathVariable("adoptionApplicationId") int adoptionApplicationId, Map<String, Object> model,
-				RedirectAttributes redirectAttributes) {
+				RedirectAttributes redirectAttributes) throws DuplicatedPetNameException {
 		 
 		 String authority = this.userService.findAuthoritiesByUsername(this.userService.getUserSession().getUsername());
 
