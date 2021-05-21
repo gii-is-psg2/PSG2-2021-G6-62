@@ -30,11 +30,11 @@ El día 15 se corresponde al 21/05/2021
 | Day 8         | :smile:       | :worried:      | :smile:        | :smile:        |
 | Day 9         | :smile:       | :alien:        | :smile:        | :smile:        |
 | Day 10        | :smile:       | :smile:        | :smile:        | :smile:        |
-| Day 11        | :smile:       | :smile:        |                | :alien:        |
-| Day 12        | :neutral_face:| :alien:        |                | :smile:        |
-| Day 13        | :neutral_face:| :neutral_face: |                | :smile:        |
-| Day 14        | :neutral_face:| :alien:        |                | :alien:        |
-| Day 15        | :neutral_face:| :neutral_face: |                | :smile:        |
+| Day 11        | :smile:       | :smile:        | :smile:        | :alien:        |
+| Day 12        | :neutral_face:| :alien:        | :smile:        | :smile:        |
+| Day 13        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
+| Day 14        | :neutral_face:| :alien:        | :smile:        | :alien:        |
+| Day 15        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
 | Day 16        |               |                |                |                |
 | Day 17        |               |                |                |                |
 | Day 18        |               |                |                |                |
