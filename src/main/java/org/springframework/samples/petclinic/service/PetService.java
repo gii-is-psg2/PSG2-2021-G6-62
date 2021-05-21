@@ -1,8 +1,10 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -58,12 +60,11 @@ public class PetService {
 	@Transactional(rollbackFor = DuplicatedPetNameException.class)
 	public void savePet(Pet pet) throws DataAccessException, DuplicatedPetNameException {
 
-		Pet otherPet = pet.getOwner().getPetwithIdDifferent(pet.getName(), pet.getId());
-
-		if (StringUtils.hasLength(pet.getName()) &&  
-				(otherPet != null && !otherPet.getId().equals(pet.getId()))) {            	
+		if (Collections.frequency(pet.getOwner().getPets().stream().map(p -> p.getName().toLowerCase())
+				.collect(Collectors.toList()), pet.getName().toLowerCase()) > 1) {
 			throw new DuplicatedPetNameException();
 		}
+		
 		petRepository.save(pet);                
 	}
 
