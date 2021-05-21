@@ -32,8 +32,8 @@ El día 15 se corresponde al 21/05/2021
 | Day 10        | :smile:       | :smile:        | :smile:        | :smile:        |
 | Day 11        | :smile:       | :smile:        |                | :alien:        |
 | Day 12        | :neutral_face:| :alien:        |                | :smile:        |
-| Day 13        | :neutral_face:| :alien:        |                | :smile:        |
-| Day 14        | :neutral_face:| :neutral_face: |                | :alien:        |
+| Day 13        | :neutral_face:| :neutral_face: |                | :smile:        |
+| Day 14        | :neutral_face:| :alien:        |                | :alien:        |
 | Day 15        | :neutral_face:| :neutral_face: |                | :smile:        |
 | Day 16        |               |                |                |                |
 | Day 17        |               |                |                |                |
