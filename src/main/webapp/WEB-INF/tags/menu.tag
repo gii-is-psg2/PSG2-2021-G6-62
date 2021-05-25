@@ -34,14 +34,6 @@
                         <span>${petHotel}</span>
                     </petclinic:menuItem>
 				</sec:authorize>
-
-				<sec:authorize access="hasAnyAuthority('admin,owner')">
-	                <spring:message code="menu.findOwners" var="findOwners"/>
-					<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find" title="${findOwners}">
-						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-						<span><spring:message code="menu.findOwners" /></span>
-					</petclinic:menuItem>
-				</sec:authorize>
 				
 				<spring:message code="menu.cause" var="causes"/>
 				<petclinic:menuItem active="${name eq 'cause'}" url="/cause"

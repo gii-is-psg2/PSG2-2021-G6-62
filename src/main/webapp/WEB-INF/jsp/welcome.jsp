@@ -26,9 +26,11 @@
 <petclinic:layout pageName="home">
     <h2><fmt:message key="welcome"/></h2>
     <div class="row">
+
         <div class="column">
             <spring:url value="/resources/images/otter.png" htmlEscape="true" var="petsImage"/>
             <img src="${petsImage}" style="width: 60%"/>
+            <br><a class="btn btn-default" href='<spring:url value="/owners/find" htmlEscape="true"/>'><spring:message code="menu.findOwners" /></a><br>
             <br><sec:authorize access="hasAuthority('owner')">
 		<%--     	<h1><spring:message code="home.booking" /></h1> --%>
 				<a class="btn btn-default" href='<spring:url value="/pethotel/${nombre}/new" htmlEscape="true"/>'><spring:message code="home.bookARoom" /></a>
