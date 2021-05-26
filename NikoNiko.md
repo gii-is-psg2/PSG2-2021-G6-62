@@ -15,6 +15,7 @@
 
 El día 1 se corresponde al 07/05/2021
 El día 15 se corresponde al 21/05/2021
+El día 20 se corresponde al 26/05/2021
 
 ## Sprint 4
 
@@ -39,7 +40,7 @@ El día 15 se corresponde al 21/05/2021
 | Day 17        |               | :alien:        |                | :alien:        |
 | Day 18        |               | :alien:        |                | :smile:        |
 | Day 19        |               | :smile:        |                | :smile:        |
-| Day 20        |               |                |                |                |
+| Day 20        |               |                |                | :alien:        |
 | Day 21        |               |                |                |                |
 | Day 22        |               |                |                |                |
 | Day 23        |               |                |                |                |
