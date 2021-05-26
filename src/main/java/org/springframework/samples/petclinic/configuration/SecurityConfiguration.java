@@ -29,11 +29,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
-	
+
 	private static final String OWNER = "owner";
 	private static final String ADMIN = "admin";
-	private static final String VET = "vet";
-	
+	private static final String VET = "veterinarian";
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
@@ -41,11 +41,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
 				.antMatchers("/users/new").permitAll()
 				.antMatchers("/pets/**").permitAll()
-				.antMatchers("/pethotel/**").hasAnyAuthority(OWNER,ADMIN)	
+				.antMatchers("/pethotel/**").hasAnyAuthority(OWNER,ADMIN)
 				.antMatchers("/admin/**").hasAnyAuthority(ADMIN)
-				.antMatchers("/owners/**").hasAnyAuthority(OWNER,ADMIN)				
-				.antMatchers("/adoptions/**").hasAnyAuthority(OWNER,ADMIN)				
-				.antMatchers("/adoptionApplications/**").hasAnyAuthority(OWNER,ADMIN)				
+				.antMatchers("/owners/**").hasAnyAuthority(OWNER,ADMIN)
+				.antMatchers("/adoptions/**").hasAnyAuthority(OWNER,ADMIN)
+				.antMatchers("/adoptionApplications/**").hasAnyAuthority(OWNER,ADMIN)
 				.antMatchers("/vets/**").hasAnyAuthority(ADMIN)
 				.antMatchers("/cause").permitAll()
 				.antMatchers("/cause/new").hasAnyAuthority(ADMIN,VET,OWNER)
@@ -61,8 +61,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				 	.failureUrl("/login-error")
 				.and()
 					.logout()
-						.logoutSuccessUrl("/"); 
-                // Configuración para que funcione la consola de administración 
+						.logoutSuccessUrl("/");
+                // Configuración para que funcione la consola de administración
                 // de la BD H2 (deshabilitar las cabeceras de protección contra
                 // ataques de tipo csrf y habilitar los framesets si su contenido
                 // se sirve desde esta misma página.
@@ -81,15 +81,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	      .authoritiesByUsernameQuery(
 	       "select username, authority "
 	        + "from authorities "
-	        + "where username = ?")	      	      
-	      .passwordEncoder(passwordEncoder());	
+	        + "where username = ?")
+	      .passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Bean
-	public PasswordEncoder passwordEncoder() {	    
+	public PasswordEncoder passwordEncoder() {
 	    return NoOpPasswordEncoder.getInstance();
 	}
-	
+
 }
 
 
