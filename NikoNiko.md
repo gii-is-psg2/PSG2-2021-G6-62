@@ -41,7 +41,7 @@ El día 20 se corresponde al 26/05/2021
 | Day 18        |               | :alien:        |                | :smile:        |
 | Day 19        |               | :smile:        |                | :smile:        |
 | Day 20        |               |                |                | :alien:        |
-| Day 21        |               |                |                |                |
+| Day 21        |               |                |                | :smile:        |
 | Day 22        |               |                |                |                |
 | Day 23        |               |                |                |                |
 
