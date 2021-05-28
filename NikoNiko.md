@@ -14,8 +14,7 @@
 | Day 6         |    :ambulance:   (Necesito un descanso o una reducción de trabajo... no puedo avanzar en estas condiciones)        |
 
 El día 1 se corresponde al 07/05/2021
-El día 15 se corresponde al 21/05/2021
-El día 20 se corresponde al 26/05/2021
+El día 22 se corresponde al 28/05/2021
 
 ## Sprint 4
 
@@ -36,14 +35,17 @@ El día 20 se corresponde al 26/05/2021
 | Day 13        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
 | Day 14        | :neutral_face:| :alien:        | :smile:        | :alien:        |
 | Day 15        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
-| Day 16        |               | :smile:        |                | :smile:        |
-| Day 17        |               | :alien:        |                | :alien:        |
-| Day 18        |               | :alien:        |                | :smile:        |
-| Day 19        |               | :smile:        |                | :smile:        |
-| Day 20        |               |                |                | :alien:        |
-| Day 21        |               |                |                | :smile:        |
-| Day 22        |               |                |                |                |
+| Day 16        | :worried:     | :smile:        |                | :smile:        |
+| Day 17        | :worried:     | :alien:        |                | :alien:        |
+| Day 18        | :worried:     | :alien:        |                | :smile:        |
+| Day 19        | :worried:     | :smile:        |                | :smile:        |
+| Day 20        | :neutral_face:|                |                | :alien:        |
+| Day 21        | :neutral_face:|                |                | :smile:        |
+| Day 22        | :neutral_face:|                |                |                |
 | Day 23        |               |                |                |                |
+| Day 24        |               |                |                |                |
+| Day 25        |               |                |                |                |
+| Day 26        |               |                |                |                |
 
 
 
