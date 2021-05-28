@@ -35,13 +35,13 @@ El día 22 se corresponde al 28/05/2021
 | Day 13        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
 | Day 14        | :neutral_face:| :alien:        | :smile:        | :alien:        |
 | Day 15        | :neutral_face:| :neutral_face: | :smile:        | :smile:        |
-| Day 16        | :worried:     | :smile:        |                | :smile:        |
-| Day 17        | :worried:     | :alien:        |                | :alien:        |
-| Day 18        | :worried:     | :alien:        |                | :smile:        |
-| Day 19        | :worried:     | :smile:        |                | :smile:        |
-| Day 20        | :neutral_face:|                |                | :alien:        |
-| Day 21        | :neutral_face:|                |                | :smile:        |
-| Day 22        | :neutral_face:|                |                |                |
+| Day 16        | :worried:     | :smile:        | :smile:        | :smile:        |
+| Day 17        | :worried:     | :alien:        | :smile:        | :alien:        |
+| Day 18        | :worried:     | :alien:        | :smile:        | :smile:        |
+| Day 19        | :worried:     | :smile:        | :smile:        | :smile:        |
+| Day 20        | :neutral_face:|                | :smile:        | :alien:        |
+| Day 21        | :neutral_face:|                | :smile:        | :smile:        |
+| Day 22        | :neutral_face:|                | :smile:        | :smile:        |
 | Day 23        |               |                |                |                |
 | Day 24        |               |                |                |                |
 | Day 25        |               |                |                |                |
