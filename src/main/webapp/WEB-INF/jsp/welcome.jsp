@@ -43,6 +43,8 @@
 			<sec:authorize access="hasAnyAuthority('owner')">
 				<a class="btn btn-default" href='<spring:url value="adoptionApplications" htmlEscape="true"/>'><spring:message code="menu.adoptionApplications" /></a>
 			</sec:authorize>
+			
+			<a class="btn btn-default" href='<spring:url value="/contact" htmlEscape="true"/>'><spring:message code="menu.contact" /></a>
 		</div>
 		<div class="column">
             <spring:url value="/resources/images/dogtor.png" htmlEscape="true" var="dogtor"/>
