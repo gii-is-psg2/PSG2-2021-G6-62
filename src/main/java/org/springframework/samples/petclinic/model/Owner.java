@@ -33,6 +33,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -120,7 +121,10 @@ public class Owner extends Person {
 		return Collections.unmodifiableList(sortedPets);
 	}
 
-	public void addPet(Pet pet) {
+	public void addPet(Pet pet) throws DuplicatedPetNameException {
+		if (getPetsInternal().stream().anyMatch(x -> x.getName().equalsIgnoreCase(pet.getName()))) {
+			throw new DuplicatedPetNameException();
+		}
 		getPetsInternal().add(pet);
 		pet.setOwner(this);
 	}
