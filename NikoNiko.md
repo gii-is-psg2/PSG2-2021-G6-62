@@ -42,10 +42,10 @@ El día 22 se corresponde al 28/05/2021
 | Day 20        | :neutral_face:| :alien:        | :smile:        | :alien:        |
 | Day 21        | :neutral_face:| :alien:        | :smile:        | :smile:        |
 | Day 22        | :neutral_face:| :smile:        | :smile:        | :smile:        |
-| Day 23        |               | :smile:        |                | :alien:        |
-| Day 24        |               |                |                |                |
-| Day 25        |               |                |                |                |
-| Day 26        |               |                |                |                |
+| Day 23        | :smile:       | :smile:        | :smile:        | :alien:        |
+| Day 24        | :smile:       | :smile:        | :smile:        | :smile:        |
+| Day 25        | :smile:       |                |                |                |
+| Day 26        | :smile:       |                |                |                |
 
 
 
